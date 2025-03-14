@@ -1,0 +1,9 @@
+<appshell-product-catalog-screen
+    [pageTitle]="'All Models'"
+    [breadcrumbLinks]="breadcrumbLinks"
+    [products]="filteredProducts"
+    [filters]="filters"
+    [noProductsIcon]="noProductsIcon"
+    [noProductsHtmlMessage]="noProductsHtmlMessage"
+    (activeFiltersChange)="filterProducts($event)"
+></appshell-product-catalog-screen>

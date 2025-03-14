@@ -1,0 +1,30 @@
+.top-section {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: end;
+    padding: 1.5rem;
+
+    h2 {
+        font-size: 1.5rem;
+        color: var(--bi-color-secondary-main);
+        line-height: 150%;
+        margin: 0;
+    }
+
+    &>button {
+        --mdc-filled-button-container-height: unset!important;
+        display: inline-flex;
+        align-items: center;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.125rem;
+        font-size: 0.875rem;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 1.25rem;
+        height: auto;
+        color: var(--bi-color-secondary-main)!important;
+        text-decoration: none;
+        font-family: BoehringerForward;
+    }
+}

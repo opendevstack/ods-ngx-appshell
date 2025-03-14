@@ -1,0 +1,30 @@
+{
+  "name": "@appshell/ngx-appshell",
+  "version": "18.0.1",
+  "scripts": {
+    "build": "tsc -p tsconfig.schematics.json",
+    "postbuild": "copyfiles schematics/collection.json schematics/*/schema.json schematics/*/files/**/* ../../dist/ngx-appshell/"
+  },
+  "publishConfig": {
+    "registry": "http://localhost:4873"
+  },
+  "ng-add": {
+    "save": "true"
+  },
+  "schematics": "./schematics/collection.json",
+  "peerDependencies": {
+    "@angular/common": ">=18.2.0",
+    "@angular/core": ">=18.2.0"
+  },
+  "dependencies": {
+    "@angular/material": "17.0.0",
+    "@azure/msal-angular": "3.1.0",
+    "@azure/msal-browser": "3.27.0",
+    "@boehringer-ingelheim/icons": "0.1.12",
+    "@boehringer-ingelheim/theme": "0.0.16-beta.5",
+    "marked": "12.0.2",
+    "ngx-markdown": "18.1.0",
+    "tslib": "2.3.0"
+  },
+  "sideEffects": false
+}

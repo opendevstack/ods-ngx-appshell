@@ -1,0 +1,9 @@
+<div class="top-section">
+    <div>
+        <appshell-breadcrumb [links]="breadcrumbLinks()"></appshell-breadcrumb>
+        <h2>{{title()}}</h2>
+    </div>
+    @if (buttonText()) {
+        <button mat-flat-button color="accent" (click)="clickButton()">{{buttonText()}}</button>
+    }
+</div>

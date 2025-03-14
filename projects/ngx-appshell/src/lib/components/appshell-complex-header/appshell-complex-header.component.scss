@@ -1,0 +1,54 @@
+.appshell-header-ctn {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--main-color);
+    color: var(--text-color-on-main-color);
+
+    appshell-header {
+        border-bottom: 1px solid var(--bi-color-secondary-medium);
+    }
+
+    .appshell-header {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        .logo-ctn {
+            width: 10rem;
+            height: 5rem;
+            margin: 0.5rem 3.5rem 0.5rem 5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            img {
+                max-width: 10rem;
+                max-height: 5rem;
+            }
+        }
+
+        a {
+            color: var(--text-color-on-main-color);
+            font-family: "Boehringer Forward Head";
+            font-size: 1rem;
+            font-style: normal;
+            font-weight: 500;
+            line-height: 1.5rem;
+            margin-right: 2rem;
+            text-decoration: none;
+
+            &.active, &:hover {
+                color: var(--main-color-contrast);
+                border-bottom: 1px solid var(--main-color-contrast);
+            }
+        }
+    }
+    
+    .header-space {
+        flex: 1;
+    }
+
+}

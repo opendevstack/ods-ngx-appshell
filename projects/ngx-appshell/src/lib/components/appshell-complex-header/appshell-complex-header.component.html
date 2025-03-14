@@ -1,0 +1,25 @@
+<div class="appshell-header-ctn">
+    <appshell-header
+        [class]="headerVariant()" 
+        [applicationName]="applicationName()"
+        [helpLink]="helpLink()"
+        [links]="headerLinks()"
+        [loggedUser]="loggedUser()"
+        (userLoggedIn)="userLoggedIn.emit()"
+        (userLoggedOut)="userLoggedOut.emit()">
+    </appshell-header>  
+    @if (links().length) {
+        <div class="appshell-header">
+            <div class="logo-ctn">
+                <img src="assets/logo/{{logo()}}" alt="Logo in the header" />
+            </div>
+            <nav aria-label="Sections navigation within the header">
+            @for (link of links(); track link.label) {
+                <a [appShellLink]="link.anchor" [class.active]="getCurrentUrlPath() === link.anchor" target="{{link.target || '_self'}}">
+                    {{link.label}}
+                </a>
+            }
+            </nav>
+        </div>
+    }
+</div>

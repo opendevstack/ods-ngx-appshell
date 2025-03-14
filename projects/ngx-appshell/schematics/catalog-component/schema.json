@@ -1,0 +1,16 @@
+{
+    "$schema": "http://json-schema.org/schema",
+    "$id": "catalog-component",
+    "title": "Appshell Component Catalog Schema",
+    "type": "object",
+    "properties": {
+        "path": {
+            "type": "string",
+            "description": "The path at which to create the component.",
+            "format": "path",
+            "x-prompt": "What is the path at which to create the component?",
+            "default": "src/app"
+        }
+    },
+    "required": []
+}

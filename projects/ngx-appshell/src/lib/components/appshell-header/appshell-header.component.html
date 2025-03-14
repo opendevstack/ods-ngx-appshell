@@ -1,0 +1,40 @@
+<nav class="appshell-meta-navigation" aria-label="Top of the header navigation">
+    <a class="app-id-ctn" href="/">
+        @if (symbol()) {
+            <img src="assets/logo/{{symbol()}}" alt="App symbol in the header" />
+        }
+        <h1>{{applicationName()}}</h1>
+    </a>
+    <div class="header-space"></div>
+    @for (link of links(); track link.label; let index = $index) {
+        <a class="header-link" [appShellLink]="link.anchor" [class.active]="getCurrentUrlPath() === link.anchor" target="{{link!.target || '_self'}}" [class.last]="index+1 === links().length">
+            {{link.label}}
+        </a>
+    }
+    @if (helpLink() && helpLink()?.icon) {
+        <a class="header-icon" [appShellLink]="helpLink()!.anchor" target="{{helpLink()!.target || '_self'}}" matTooltip="Help" aria-label="Visit the help page">
+            <span [class]="helpLink()!.icon!" aria-label="Help user icon"></span>
+        </a>
+    }
+    <div class="separator"></div>
+    <div class="user-ctn">
+        @if (loggedUser() !== null) {
+            <button [matMenuTriggerFor]="logoutMenu">
+                @if (loggedUser()!.avatarSrc) {
+                    <div class="header-profile-picture" [style.backgroundImage]="'url('+loggedUser()!.avatarSrc+')'"></div>
+                } @else {
+                    <span class="bi-person-icon" aria-label="Guest user icon"></span>
+                }
+                <div class="user-text">{{loggedUser()?.fullName}}</div>
+            </button>
+            <mat-menu #logoutMenu="matMenu" xPosition="before" class="appshell-logout-panel">
+                <button mat-menu-item (click)="userLoggedOut.emit()" (keypress)="userLoggedOut.emit()" aria-label="Logout">Log Out</button>
+            </mat-menu>
+        } @else {
+            <button (click)="userLoggedIn.emit()" (keypress)="userLoggedIn.emit()" aria-label="Login">
+                <span class="bi-person-icon" aria-label="Guest user icon"></span>
+                <div class="user-text">Login</div>
+            </button>
+        }
+    </div>
+</nav>

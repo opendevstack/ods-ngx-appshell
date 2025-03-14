@@ -1,0 +1,16 @@
+nav {
+    margin-bottom: .5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+
+    a, span {
+        color: var(--bi-color-secondary-main);
+        font-size: 0.875rem;
+
+        &.separator {
+            height: 1.25rem;
+            width: 1.25rem;
+        }
+    }
+}

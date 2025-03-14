@@ -1,0 +1,13 @@
+<nav>
+    <a appShellLink="/" aria-label="Home link icon in breadcrumb">
+        <span class="bi-house-icon"></span>
+    </a>
+    @for (link of links(); track link.label) {
+        <span class="bi-chevron-right-icon separator" aria-label="Breadcrumb separator icon"></span>
+        @if (link.anchor !== '') {
+            <a [appShellLink]="link.anchor" target="{{link.target || '_self'}}">{{ link.label }}</a>
+        } @else {
+            <span>{{ link.label }}</span>
+        }
+    }
+</nav>

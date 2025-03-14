@@ -1,0 +1,19 @@
+{
+    "$schema": "../../../node_modules/@angular-devkit/schematics/collection-schema.json",
+    "schematics": {
+        "ng-add": {
+            "description": "Add the AppShell module to your project.",
+            "factory": "./ng-add/index#ngAdd"
+        },
+        "azure-login": {
+            "description": "Integrate azure enterprise login in the application.",
+            "factory": "./azure-login/index#azureLoginGenerator",
+            "schema": "./azure-login/schema.json"
+        },
+        "catalog-component": {
+            "description": "Generate new components and services to build a catalog.",
+            "factory": "./catalog-component/index#catalogComponentGenerator",
+            "schema": "./catalog-component/schema.json"
+        }
+    }
+}

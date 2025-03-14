@@ -1,0 +1,76 @@
+@use '@angular/material' as mat;
+@use "./appshell-typography-config" as config;
+
+@import '@boehringer-ingelheim/icons/icons.css';
+
+@include mat.core();
+
+$appshell-primary-palette: (
+    200: var(--bi-color-secondary-light),
+    600: var(--bi-color-secondary-medium),
+    800: var(--bi-color-secondary-main),
+    900: var(--bi-color-secondary-dark),
+    contrast: (
+        200: var(--bi-color-black-main),
+        600: var(--bi-color-secondary-contrast),
+        800: var(--bi-color-secondary-contrast),
+        900: var(--bi-color-secondary-contrast),
+    )
+);
+
+$appshell-accent-palette: (
+    100: var(--bi-color-accent-green-light),
+    200: var(--bi-color-accent-green-medium),
+    500: var(--bi-color-accent-green-main),
+    600: var(--bi-color-accent-green-dark),
+    contrast: (
+        100: var(--bi-color-accent-green-contrast),
+        200: var(--bi-color-accent-green-contrast),
+        500: var(--bi-color-accent-green-contrast),
+        600: var(--bi-color-accent-green-neutral),
+    )
+);
+
+$appshell-warn-palette: (
+    100: var(--bi-color-danger-main),
+    500: var(--bi-color-danger-medium),
+    800: var(--bi-color-danger-dark),
+    contrast: (
+        100: var(--bi-color-black-main),
+        500: var(--bi-color-white-main),
+        800: var(--bi-color-white-main),
+    )
+);
+
+$appshell-primary: mat.define-palette($appshell-primary-palette, 800, 600, 900, 200);
+$appshell-accent: mat.define-palette($appshell-accent-palette, 500, 200, 600, 100);
+$appshell-warn: mat.define-palette($appshell-warn-palette, 500, 100, 800);
+
+$appshell-theme: mat.define-light-theme((
+    color: (
+        primary: $appshell-primary,
+        accent: $appshell-accent,
+        warn: $appshell-warn
+    ),
+    typography: config.$appshell-typography,
+    density: 0,
+    background-color: #ffffff,
+));
+
+button {
+    &:hover {
+        background-color: var(--main-color-contrast-hover);
+    }
+
+    &:focus {
+        outline: 2px solid #0069E5;
+        outline-offset: .2rem;
+    }
+}
+
+a:focus:focus-visible {
+    outline: 2px solid #0069E5;
+    outline-offset: .2rem;
+}
+
+@include mat.all-component-themes($appshell-theme);
