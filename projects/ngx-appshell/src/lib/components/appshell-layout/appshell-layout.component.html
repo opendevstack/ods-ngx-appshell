@@ -1,0 +1,30 @@
+<appshell-header
+    [class]="headerVariant()"
+    [symbol]="applicationSymbol()"
+    [applicationName]="applicationName()"
+    [applicationNameLink]="applicationNameLink()"
+    [helpLink]="appShellHelpLink()"
+    [notificationsLink]="appShellNotificationsLink()"
+    [notificationsCount]="appShellNotificationsCount()"
+    [links]="headerLinks()"
+    [picker]="headerPicker()"
+    [loggedUser]="loggedUser()"
+    (userLoggedIn)="userLoggedIn.emit()"
+    (userLoggedOut)="userLoggedOut.emit()"
+    (userPick)="userPick.emit($event)">
+</appshell-header>
+
+<section id="appshell-layout-content">
+    <mat-sidenav-container>
+        @if (sidenavSections() && sidenavSections().length) {
+            <mat-sidenav opened mode="side" disableClose [fixedInViewport]="true" [fixedTopGap]="48">
+                <appshell-sidebar-menu [sections]="sidenavSections()" [links]="sidenavLinks()"></appshell-sidebar-menu>
+            </mat-sidenav>
+        }
+        <mat-sidenav-content>
+            <main>
+                <router-outlet></router-outlet>
+            </main>
+        </mat-sidenav-content>
+    </mat-sidenav-container>
+</section>

@@ -1,0 +1,152 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { provideHttpClient } from '@angular/common/http';
+import { NotificationsScreenComponent } from './notifications-screen.component';
+import { AppShellNotification } from '@appshell/ngx-appshell';
+import { NatsMessage, NatsService } from '../../services/nats.service';
+import { Subject } from 'rxjs';
+import { provideMarkdown } from 'ngx-markdown';
+
+describe('NotificationsScreenComponent', () => {
+  let component: NotificationsScreenComponent;
+  let fixture: ComponentFixture<NotificationsScreenComponent>;
+  let mockNatsService: jasmine.SpyObj<NatsService>;
+  let natsMessages$: Subject<NatsMessage[]>;
+
+  beforeEach(async () => {
+    natsMessages$ = new Subject<NatsMessage[]>();
+    mockNatsService = jasmine.createSpyObj('NatsService', ['initialize', 'initializeUser', 'isValidMessage', 'readMessages'], { messages$: natsMessages$.asObservable() });
+        
+    await TestBed.configureTestingModule({
+      imports: [BrowserAnimationsModule, NotificationsScreenComponent],
+      providers: [
+        provideHttpClient(),
+        provideMarkdown(),
+        { provide: NatsService, useValue: mockNatsService }
+      ]
+    })
+    .compileComponents();
+
+    fixture = TestBed.createComponent(NotificationsScreenComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should subscribe to natsService messages$ and populate notifications', () => {
+    const mockMessages = [
+      {
+        id: '1',
+        data: { type: 'info', title: 'Test Title 1', message: 'Test Message 1', date: '2023-01-01T00:00:00Z' },
+        read: false,
+        subject: 'subject1'
+      },
+      {
+        id: '2',
+        data: { type: 'warning', title: 'Test Title 2', message: 'Test Message 2', date: '2023-01-02T00:00:00Z' },
+        read: true,
+        subject: 'subject2'
+      }
+    ];
+
+    mockNatsService.isValidMessage.and.returnValues(true, false);
+    natsMessages$.next(mockMessages);
+
+    expect(component.notifications).toEqual([
+      {
+        id: '1',
+        type: 'info',
+        title: 'Test Title 1',
+        message: 'Test Message 1',
+        date: new Date('2023-01-01T00:00:00Z'),
+        read: false,
+        subject: 'subject1'
+      }
+    ]);
+  });
+  
+  it('should mark a notification as read and call natsService.readMessages', () => {
+    const mockNotification: AppShellNotification = {
+      id: '1',
+      type: 'info',
+      title: 'Test Title',
+      message: 'Test Message',
+      date: new Date('2023-01-01T00:00:00Z'),
+      read: false,
+      subject: 'subject1'
+    };
+
+    component.notifications = [mockNotification];
+    component.markAsRead(mockNotification);
+
+    expect(mockNatsService.readMessages).toHaveBeenCalledWith('subject1', ['1']);
+  });
+
+  it('should not mark a notification as read if it does not exist in notifications', () => {
+    const mockNotification: AppShellNotification = {
+      id: '1',
+      type: 'info',
+      title: 'Test Title',
+      message: 'Test Message',
+      date: new Date('2023-01-01T00:00:00Z'),
+      read: false,
+      subject: 'subject1'
+    };
+
+    component.notifications = [];
+
+    component.markAsRead(mockNotification);
+
+    expect(mockNatsService.readMessages).not.toHaveBeenCalled();
+  });
+  
+  it('should mark all notifications as read and call natsService.readMessages for each subject', () => {
+    const mockNotifications: AppShellNotification[] = [
+      {
+        id: '1',
+        type: 'info',
+        title: 'Test Title 1',
+        message: 'Test Message 1',
+        date: new Date('2023-01-01T00:00:00Z'),
+        read: false,
+        subject: 'subject1'
+      },
+      {
+        id: '2',
+        type: 'success',
+        title: 'Test Title 2',
+        message: 'Test Message 2',
+        date: new Date('2023-01-02T00:00:00Z'),
+        read: false,
+        subject: 'subject1'
+      },
+      {
+        id: '3',
+        type: 'error',
+        title: 'Test Title 3',
+        message: 'Test Message 3',
+        date: new Date('2023-01-03T00:00:00Z'),
+        read: false,
+        subject: 'subject2'
+      }
+    ];
+
+    component.notifications = mockNotifications;
+
+    component.markAllAsRead();
+
+    expect(mockNatsService.readMessages).toHaveBeenCalledWith('subject1', ['1', '2']);
+    expect(mockNatsService.readMessages).toHaveBeenCalledWith('subject2', ['3']);
+  });
+
+  it('should not call natsService.readMessages if there are no notifications', () => {
+    component.notifications = [];
+
+    component.markAllAsRead();
+
+    expect(mockNatsService.readMessages).not.toHaveBeenCalled();
+  });
+});

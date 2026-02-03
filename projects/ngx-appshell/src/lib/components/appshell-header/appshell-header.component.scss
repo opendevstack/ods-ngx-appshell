@@ -1,0 +1,270 @@
+appshell-header {
+    width: 100%;
+    --header-bg-color: var(--appshell-color-dark-green-main);
+    --header-text-color: var(--text-color-on-main-color);
+    --header-separator-color: var(--appshell-color-dark-green-light);
+    --header-link-color: var(--appshell-color-dark-green-light);
+    --header-link-hover-color: #ffffff;
+    --header-link-selected-color: var(--appshell-color-accent-green-main);
+    --header-border-bottom-color: var(--appshell-color-dark-green-main);
+    --header-app-name-color: var(--appshell-color-grey-medium);
+}
+
+appshell-header.theme-white {
+    --header-bg-color: #ffffff;
+    --header-text-color: var(--appshell-color-dark-green-main);
+    --header-separator-color: var(--appshell-color-grey-strong);
+    --header-link-color: var(--appshell-color-grey-strong);
+    --header-link-hover-color: var(--appshell-color-dark-green-main);
+    --header-link-selected-color: var(--appshell-color-dark-green-main);
+    --header-border-bottom-color: var(--appshell-color-grey-warm);
+    --header-app-name-color: var(--appshell-color-dark-green-main);
+}
+
+appshell-header.theme-purple {
+    --header-bg-color: var(--appshell-color-violet-dark);
+    --header-text-color: #ffffff;
+    --header-separator-color: var(--appshell-color-violet-light);
+    --header-link-color: var(--appshell-color-violet-light);
+    --header-link-hover-color: #ffffff;
+    --header-link-selected-color: #ffffff;
+    --header-border-bottom-color: var(--appshell-color-violet-dark);
+    --header-app-name-color: var(--appshell-color-grey-medium);
+}
+
+appshell-header.theme-blue {
+    --header-bg-color: var(--appshell-color-sky-blue-dark);
+    --header-text-color: #ffffff;
+    --header-separator-color: var(--appshell-color-sky-blue-medium);
+    --header-link-color: var(--appshell-color-sky-blue-medium);
+    --header-link-hover-color: #ffffff;
+    --header-link-selected-color: #ffffff;
+    --header-border-bottom-color: var(--appshell-color-sky-blue-dark);
+    --header-app-name-color: var(--appshell-color-grey-medium);
+}
+
+.appshell-meta-navigation {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 3rem;
+    background-color: var(--header-bg-color);
+    color: var(--header-text-color);
+    padding: 0;
+    box-sizing:border-box;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 400;
+    font-style: normal;
+    border-bottom: 1px solid var(--header-border-bottom-color);
+
+    .app-id-ctn {
+        margin-left: 2rem;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+
+        img {
+            height: 1.5rem;
+            width: 1.5rem;
+            margin-right: .5rem;
+        }
+        
+        h1 {
+            color: var(--header-app-name-color);
+            font-weight: 500;
+            margin: auto 0;
+            font-size: 1rem;
+        }
+    }
+
+    a.app-id-ctn:hover h1 {
+        color: var(--header-link-hover-color);
+    }
+
+
+    .header-link {
+        color: var(--header-link-color);
+        margin-left: 2rem;
+        text-decoration: none;
+        font-size: 1rem;
+        font-style: normal;
+        font-weight: 500;
+
+        &.last {
+            margin-right: 1.25rem;
+        }
+
+        &:hover {
+            color: var(--header-link-hover-color);
+        }
+
+        &.active {
+            color: var(--header-link-selected-color);
+            text-decoration: underline;
+        }
+    }
+
+    .separator {
+        width: 1px;
+        height: 70%;
+        margin: auto 1rem;
+        background-color: var(--header-separator-color);
+    }
+
+    .header-picker {
+        cursor: pointer;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        background-color: transparent;
+        border: none;
+        color: var(--header-link-color);
+        font-size: 1rem;
+        font-style: normal;
+        font-weight: 500;
+        font-family: "AppShellTextFont";
+        line-height: 1.5rem;
+        gap: .25rem;
+        padding: 0 1rem;
+        height: 85%;
+        margin: auto 1.5rem;
+
+        appshell-icon, mat-icon {
+            width: 1rem;
+            height: 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        &:hover {
+            color: var(--header-link-hover-color);
+        }
+    }
+
+    .header-icon {
+        border-radius: 50%;
+        display: flex;
+        height: 3rem;
+        width: 3rem;
+        justify-content: center;
+        align-items: center;
+        color: var(--header-link-color);
+        position: relative;
+
+        &:hover {
+            color: var(--header-link-hover-color);
+        }
+
+        .notification-count {
+            height: 1.25rem;
+            width: 1.25rem;
+            border-radius: 50%;
+            background-color: #E10A0A;
+            color: #FFF;
+            font-family: "AppShellTextFont";
+            font-size: 0.75rem;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 1.5rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: .25rem;
+            right: .25rem;
+        }
+    }
+
+    .user-ctn {
+        padding-left: .5rem;
+        padding-right: 1.25rem;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        height: 100%;
+
+        button {
+            cursor: pointer;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            background-color: transparent;
+            border: none;
+            width: 100%;
+            gap: .5rem;
+            color: var(--header-link-color);
+            
+            &:hover {
+                color: var(--header-link-hover-color);
+            }
+
+            .header-profile-picture {
+                width: 1.5rem;
+                height: 1.5rem;
+                border-radius: 50%;
+                background-size: cover;
+                background-position: center;
+                border: 1px solid var(--appshell-color-grey-warm);
+                aspect-ratio: 1;
+            }
+    
+            .user-text {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                font-size: 0.875rem;
+                font-style: normal;
+                font-weight: 400;
+                font-family: "AppShellTextFont";
+                width: 10rem;
+                line-height: 1.25rem;
+                text-align: start;
+            }
+        }
+    }
+}
+
+.header-space {
+    flex: 1;
+}
+
+.appshell-logout-panel, .appshell-picker-panel {
+    border-radius: 0.125rem!important;
+    border: 1px solid var(--appshell-color-grey-main);
+    box-shadow: none!important;
+    width: 13rem;
+
+    &>div {
+        padding: 0;
+    }
+}
+
+.appshell-logout-panel {
+    margin-top: .7rem;
+}
+
+.appshell-picker-panel {
+    padding: 0.75rem 0;
+    margin-top: .4rem;
+
+    button {
+        &.active {
+            background-color: var(--appshell-color-grey-neutral);
+            border-left: 2px solid var(--appshell-color-accent-green-main);
+        }
+        
+        &:focus-visible {
+            outline: 2px solid #0069E5;
+            outline-offset: -.1rem;
+        }
+    
+        &:hover {
+            background-color: var(--appshell-color-grey-light);
+        }
+    }
+}

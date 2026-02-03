@@ -1,0 +1,29 @@
+<div class="top-section">
+    <div class="left-ctn">
+        <appshell-breadcrumb [links]="breadcrumbLinks()"></appshell-breadcrumb>
+        <h2>{{title()}}</h2>
+    </div>
+    @if (picker() && picker()?.label && picker()?.options && picker()?.options!.length > 0) {
+        <button [matMenuTriggerFor]="pickerMenu" #pickerTrigger="matMenuTrigger" mat-button class="action-picker-btn">
+            <span class="action-picker-label">
+                {{picker()!.label}}
+                <appshell-icon [icon]="pickerTrigger.menuOpen ? 'expand_less' : 'expand_more'" />
+            </span>
+        </button>
+        <mat-menu #pickerMenu="matMenu" xPosition="after"  class="appshell-picker-panel">
+            @for (opt of picker()!.options; track opt; let index = $index) {
+                <button mat-menu-item (click)="pick.emit(opt)" (keypress)="pick.emit(opt)" [class.active]="picker()?.selected === opt" attr.aria-label="{{opt}}">{{ opt }}</button>
+            }
+        </mat-menu>
+    }
+    @if (secondaryButton()) {
+        <div [matTooltip]="secondaryButton()?.tooltip || ''" class="btn-ctn">
+            <button mat-flat-button color="secondary" (click)="clickSecondaryButton()"  [disabled]="secondaryButton()?.disabled">{{secondaryButton()?.label}}</button>
+        </div>
+    }
+    @if (button()) {
+        <div [matTooltip]="button()?.tooltip || ''" class="btn-ctn">
+            <button mat-flat-button color="accent" (click)="clickButton()" [disabled]="button()?.disabled">{{button()?.label}}</button>
+        </div>
+    }
+</div>

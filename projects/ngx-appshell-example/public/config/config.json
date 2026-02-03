@@ -1,0 +1,13 @@
+{
+  "msalConfig": {
+    "auth": {
+      "clientId": "56a0fc62-bf77-4acb-8cd7-8cc9f5f2198f",
+      "authority": "https://login.microsoftonline.com/e1f8af86-ee95-4718-bd0d-375b37366c83"
+    }
+  },
+  "apiConfig": {
+    "scopes": ["user.read"],
+    "uri": "api://56a0fc62-bf77-4acb-8cd7-8cc9f5f2198f"
+  },
+  "natsUrl": "wss://nats.yourdomain.com"
+}

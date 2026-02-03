@@ -1,0 +1,21 @@
+nav {
+    margin-bottom: .5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+
+    a, span {
+        color: var(--appshell-color-secondary-main);
+        font-size: 0.875rem;
+        text-decoration: none;
+    }
+
+    .separator, .separator>mat-icon {
+        height: 1.25rem;
+        width: 1.25rem;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+}

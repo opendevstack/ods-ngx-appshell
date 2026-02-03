@@ -1,0 +1,35 @@
+<appshell-platform-header
+    [class]="headerVariant()"
+    [symbol]="applicationSymbol()"
+    [logo]="applicationLogo()"
+    [applicationName]="applicationName()"
+    [applicationNameLink]="applicationNameLink()"
+    [helpLink]="appShellHelpLink()"
+    [notificationsLink]="appShellNotificationsLink()"
+    [notificationsCount]="appShellNotificationsCount()"
+    [links]="headerLinks()"
+    [projectPicker]="headerProjectPicker()"
+    [secondaryPicker]="headerSecondaryPicker()"
+    [loggedUser]="loggedUser()"
+    [isPlatformPickerOpened]="isPlatformPickerOpened()"
+    (userLoggedIn)="userLoggedIn.emit()"
+    (userLoggedOut)="userLoggedOut.emit()"
+    (platformPickerClick)="platformPickerClick.emit()"
+    (userProjectPick)="userProjectPick.emit($event)"
+    (userSecondaryPick)="userSecondaryPick.emit($event)">
+</appshell-platform-header>
+
+<section id="appshell-layout-content">
+    <mat-sidenav-container>
+        @if (sidenavSections() && sidenavSections().length) {
+            <mat-sidenav opened mode="side" disableClose [fixedInViewport]="true" [fixedTopGap]="64">
+                <appshell-sidebar-menu [sections]="sidenavSections()" [links]="sidenavLinks()"></appshell-sidebar-menu>
+            </mat-sidenav>
+        }
+        <mat-sidenav-content>
+            <main>
+                <router-outlet></router-outlet>
+            </main>
+        </mat-sidenav-content>
+    </mat-sidenav-container>
+</section>

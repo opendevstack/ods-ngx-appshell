@@ -1,0 +1,5 @@
+@if (resolvedSvgIcon()) {
+    <mat-icon [svgIcon]="resolvedSvgIcon()"></mat-icon>
+} @else {
+    <mat-icon>{{ resolvedFontIcon() }}</mat-icon>
+}

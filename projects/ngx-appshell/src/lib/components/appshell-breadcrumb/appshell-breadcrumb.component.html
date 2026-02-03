@@ -1,0 +1,22 @@
+<nav>
+    @for (link of links(); track link.label) {
+        @if ($index > 0) {
+            <appshell-icon class="separator" aria-hidden="true" [icon]="'chevron_right'" />
+        }
+        @if (link.icon) {
+            @if (link.anchor !== '') {
+                <a [appShellLink]="link.anchor" target="{{link.target || '_self'}}">
+                    <appshell-icon [icon]="link.icon" />
+                </a>
+            } @else {
+                <appshell-icon [icon]="link.icon" />
+            }
+        } @else {
+            @if (link.anchor !== '') {
+                <a [appShellLink]="link.anchor" target="{{link.target || '_self'}}">{{ link.label }}</a>
+            } @else {
+                <span>{{ link.label }}</span>
+            }
+        }
+    }
+</nav>

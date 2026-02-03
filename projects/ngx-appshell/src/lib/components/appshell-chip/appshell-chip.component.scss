@@ -1,0 +1,24 @@
+.appshell-chip {
+    --mdc-chip-disabled-label-text-color: var(--appshell-color-sky-blue-contrast)!important;
+    --mdc-chip-elevated-container-color: var(--appshell-color-sky-blue-light)!important;
+    --mdc-chip-elevated-disabled-container-color: var(--appshell-color-sky-blue-light)!important;
+    --mdc-chip-focus-state-layer-color: black;
+    --mdc-chip-focus-state-layer-opacity: 0.12;
+    --mdc-chip-label-text-color: var(--appshell-color-sky-blue-contrast)!important;
+    --mdc-chip-with-icon-icon-color: var(--appshell-color-sky-blue-contrast)!important;
+    --mdc-chip-with-icon-disabled-icon-color: var(--appshell-color-sky-blue-contrast)!important;
+    --mdc-chip-with-icon-selected-icon-color: var(--appshell-color-sky-blue-contrast)!important;
+    --mdc-chip-with-trailing-icon-disabled-trailing-icon-color: var(--appshell-color-sky-blue-contrast)!important;
+    --mdc-chip-with-trailing-icon-trailing-icon-color: var(--appshell-color-sky-blue-contrast)!important;
+    --mdc-chip-focus-state-layer-color: var(--appshell-color-sky-blue-light)!important;
+    --mdc-chip-focus-state-layer-opacity: 0;
+    --mdc-chip-label-text-size: 0.875rem;
+
+    &.mat-mdc-standard-chip {
+        margin: 0;
+
+        .mdc-evolution-chip__action {
+            cursor: unset;
+        }
+    }
+}

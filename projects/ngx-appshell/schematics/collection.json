@@ -1,0 +1,19 @@
+{
+    "$schema": "../../../node_modules/@angular-devkit/schematics/collection-schema.json",
+    "schematics": {
+        "ng-add": {
+            "description": "Add the AppShell module to your project.",
+            "factory": "./ng-add/index#ngAdd"
+        },
+        "azure-login": {
+            "description": "Integrate azure enterprise login in the application.",
+            "factory": "./azure-login/index#azureLoginGenerator",
+            "schema": "./azure-login/schema.json"
+        },
+        "nats-notifications": {
+            "description": "Integrate notifications into your application based on Nats.io.",
+            "factory": "./nats-notifications/index#natsNotificationsGenerator",
+            "schema": "./nats-notifications/schema.json"
+        }
+    }
+}

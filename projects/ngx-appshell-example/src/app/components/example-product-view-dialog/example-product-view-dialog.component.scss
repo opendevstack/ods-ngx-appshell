@@ -1,0 +1,32 @@
+app-example-product-view-dialog {
+    --mdc-dialog-supporting-text-line-height: 1.25rem;
+    --mdc-dialog-supporting-text-color: var(--appshell-color-secondary-main);
+    --mdc-dialog-supporting-text-size: 0.875rem;
+
+    .dialog-title {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        font-size: 1.25rem;
+        line-height: 1.75rem;
+        margin-bottom: 1rem;
+        gap: .5rem;
+        
+        .dialog-icon {
+            width: 1.75rem;
+            height: 1.75rem;
+        }
+    }
+
+    mat-dialog-actions {
+        padding: 0 1.5rem 1.5rem!important;
+        gap: 1.5rem;
+
+        a {
+            color: var(--appshell-color-secondary-main);
+            font-weight: 500;
+            border-bottom: 2px solid var(--appshell-color-accent-green-main);
+            cursor: pointer;
+        }
+    }
+}

@@ -1,0 +1,92 @@
+.appshell-product-card-v2 {
+    border-radius: 0.15rem!important;
+    border-width: 1px!important;
+    border-color: var(--appshell-color-grey-warm)!important;
+    gap: 1rem;
+    text-decoration: none;
+    cursor: pointer;
+
+    mat-card-content {
+        color: var(--appshell-color-secondary-main);
+        letter-spacing: 0.00625rem;
+        display: flex;
+        flex-direction: row;
+        height: 10rem;
+        padding: 0!important;
+
+        &:hover {
+            color: var(--appshell-color-secondary-medium);
+        }
+
+        .appshell-product-card-v2-img {
+            padding: 1.5rem;
+            img {
+                width: 7rem;
+                height: 7rem;
+            }
+        }
+
+        .appshell-product-card-v2-data {
+            display: flex;
+            flex-direction: column;
+            justify-content: start;
+            padding: 1rem;
+
+            .labels {
+                display: -webkit-box;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                font-size: 0.875rem;
+                font-style: normal;
+                font-weight: 400;
+                line-height: 1.25rem;
+                height: 1.25rem;
+
+                span {
+                    display: inline-block;
+                    white-space: nowrap;
+
+                    &::before {
+                        content: '-';
+                        margin-right: 0.1rem;
+                        margin-left: 0.1rem;
+                    }
+
+                    &:first-child::before {
+                        content: '';
+                        margin-right: 0;
+                        margin-left: 0;
+                    }
+                }
+            }
+
+            .title {
+                font-size: 1.5rem;
+                font-style: normal;
+                font-weight: 700;
+                line-height: 2.25rem;
+                display: -webkit-box;
+                -webkit-box-orient: vertical;
+                -webkit-line-clamp: 1;
+                line-clamp: 1;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .description {
+                margin-top: .5rem;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                font-size: 0.875rem;
+                font-style: normal;
+                font-weight: 400;
+                line-height: 1.25rem;
+                display: -webkit-box;
+                -webkit-box-orient: vertical;
+                -webkit-line-clamp: 3;
+                line-clamp: 3;
+            }
+        }
+    }
+}

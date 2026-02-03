@@ -1,0 +1,75 @@
+@use '@angular/material' as mat;
+@use "./appshell-typography-config" as config;
+
+@include mat.elevation-classes();
+@include mat.app-background();
+
+$appshell-primary-palette: (
+    200: var(--appshell-color-secondary-light),
+    600: var(--appshell-color-secondary-medium),
+    800: var(--appshell-color-secondary-main),
+    900: var(--appshell-color-secondary-dark),
+    contrast: (
+        200: var(--appshell-color-black-main),
+        600: var(--appshell-color-secondary-contrast),
+        800: var(--appshell-color-secondary-contrast),
+        900: var(--appshell-color-secondary-contrast),
+    )
+);
+
+$appshell-accent-palette: (
+    100: var(--appshell-color-accent-green-light),
+    200: var(--appshell-color-accent-green-medium),
+    500: var(--appshell-color-accent-green-main),
+    600: var(--appshell-color-accent-green-dark),
+    contrast: (
+        100: var(--appshell-color-accent-green-contrast),
+        200: var(--appshell-color-accent-green-contrast),
+        500: var(--appshell-color-accent-green-contrast),
+        600: var(--appshell-color-accent-green-neutral),
+    )
+);
+
+$appshell-warn-palette: (
+    100: var(--appshell-color-danger-main),
+    500: var(--appshell-color-danger-medium),
+    800: var(--appshell-color-danger-dark),
+    contrast: (
+        100: var(--appshell-color-black-main),
+        500: var(--appshell-color-white-main),
+        800: var(--appshell-color-white-main),
+    )
+);
+
+$appshell-primary: mat.m2-define-palette($appshell-primary-palette, 800, 600, 900, 200);
+$appshell-accent: mat.m2-define-palette($appshell-accent-palette, 500, 200, 600, 100);
+$appshell-warn: mat.m2-define-palette($appshell-warn-palette, 500, 100, 800);
+
+$appshell-theme: mat.m2-define-light-theme((
+    color: (
+        primary: $appshell-primary,
+        accent: $appshell-accent,
+        warn: $appshell-warn
+    ),
+    typography: config.$appshell-typography,
+    density: 0,
+    background-color: #ffffff,
+));
+
+button {
+    &:hover {
+        background-color: var(--main-color-contrast-hover);
+    }
+
+    &:focus:focus-visible {
+        outline: 2px solid #0069E5;
+        outline-offset: .2rem;
+    }
+}
+
+a:focus:focus-visible {
+    outline: 2px solid #0069E5;
+    outline-offset: .2rem;
+}
+
+@include mat.all-component-themes($appshell-theme);

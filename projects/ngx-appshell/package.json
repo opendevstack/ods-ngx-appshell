@@ -1,0 +1,33 @@
+{
+  "name": "@appshell/ngx-appshell",
+  "version": "19.0.4",
+  "scripts": {
+    "build": "tsc -p tsconfig.schematics.json",
+    "postbuild": "copyfiles schematics/collection.json schematics/*/schema.json schematics/*/files/**/* schematics/*/files/* ../../dist/ngx-appshell/"
+  },
+  "publishConfig": {
+    "registry": "http://localhost:4873"
+  },
+  "ng-add": {
+    "save": "true"
+  },
+  "schematics": "./schematics/collection.json",
+  "peerDependencies": {
+    "@angular/common": ">=19.0.0",
+    "@angular/core": ">=19.0.0",
+    "@angular/material": ">=19.0.0",
+    "@angular/animations": ">=19.0.0"
+  },
+  "dependencies": {
+    "@angular/material": "19.2.16",
+    "@azure/msal-angular": "3.1.0",
+    "@azure/msal-browser": "3.27.0",
+    "@nats-io/nats-core": "3.0.0",
+    "@nats-io/jetstream": "3.0.0",
+    "@nats-io/kv": "3.0.0",
+    "marked": "15.0.11",
+    "ngx-markdown": "19.1.1",
+    "tslib": "2.3.0"
+  },
+  "sideEffects": false
+}

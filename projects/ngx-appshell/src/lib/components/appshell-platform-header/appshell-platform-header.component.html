@@ -1,0 +1,127 @@
+<nav class="appshell-meta-navigation" aria-label="Top of the header navigation">
+    @if(isPlatformPickerOpened() !== null) {
+        <div class="platform-picker-trigger" [class.opened-widget]="isPlatformPickerOpened()" (click)="openPlatformPicker()" (keypress)="openPlatformPicker()">
+            <svg width="24" height="24" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="10" width="20" height="20" fill="#FFFFFF"/><rect x="40" y="10" width="20" height="20" fill="#FFFFFF"/><rect x="70" y="10" width="20" height="20" fill="#FFFFFF"/><rect x="10" y="40" width="20" height="20" fill="#FFFFFF"/><rect x="40" y="40" width="20" height="20" fill="#FFFFFF"/><rect x="70" y="40" width="20" height="20" fill="#FFFFFF"/><rect x="10" y="70" width="20" height="20" fill="#FFFFFF"/><rect x="40" y="70" width="20" height="20" fill="#FFFFFF"/><rect x="70" y="70" width="20" height="20" fill="#FFFFFF"/></svg>
+        </div>
+    }
+
+    <div class="app-id-ctn">
+        @if (symbol()) {
+            <img src="assets/logo/{{symbol()}}" alt="App symbol in the header" class="header-symbol" />
+        }
+        @if (logo()) {
+            <img src="assets/logo/{{logo()}}" alt="App logo in the header" class="header-logo" />
+        }
+        <h1>{{applicationName()}}</h1>
+    </div>
+    @if (projectPicker() && projectPicker()?.label) {
+        <div class="header-picker">
+            <button [matMenuTriggerFor]="projectPickerMenu" #projectPickerTrigger="matMenuTrigger" (menuOpened)="projectPickerSearchInput?.focus()"
+                [class.active]="projectPickerTrigger.menuOpen">
+                {{userProjectPickChoice && projectPicker()?.options && projectPicker()?.options!.length > 0 ? projectPicker()!.label + userProjectPickChoice : projectPicker()!.label}}
+                <appshell-icon [icon]="projectPickerTrigger.menuOpen ? 'expand_less' : 'expand_more'" />
+            </button>
+        </div>
+        <mat-menu #projectPickerMenu="matMenu" xPosition="after" class="appshell-platform-header-picker-panel">
+            <div class="picker-search-ctn" 
+                (click)="$event.stopPropagation()" 
+                (mousedown)="$event.stopPropagation()" 
+                [hidden]="!projectPicker()?.options || projectPicker()?.options!.length === 0">
+                <mat-form-field>
+                    @if (!projectPickerSearch) {
+                        <appshell-icon matPrefix class="prefix-icon" aria-label="Search icon" [icon]="'search'" />
+                    }
+                    <input matInput type="text" placeholder="Search for ..." aria-label="Search options"
+                    [(ngModel)]="projectPickerSearch" (keydown)="onSearchKeydown($event)"
+                    #projectPickerSearchInput />
+                    @if (projectPickerSearch) {
+                    <button matSuffix aria-label="Clear" (click)="projectPickerSearch=''">
+                        <appshell-icon [icon]="'close'" aria-hidden="true" />
+                    </button>
+                    }
+                </mat-form-field>
+            </div>
+            <div class="picker-options-ctn">
+                @for (opt of filteredProjectPickerOptions(); track opt; let index = $index) {
+                    <button mat-menu-item (click)="pickProject(opt)" (keypress)="pickProject(opt)" [class.active]="projectPicker()?.selected === opt" attr.aria-label="{{opt}}">{{ opt }}</button>
+                }
+                @if (!projectPicker()?.options || projectPicker()?.options!.length === 0) {
+                    <div class="no-options-text">
+                        @if(projectPicker()?.noOptionsTitle) {
+                            <b>{{ projectPicker()?.noOptionsTitle }}</b>
+                        }
+                        @if(projectPicker()?.noOptionsMessage) {
+                            <div [innerHTML]="projectPicker()?.noOptionsMessage"></div>
+                        }
+                    </div>
+                } @else if (filteredProjectPickerOptions().length === 0) {
+                    <div class="no-options-text">
+                        @if(projectPicker()?.noFilteredOptionsTitle) {
+                            <b>{{ projectPicker()?.noFilteredOptionsTitle }}</b>
+                        }
+                        @if(projectPicker()?.noFilteredOptionsMessage) {
+                            <div [innerHTML]="projectPicker()?.noFilteredOptionsMessage"></div>
+                        }
+                    </div>
+                    <button class="clear-search-btn" mat-button (click)="projectPickerSearch=''; $event.stopPropagation()" aria-label="Clear search">Clear search</button>
+                }
+            </div>
+        </mat-menu>
+    }
+    @if (secondaryPicker() && secondaryPicker()?.label && secondaryPicker()?.options && secondaryPicker()?.options!.length > 0) {
+        <div class="header-picker">
+            <button [matMenuTriggerFor]="pickerMenu" #pickerTrigger="matMenuTrigger"
+                [class.active]="pickerTrigger.menuOpen">
+                {{userSecondaryPickChoice ? secondaryPicker()!.label + userSecondaryPickChoice : secondaryPicker()!.label}}
+                <appshell-icon [icon]="pickerTrigger.menuOpen ? 'expand_less' : 'expand_more'" />
+            </button>
+        </div>
+        <mat-menu #pickerMenu="matMenu" xPosition="after" class="appshell-platform-header-picker-panel">
+            @for (opt of secondaryPicker()!.options; track opt; let index = $index) {
+                <button mat-menu-item (click)="pickSecondChoice(opt)" (keypress)="pickSecondChoice(opt)" [class.active]="secondaryPicker()?.selected === opt" attr.aria-label="{{opt}}">{{ opt }}</button>
+            }
+        </mat-menu>
+    }
+    <div class="header-space"></div>
+    @for (link of links(); track link.label; let index = $index) {
+        <a class="header-link" [appShellLink]="link.anchor" [class.active]="getCurrentUrlPath() === link.anchor" target="{{link!.target || '_self'}}" [class.last]="index+1 === links().length">
+            {{link.label}}
+        </a>
+    }
+    @if (helpLink() && helpLink()?.icon) {
+        <a class="header-icon" [appShellLink]="helpLink()!.anchor" target="{{helpLink()!.target || '_self'}}" [matTooltip]="helpLink()!.label" aria-label="Visit the help page">
+            <appshell-icon [icon]="helpLink()!.icon!" aria-label="Help icon" />
+        </a>
+    }
+    @if (notificationsLink() && notificationsLink()?.icon) {
+        <a class="header-icon" [appShellLink]="notificationsLink()!.anchor" target="{{notificationsLink()!.target || '_self'}}" [matTooltip]="notificationsLink()!.label"  aria-label="Visit the notifications page">
+            <appshell-icon [icon]="notificationsLink()!.icon!" aria-label="Notifications icon" />
+            @if (notificationsCount() > 0) {
+                <div class="notification-count" aria-label="Number of notifications">
+                    {{notificationsCount() > 9 ? '9+' : notificationsCount()}}
+                </div>
+            }
+        </a>
+    }
+    <div class="separator"></div>
+    <div class="user-ctn">
+        @if (loggedUser() !== null) {
+            <button [matMenuTriggerFor]="logoutMenu">
+                @if (loggedUser()!.avatarSrc) {
+                    <div class="header-profile-picture" [style.backgroundImage]="'url('+loggedUser()!.avatarSrc+')'"></div>
+                } @else {
+                    <appshell-icon [icon]="'person'" aria-label="Guest user icon" />
+                }
+                <div class="user-text">{{loggedUser()?.fullName}}</div>
+            </button>
+            <mat-menu #logoutMenu="matMenu" xPosition="before" class="appshell-logout-panel">
+                <button mat-menu-item (click)="userLoggedOut.emit()" (keypress)="userLoggedOut.emit()" aria-label="Logout">Log Out</button>
+            </mat-menu>
+        } @else {
+            <button (click)="userLoggedIn.emit()" (keypress)="userLoggedIn.emit()" aria-label="Login">
+                <appshell-icon [icon]="'person'" aria-label="Guest user icon" />
+                <div class="user-text">Login</div>
+            </button>
+        }
+    </div>
+</nav>

@@ -1,0 +1,127 @@
+.notifications-ctn {
+    box-sizing: border-box;
+    padding: 0 1.5rem 1.5rem;
+    width: 50rem;
+
+    .mark-all-read-btn {
+        display: block;
+        margin-left: auto;
+        margin-bottom: 1rem;
+        color: var(--appshell-color-secondary-main);
+        font-family: "AppShellTextFont";
+        font-size: 0.875rem;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 1.25rem;
+        text-decoration-line: underline;
+        text-decoration-color: var(--appshell-color-accent-green-main);
+        text-decoration-thickness: 3px;
+        text-underline-offset: 6px;
+        
+        --mat-text-button-hover-state-layer-opacity: 0;
+        --mat-text-button-focus-state-layer-opacity: 0;
+        --mat-text-button-pressed-state-layer-opacity: 0;
+        --mat-text-button-ripple-color: transparent;
+
+        &:hover {
+            color: var(--appshell-color-secondary-medium);
+            background-color: transparent;
+            text-decoration-color: var(--appshell-color-accent-green-medium);
+        }
+    }
+
+    .notification-ctn {
+        border-top: 1px solid #B7B6B2;
+        padding: 1rem;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: row;
+        gap: 0.75rem;
+        background-color: transparent;
+
+        &:hover {
+            background-color: var(--appshell-color-tertiary-neutral);
+        }
+
+        &:last-of-type {
+            border-bottom: 1px solid #B7B6B2;
+        }
+
+        &.unread {
+            background-color: var(--appshell-color-sky-blue-light);
+
+            &:hover {
+                background-color: var(--appshell-color-sky-blue-medium);
+            }
+        }
+
+        .notification-icon .notification {
+            color: #0069E5;
+
+            &.success {
+                color: #168215;
+            }
+
+            &.error {
+                color: #E10A0A;
+            }
+        }
+
+        .notification-content {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+
+            .notification-title {
+                color: var(--appshell-color-secondary-main);
+                font-family: "AppShellHeadingFont";
+                font-size: 1rem;
+                font-style: normal;
+                font-weight: 400;
+                line-height: 1.5rem;
+                word-break: break-word;
+            }
+
+            .notification-body {
+                color: var(--appshell-color-secondary-main);
+                font-family: "AppShellTextFont";
+                font-size: 0.875rem;
+                font-style: normal;
+                font-weight: 400;
+                line-height: 1.5rem;
+                letter-spacing: 0.00625rem;
+                word-break: break-word;
+
+                .sliced-message {
+                    display: inline-flex;
+                }
+
+                .read-more-less {
+                    color: #0069E5;
+                    margin-left: 0.2rem;
+                    display: inline;
+
+                    &:hover {
+                        cursor: pointer;
+                        text-decoration: underline;
+                    }
+                }
+
+                &.expanded .read-more-less {
+                    margin-left: 0;
+                    display: block;
+                }
+            }
+        }
+
+        .notification-date {
+            color: var(--appshell-color-secondary-main);
+            font-family: "AppShellTextFont";
+            font-size: 0.875rem;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 1.5rem;
+        }
+    }
+}

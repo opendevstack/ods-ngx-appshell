@@ -1,0 +1,29 @@
+<appshell-page-header 
+    [breadcrumbLinks]="breadcrumbLinks()"
+    [title]="pageTitle()"></appshell-page-header>
+<div class="notifications-ctn">
+    <button class="mark-all-read-btn" mat-button (click)="markAllAsRead()">Mark all as read</button>
+    @for (notification of computedNotifications(); track notification.date) {
+        <div class="notification-ctn" [class.unread]="!notification.read" (click)="markAsRead(notification)">
+            <div class="notification-icon">
+                <appshell-icon [icon]="getIcon(notification)" [class]="getIconClasses(notification)" />
+            </div>
+            <div class="notification-content">
+                <span class="notification-title">{{ notification.title }}</span>
+                <span class="notification-body" [class.expanded]="notification.expanded">
+                    @if (notification.message && notification.message.length > 80) {
+                        @if (notification.expanded) {
+                            <span [innerHTML]="notification.message"></span>
+                        } @else {
+                            <span [innerHTML]="notification.message | slice:0:70" class="sliced-message"></span>...
+                        }
+                        <span class="read-more-less" (click)="expandNotification(notification)">{{ notification.expanded ? 'Show less' : 'Read more' }}</span>
+                    } @else {
+                        <span [innerHTML]="notification.message"></span>
+                    }
+                </span>
+            </div>
+            <span class="notification-date">{{ notification.date | date:'dd/MM/YY' }}</span>
+        </div>
+    }
+</div>

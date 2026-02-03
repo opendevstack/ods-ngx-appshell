@@ -1,0 +1,43 @@
+<div class="appshell-sidebar-menu-ctn">
+    @for (section of sections(); track $index) {
+        <div class="link-group">
+            @if (section.label !== '') {
+                <div class="menu-item link-group-header">
+                    {{section.label}}
+                </div>
+            }
+            <nav attr.aria-label="Sidebar menu for {{section.label}}">
+                @for (page of section.links; track $index) {
+                    <div class="menu-item link" [class.active]="getCurrentUrlPath() === page.anchor">
+                        <a [appShellLink]="page.anchor" target="{{page.target || '_self'}}">
+                            @if (page.icon) {
+                                <appshell-icon [icon]="page.icon" aria-hidden="true" />
+                            }
+                            {{page.label}}
+                        </a>
+                    </div>
+                }
+            </nav>
+        </div>
+    }
+    @if (links() && links()!.links.length > 0) {
+        <nav class="links" aria-label="Links from sidebar menu">
+            <div class="links-separator"></div>
+            @if (links()!.label !== '') {
+                <div class="links-header">
+                    {{links()!.label}}
+                </div>
+            }
+            @for (link of links()!.links; track $index) {
+                <div class="menu-item link">
+                    <a [appShellLink]="link.anchor" target="{{link.target || '_self'}}">
+                        @if (link.icon) {
+                            <appshell-icon [icon]="link.icon" aria-hidden="true" />
+                        }
+                        {{link.label}}
+                    </a>
+                </div>
+            }
+        </nav>
+    }
+</div>

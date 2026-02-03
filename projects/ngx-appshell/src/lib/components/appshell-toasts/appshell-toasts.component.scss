@@ -1,0 +1,13 @@
+.toast-container {
+    position: fixed;
+    top: 4.5rem;
+    right: 1rem;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: flex-end;
+    z-index: 9999;
+
+    appshell-toast {
+      margin-bottom: 1rem;
+    }
+  }

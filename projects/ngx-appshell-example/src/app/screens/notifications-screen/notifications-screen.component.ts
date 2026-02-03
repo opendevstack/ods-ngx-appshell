@@ -1,0 +1,60 @@
+import { Component } from '@angular/core';
+import { AppShellNotificationsScreenComponent, AppShellLink, AppShellNotification } from 'ngx-appshell';
+import { Subscription } from 'rxjs';
+import { NatsService } from '../../services/nats.service';
+
+@Component({
+    selector: 'app-notifications-screen',
+    imports: [AppShellNotificationsScreenComponent],
+    templateUrl: './notifications-screen.component.html',
+    styleUrl: './notifications-screen.component.scss'
+})
+export class NotificationsScreenComponent {
+
+  notifications: AppShellNotification[] = [];
+  private messageSubscription!: Subscription;
+
+  constructor(private natsService: NatsService) {
+    this.messageSubscription = this.natsService.messages$.subscribe((messages) => {
+      this.notifications = messages.filter((message) => this.natsService.isValidMessage(message.data)).map((message) => ({
+        id: message.id,
+        type: message.data.type,
+        title: message.data.title,
+        message: message.data.message,
+        date: new Date(message.data.date),
+        read: message.read,
+        subject: message.subject
+      }));
+    });
+  }
+
+  breadcrumbLinks: AppShellLink[] = [
+    {anchor: '', label: 'Notifications'}
+  ]
+
+  markAsRead(notification: AppShellNotification) {
+    const notif = this.notifications.find(n => n === notification);
+    if (!notif) {
+      return;
+    }
+    this.natsService.readMessages(notification.subject, [notification.id]);
+  }
+  
+  markAllAsRead() {
+    const groupedBySubject = this.notifications.reduce((acc, notification) => {
+      if (!acc[notification.subject]) {
+        acc[notification.subject] = [];
+      }
+      acc[notification.subject].push(notification.id);
+      return acc;
+    }, {} as Record<string, string[]>);
+
+    Object.entries(groupedBySubject).forEach(([subject, ids]) => {
+      this.natsService.readMessages(subject, ids);
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.messageSubscription.unsubscribe();
+  }
+}

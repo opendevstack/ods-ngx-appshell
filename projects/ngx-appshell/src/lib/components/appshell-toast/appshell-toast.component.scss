@@ -1,0 +1,58 @@
+.appshell-toast {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 17rem;
+    padding: 0.75rem 0.5rem 0.75rem 1rem;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+    border-radius: 0.125rem;
+    border: 1px solid #EFEEEB;
+    background: #FFF;
+    box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.05);
+
+    .appshell-toast-content {
+        height: 100%;
+
+        h4 {
+            overflow: hidden;
+            color: var(--black, #191919);
+            text-overflow: ellipsis;
+            margin: 0;
+            font-family: "AppShellTextFont";
+            font-size: 0.875rem;
+            font-style: normal;
+            font-weight: 700;
+            line-height: 1.25rem;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            line-clamp: 1;
+            -webkit-line-clamp: 1;
+        }
+
+        p {
+            margin: 0;
+            overflow: hidden;
+            color: var(--appshell-color-grey-main);
+            text-overflow: ellipsis;
+            font-family: "AppShellTextFont";
+            font-size: 0.875rem;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 1.25rem;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            line-clamp: 1;
+            -webkit-line-clamp: 1;            
+        }
+    }
+
+    button {
+        width: 2rem;
+        height: 2rem;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+    }
+}

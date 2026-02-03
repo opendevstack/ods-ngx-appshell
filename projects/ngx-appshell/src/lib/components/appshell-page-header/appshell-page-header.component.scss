@@ -1,0 +1,106 @@
+.top-section {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: end;
+    padding: 1.5rem;
+    gap: 2rem;
+
+    &>.left-ctn {
+        flex: 1;
+        h2 {
+            font-size: 1.5rem;
+            color: var(--appshell-color-secondary-main);
+            line-height: 150%;
+            margin: 0;
+        }
+    }
+
+    &>.btn-ctn>button, .action-picker-btn {
+        --mdc-filled-button-container-height: unset!important;
+        
+        display: inline-flex;
+        align-items: center;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.125rem;
+        font-size: 0.875rem;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 1.25rem;
+        height: auto;
+        color: var(--appshell-color-secondary-main)!important;
+        text-decoration: none;
+        font-family: AppShellTextFont;
+        border: 2px solid var(--mdc-filled-button-container-color);
+
+        &:disabled {
+            border-color: transparent;
+            color: var(--appshell-color-grey-main)!important;
+        }
+
+        &.mat-secondary {
+            border: 2px solid var(--appshell-color-secondary-main);
+
+            &:disabled {
+                border-color: var(--mdc-filled-button-disabled-container-color);
+                background-color: transparent;
+                color: var(--appshell-color-grey-main)!important;
+            }
+        }
+
+        &.action-picker-btn {
+            border-bottom: 2px solid var(--appshell-color-accent-green-main);
+            padding: 0.5rem 1rem;
+            min-width: 10rem;
+            
+            --mat-text-button-hover-state-layer-opacity: 0;
+            --mat-text-button-focus-state-layer-opacity: 0;
+            --mat-text-button-pressed-state-layer-opacity: 0;
+            --mat-text-button-ripple-color: transparent;
+
+            &>span {
+                width: 100%;
+            }
+
+            &:hover {
+                color: var(--appshell-color-secondary-medium);
+                background-color: transparent;
+                border-bottom: 2px solid var(--appshell-color-accent-green-medium);
+            }
+
+            .action-picker-label {
+                display: flex;
+                gap: 0.5rem;
+                justify-content: space-between;
+            }
+        }
+    }
+}
+
+.appshell-picker-panel {
+    padding: 0.75rem 0;
+    margin-top: .4rem;
+    border-radius: 0.125rem!important;
+    border: 1px solid var(--appshell-color-grey-main);
+    box-shadow: none!important;
+
+    &>div {
+        padding: 0;
+    }
+
+    button {
+        &.active {
+            background-color: var(--appshell-color-grey-neutral);
+            border-left: 2px solid var(--appshell-color-accent-green-main);
+        }
+        
+        &:focus-visible {
+            outline: 2px solid #0069E5;
+            outline-offset: -.1rem;
+        }
+    
+        &:hover {
+            background-color: var(--appshell-color-grey-light);
+        }
+    }
+}

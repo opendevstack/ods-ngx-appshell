@@ -1,0 +1,45 @@
+<appshell-page-header 
+    [breadcrumbLinks]="breadcrumbLinks()"
+    [title]="pageTitle()"
+    [button]="actionButton()"
+    (buttonClicked)="actionButtonClicked.emit()"
+    [secondaryButton]="secondaryButton()"
+    (secondaryButtonClicked)="secondaryButtonClicked.emit()"
+    [picker]="actionPicker()"
+    (pick)="actionPick.emit($event)"></appshell-page-header>
+<div class="product-ctn">
+    @if (product().image) {
+        <div class="product-img">
+            <img [src]="product().image" [alt]="'Product image for ' + product().title">
+        </div>
+    }
+    <div class="product-metadata">
+        <h2>{{ product().title }}</h2>
+        <div class="subheadline">
+            @if (product().authors && product().authors!.length > 0) {
+                <span>{{ product().authors.join(', ') }}</span>
+            }
+            @if (product().authors && product().authors!.length > 0 && product().date) {
+                <div class="row-separator"></div>
+            }
+            @if (product().date) {
+                <span>{{ product().date!.toJSON().slice(0,10) }}</span>
+            }
+        </div>
+        @if (product().tags && product().tags!.length > 0) {
+            <div class="tags-ctn">
+                <mat-chip-set aria-label="Product categories">
+                    @for (tag of productLabels(); track tag) {
+                        <appshell-chip [label]="tag"></appshell-chip>
+                    }
+                </mat-chip-set>
+            </div>
+        }
+    </div>
+    <div class="description">
+        <markdown
+            [data]="product().description"
+            [disableSanitizer]="true">
+        </markdown>
+    </div>
+</div>

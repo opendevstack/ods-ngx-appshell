@@ -1,0 +1,41 @@
+appshell-select {
+    display: flex;
+    flex-direction: column;
+
+    --mat-select-enabled-trigger-text-color: var(--appshell-color-secondary-main);
+    --mdc-outlined-text-field-focus-outline-color: var(--appshell-color-accent-green-main);
+    --mat-form-field-subscript-text-line-height: 1.5rem;
+    --mdc-outlined-text-field-container-shape: 0.125rem;
+
+    mat-label {
+        margin-bottom: .5rem;
+        color: var(--appshell-color-secondary-main);
+        font-size: 0.875rem;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 1.25rem;
+    }
+
+    .mat-mdc-form-field-type-mat-select .mat-mdc-text-field-wrapper {
+        height: 3rem;
+
+        .mat-mdc-form-field-flex {
+            height: 100%;
+        }
+
+        .mat-mdc-form-field-infix {
+            height: 100%;
+            min-height: unset;
+            padding: 0.75rem 0;
+        }
+    }
+}
+
+.appshell-select-panel {
+    border: 1px solid var(--appshell-color-grey-dark);
+    margin-top: 0.5rem;
+    box-shadow: none!important;
+    border-radius: 0.125rem!important;
+    padding: 0.75rem 0!important;
+    --mat-option-label-text-color: var(--appshell-color-secondary-main);
+}

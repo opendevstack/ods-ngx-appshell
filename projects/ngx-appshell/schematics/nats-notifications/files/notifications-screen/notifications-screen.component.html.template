@@ -1,0 +1,7 @@
+<appshell-notifications-screen
+    [pageTitle]="'Notifications'"
+    [breadcrumbLinks]="breadcrumbLinks"
+    [notifications]="notifications"
+    (readNotification)="markAsRead($event)"
+    (readAllNotifications)="markAllAsRead()"
+/>

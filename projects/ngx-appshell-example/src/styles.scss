@@ -1,0 +1,43 @@
+@use '@angular/material' as mat;
+@use "../../ngx-appshell/src/lib/styles/appshell-typography-config" as config;
+@use '../../ngx-appshell/src/lib/styles/appshell.theme.scss' as appshell;
+@use "sass:map";
+@use "fonts";
+@import '../../ngx-appshell/src/lib/styles/palette.css';
+@include mat.typography-hierarchy(config.$appshell-typography);
+
+
+:root {
+    --main-color: #{map.get(appshell.$appshell-primary-palette, 800)};
+    --main-color-contrast: #{map.get(appshell.$appshell-accent-palette, 500)};
+    --main-color-contrast-hover: #{map.get(appshell.$appshell-accent-palette, 200)};
+    --main-color-dark: #{map.get(appshell.$appshell-primary-palette, 900)};
+    --text-color-on-main-color: #{map.get(map.get(appshell.$appshell-primary-palette, contrast), 800)};
+    --background-color: #{map.get(appshell.$appshell-theme, background-color)};
+    --text-color-on-background: #{map.get(appshell.$appshell-primary-palette, 800)};
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+h1,h2,h3 {
+    font-family: AppShellHeadingFont!important;
+    font-weight: 500!important; // Needed since angular material theming for typographies is not working with all headings
+}
+h4,h5,h6 {
+    font-family: AppShellHeadingFont!important;
+    font-weight: 700!important; // Needed since angular material theming for typographies is not working with all headings
+}
+
+router-outlet+* {
+    width: 100%;
+    height: 100%;
+    background-color: var(--background-color);
+}
+
+.mat-mdc-tooltip>div {
+    background-color: var(--background-color)!important;
+    color: var(--text-color-on-background)!important;
+}

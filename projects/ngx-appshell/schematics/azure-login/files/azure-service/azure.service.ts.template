@@ -1,0 +1,161 @@
+import { Inject, Injectable, OnDestroy } from "@angular/core";
+import { MSAL_GUARD_CONFIG, MsalBroadcastService, MsalGuardConfiguration, MsalService } from "@azure/msal-angular";
+import { AuthenticationResult, EventMessage, EventType, InteractionStatus, RedirectRequest } from "@azure/msal-browser";
+import { AppShellUser } from "@appshell/ngx-appshell";
+import { BehaviorSubject, filter, from, map, Observable, Subject, switchMap, takeUntil } from "rxjs";
+import { Router } from "@angular/router";
+
+@Injectable({
+    providedIn: 'root'
+})
+export class AzureService implements OnDestroy {
+    isIframe = false;
+    loginDisplay = false;
+    private readonly _destroying$ = new Subject<void>();
+
+    isFirstTime = true;
+    loggedUser$ = new BehaviorSubject<AppShellUser | null >(null);
+  
+    constructor(
+      @Inject(MSAL_GUARD_CONFIG) private readonly msalGuardConfig: MsalGuardConfiguration,
+      private readonly msalService: MsalService,
+      private readonly msalBroadcastService: MsalBroadcastService,
+      private readonly router: Router
+    ) {}
+
+    initialize() {
+        this.msalService.handleRedirectObservable().subscribe();
+        this.isIframe = window !== window.parent && !window.opener; // Remove this line to use Angular Universal
+
+        this.setLoginDisplay();
+
+        this.msalService.instance.enableAccountStorageEvents(); // Optional - This will enable ACCOUNT_ADDED and ACCOUNT_REMOVED events emitted when a user logs in or out of another tab or window
+        this.msalBroadcastService.msalSubject$
+        .pipe(
+            filter((msg: EventMessage) =>
+                msg.eventType === EventType.ACCOUNT_ADDED ||
+                msg.eventType === EventType.ACCOUNT_REMOVED
+            )
+        )
+        .subscribe(() => {
+            if (this.msalService.instance.getAllAccounts().length === 0) {
+                this.router.navigate(['/']);
+            } else {
+                this.setLoginDisplay();
+            }
+        });
+
+        this.msalBroadcastService.inProgress$
+        .pipe(
+            filter((status: InteractionStatus) => status === InteractionStatus.None),
+            takeUntil(this._destroying$)
+        )
+        .subscribe(() => {
+            this.setLoginDisplay();
+            this.checkAndSetActiveAccount();
+        });
+    }
+
+    setLoginDisplay() {
+        this.loginDisplay = this.msalService.instance.getAllAccounts().length > 0;
+    }
+
+    getIdToken(): string {
+        return this.msalService.instance.getActiveAccount()?.idToken ?? '';
+    }
+
+    refreshToken(): Promise<AuthenticationResult> {
+        return this.msalService.instance.acquireTokenSilent({scopes: ["User.Read"]});
+    }
+
+    getRefreshedAccessToken(): Observable<string> {
+        return from(this.refreshToken()).pipe(
+            map((azureData: AuthenticationResult) => azureData.accessToken)
+        );
+    }
+
+    refreshLoggedUser(): void {
+        const msalUser = this.msalService.instance.getActiveAccount();
+        if (!msalUser) {
+            if(this.isFirstTime && !this.isIframe) {
+                this.isFirstTime = false;
+                // Add a small delay to prevent rapid loops
+                setTimeout(() => {
+                    this.login();
+                }, 100);
+            } else {
+                this.loggedUser$.next(null);
+            }
+        } else {
+            const loggedUser = {
+                fullName: msalUser.name,
+                username: msalUser.username,
+                avatarSrc: undefined
+            } as AppShellUser;
+            
+            this.msalService.instance.acquireTokenSilent({
+                scopes: ["User.Read"]
+            })
+            .then(async response => {
+                try {
+                    const res = await fetch('https://graph.microsoft.com/v1.0/me/photo/$value', {
+                        headers: {
+                            'Authorization': `Bearer ${response.accessToken}`
+                        }
+                    });
+                    if (!res.ok) {
+                        console.warn('Microsoft profile picture not found');
+                        return;
+                    }
+                    const blob = await res.blob();
+                    loggedUser.avatarSrc = URL.createObjectURL(blob);
+                } catch (error) {
+                    console.error('Error fetching profile picture', error);
+                }
+            })
+            .catch(error => {
+                console.error('Error acquiring token silently', error);
+            })
+            .finally(() => {
+                this.loggedUser$.next(loggedUser);
+            });
+        }
+    }
+
+    checkAndSetActiveAccount() {
+        /**
+         * If no active account set but there are accounts signed in, sets first account to active account
+         * To use active account set here, subscribe to inProgress$ first in your component
+         * Note: Basic usage demonstrated. Your app may require more complicated account selection logic
+         */
+        const activeAccount = this.msalService.instance.getActiveAccount();
+
+        if (
+            !activeAccount &&
+            this.msalService.instance.getAllAccounts().length > 0
+        ) {
+            const accounts = this.msalService.instance.getAllAccounts();
+            this.msalService.instance.setActiveAccount(accounts[0]);
+        }
+        this.refreshLoggedUser();
+    }
+
+    login() {
+        if (this.msalGuardConfig.authRequest) {
+            this.msalService.loginRedirect({
+                ...this.msalGuardConfig.authRequest,
+            } as RedirectRequest);
+        } else {
+            this.msalService.loginRedirect();
+        }
+    }
+
+    logout() {
+        this.msalService.logout();
+    }
+
+    ngOnDestroy(): void {
+        this._destroying$.next(undefined);
+        this._destroying$.complete();
+    }
+}

@@ -1,0 +1,167 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "cli": {
+    "schematicCollections": [
+      "@angular-eslint/schematics"
+    ],
+    "analytics": false
+  },
+  "newProjectRoot": "projects",
+  "projects": {
+    "ngx-appshell": {
+      "projectType": "library",
+      "root": "projects/ngx-appshell",
+      "sourceRoot": "projects/ngx-appshell/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/ngx-appshell/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/ngx-appshell/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/ngx-appshell/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/ngx-appshell/src/test.ts",
+            "tsConfig": "projects/ngx-appshell/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js"
+            ],
+            "karmaConfig": "projects/ngx-appshell/karma.conf.js",
+            "codeCoverageExclude": [
+              "**/mock-**"
+            ]
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/ngx-appshell/src/**/*.ts",
+              "projects/ngx-appshell/src/**/*.html"
+            ]
+          }
+        }
+      }
+    },
+    "ngx-appshell-example": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "projects/ngx-appshell-example",
+      "sourceRoot": "projects/ngx-appshell-example/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:application",
+          "options": {
+            "outputPath": "dist/ngx-appshell-example",
+            "index": "projects/ngx-appshell-example/src/index.html",
+            "browser": "projects/ngx-appshell-example/src/main.ts",
+            "polyfills": [
+              "zone.js"
+            ],
+            "tsConfig": "projects/ngx-appshell-example/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/ngx-appshell-example/public"
+              }
+            ],
+            "styles": [
+              "projects/ngx-appshell-example/src/styles.scss"
+            ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "dist"
+              ]
+            },
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kB",
+                  "maximumError": "1MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kB",
+                  "maximumError": "4kB"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "ngx-appshell-example:build:production"
+            },
+            "development": {
+              "buildTarget": "ngx-appshell-example:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ],
+            "tsConfig": "projects/ngx-appshell-example/tsconfig.spec.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/ngx-appshell-example/public"
+              }
+            ],
+            "karmaConfig": "projects/ngx-appshell-example/karma.conf.js",
+            "styles": [],
+            "scripts": []
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/ngx-appshell-example/src/**/*.ts",
+              "projects/ngx-appshell-example/src/**/*.html"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

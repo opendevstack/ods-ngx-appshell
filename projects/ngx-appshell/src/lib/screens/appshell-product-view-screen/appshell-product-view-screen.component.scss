@@ -1,0 +1,70 @@
+.product-ctn {
+    padding: .5rem 1.5rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 50rem;
+
+    .product-img img {
+        max-height: 7.5rem;
+        max-width: 7.5rem;
+        aspect-ratio: 1;
+        height: fit-content;
+        width: fit-content;
+        min-height: 4rem;
+        min-width: 4rem;
+    }
+
+    .product-metadata {
+        display: flex;
+        flex-direction: column;
+        gap: .5rem;
+
+        h2 {
+            margin: 0;
+            overflow: hidden;
+            color: var(--appshell-color-secondary-main);
+            font-size: 1.375rem;
+            font-style: normal;
+            font-weight: 500;
+            line-height: 150%;
+            letter-spacing: 0rem;
+        }
+    
+        .subheadline {
+            display: flex;
+            flex-direction: row;
+
+            &>span {
+                color: var(--appshell-color-grey-strong);
+                font-size: 0.875rem;
+                font-style: normal;
+                font-weight: 500;
+                line-height: 150%;
+                letter-spacing: 0rem;
+            }
+    
+            .row-separator {
+                width: 0.0625rem;
+                background-color: var(--appshell-color-accent-green-dark);
+                margin: 0 .5rem;
+            }
+        }
+        
+        mat-chip-set>div[role="presentation"] {
+            gap: .5rem;
+        }
+    }
+
+    .description {
+        line-height: 150%;
+        max-width: 50rem;
+        color: var(--appshell-color-secondary-main);
+
+        * {
+            max-width: 100%;
+            text-wrap: auto;
+            overflow-wrap: anywhere;
+        }
+    }
+}

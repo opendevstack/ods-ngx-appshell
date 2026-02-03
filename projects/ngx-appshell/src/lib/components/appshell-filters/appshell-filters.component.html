@@ -1,0 +1,9 @@
+<div class="filters-ctn">
+    @for (filter of filters(); track filter.label) {
+        <appshell-select [label]="filter.label" 
+            [options]="filter.options" 
+            [placeholder]="filter.placeholder" 
+            (selectValueChange)="onFilterChange(filter.label, $event)">
+        </appshell-select>
+    }
+</div>

@@ -1,0 +1,8 @@
+{
+    "$schema": "http://json-schema.org/schema",
+    "$id": "nats-notifications",
+    "title": "AppShell Nats Notifications Schema",
+    "type": "object",
+    "properties": {},
+    "required": []
+}

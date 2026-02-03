@@ -1,0 +1,5 @@
+<div class="toast-container">
+  @for (toast of toasts | slice:0:toastsLimit(); track toast.id) {
+      <appshell-toast [notification]="toast.notification" (closed)="closeToast(toast.id)"></appshell-toast>
+  }
+</div>

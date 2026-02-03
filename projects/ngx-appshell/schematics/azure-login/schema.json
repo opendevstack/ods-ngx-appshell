@@ -1,0 +1,8 @@
+{
+    "$schema": "http://json-schema.org/schema",
+    "$id": "azure-login",
+    "title": "AppShell Azure Login Schema",
+    "type": "object",
+    "properties": {},
+    "required": []
+}

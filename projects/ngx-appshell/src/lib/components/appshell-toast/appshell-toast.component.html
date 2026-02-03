@@ -1,0 +1,9 @@
+<div class="appshell-toast">
+    <div class="appshell-toast-content">
+        <h4>{{ notification()?.title }}</h4>
+        <p>{{ notification()?.message }}</p>
+    </div>
+    <button (click)="closeToast()">
+        <appshell-icon [icon]="'close'"></appshell-icon>
+    </button>
+</div>

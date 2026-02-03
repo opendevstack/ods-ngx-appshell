@@ -1,0 +1,38 @@
+appshell-header {
+    display: flex;
+    position: fixed;
+    z-index: 99;
+    width: 100%;
+}
+
+appshell-navigation {
+    display: flex;
+    flex-direction: row;
+}
+
+#appshell-layout-content {
+    flex-grow: 1;
+    display: flex;
+    height: 100%;
+    padding-top: 3rem;
+
+    mat-sidenav-container {
+        width: 100%;
+    }
+    
+    appshell-sidebar-menu {
+        display: flex;
+        flex-direction: column;
+        z-index: 2;
+    }
+
+    mat-sidenav-content {
+        box-sizing: border-box;
+        background-color: var(--background-color);
+
+        main {
+            display: flex;
+            height: 100%;
+        }
+    }
+}
