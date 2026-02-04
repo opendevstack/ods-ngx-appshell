@@ -90,6 +90,29 @@ npm run build-lib
 # The build artifacts will be in dist/ngx-appshell/
 ```
 
+### Publishing the Library
+
+To publish the library to npm:
+
+```bash
+# Install dependencies
+npm install
+
+# Pack the library
+npm run pack-lib
+
+# Navigate to the distribution folder
+cd dist/ngx-appshell
+
+# Login to npm (follow the login process)
+npm login
+
+# Publish the package
+npm publish --access public
+```
+
+**Note:** Make sure you have the necessary permissions to publish to the npm registry and that you've updated the version number in `projects/ngx-appshell/package.json` before publishing.
+
 ## Customizing Your Brand
 
 You can customize the appshell to match your brand identity by updating the following files in the example project:
