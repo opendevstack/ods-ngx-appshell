@@ -51,7 +51,11 @@ function addAzureServiceToAppComponent(): Rule {
     sourceText = ensureImport(sourceText, sourceFile, 'OnInit', '@angular/core', 'Component');
 
     if (hasConstructor(sourceFile)) {
-      if (!sourceText.includes('AzureService')) {
+      const constructorRegex = /constructor\s*\(([^)]*)\)/;
+      const constructorMatch = sourceText.match(constructorRegex);
+      const hasAzureServiceParam = constructorMatch && constructorMatch[1].includes('AzureService');
+      
+      if (!hasAzureServiceParam) {
         sourceText = updateConstructor(sourceText);
         context.logger.info('Updated constructor with AzureService injection');
       }
@@ -72,7 +76,7 @@ function addAzureServiceToAppComponent(): Rule {
     sourceText = ensureMethodWithContent(sourceText, sourceFile, 'login', 'this.azureService.login();', context);
     sourceText = ensureMethodWithContent(sourceText, sourceFile, 'logout', 'this.azureService.logout();', context);
 
-    if (!sourceText.includes('loggedUser')) {
+    if (!hasProperty(sourceFile, 'loggedUser')) {
       sourceText = addProperty(sourceText, 'loggedUser: any;');
       context.logger.info('Added loggedUser property');
     }
@@ -300,6 +304,20 @@ function hasConstructor(sourceFile: ts.SourceFile): boolean {
   
   function visit(node: ts.Node) {
     if (ts.isConstructorDeclaration(node)) {
+      found = true;
+    }
+    if (!found) ts.forEachChild(node, visit);
+  }
+  
+  visit(sourceFile);
+  return found;
+}
+
+function hasProperty(sourceFile: ts.SourceFile, propertyName: string): boolean {
+  let found = false;
+  
+  function visit(node: ts.Node) {
+    if (ts.isPropertyDeclaration(node) && node.name && node.name.getText() === propertyName) {
       found = true;
     }
     if (!found) ts.forEachChild(node, visit);
