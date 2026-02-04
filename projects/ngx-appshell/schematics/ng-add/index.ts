@@ -107,8 +107,8 @@ function updateAngularJson(): Rule {
         if (!content) return tree;
 
         const angularJson = JSON.parse(content);
-        const paletteStyle = 'node_modules/@appshell/ngx-appshell/styles/palette.css';
-        const stylePreprocessorPath = 'node_modules/@appshell/ngx-appshell';
+        const paletteStyle = 'node_modules/@opendevstack/ngx-appshell/styles/palette.css';
+        const stylePreprocessorPath = 'node_modules/@opendevstack/ngx-appshell';
         
         let updated = false;
         const projects = angularJson.projects;
@@ -409,7 +409,7 @@ function addAppInitializerProviderIfMissing(
         }
     }
 
-    content = `import { IconRegistryService } from '@appshell/ngx-appshell';\n${content}`;
+    content = `import { IconRegistryService } from '@opendevstack/ngx-appshell';\n${content}`;
     content = content.replace(providersMatch[0], `providers: [\n    ${updatedProviders}\n  ]`);
     
     context.logger.info('Updated providers array to include icon registry app initializer');

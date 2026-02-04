@@ -16,13 +16,13 @@ A comprehensive Angular library providing pre-built UI components, directives, a
 ## Installation
 
 ```bash
-ng add @appshell/ngx-appshell
+ng add @opendevstack/ngx-appshell
 ```
 
 Or install manually:
 
 ```bash
-npm install @appshell/ngx-appshell
+npm install @opendevstack/ngx-appshell
 ```
 
 Take into account that the ng add command, prepares the project to work with the library, if you use npm install, you'll need to reproduce manually the steps from the ng-add schematics in your project.
@@ -64,13 +64,13 @@ The library includes the following schematics to quickly integrate common featur
 
 ### ng-add
 ```bash
-ng add @appshell/ngx-appshell
+ng add @opendevstack/ngx-appshell
 ```
 Adds the AppShell module to your project with all necessary dependencies and configuration.
 
 ### azure-login
 ```bash
-ng generate @appshell/ngx-appshell:azure-login
+ng generate @opendevstack/ngx-appshell:azure-login
 ```
 Integrates Azure Enterprise Login (MSAL) into your application. This schematic generates:
 - Azure configuration files
@@ -80,7 +80,7 @@ Integrates Azure Enterprise Login (MSAL) into your application. This schematic g
 
 ### nats-notifications
 ```bash
-ng generate @appshell/ngx-appshell:nats-notifications
+ng generate @opendevstack/ngx-appshell:nats-notifications
 ```
 Integrates NATS.io-based notifications into your application. This schematic generates:
 - NATS service for message handling
