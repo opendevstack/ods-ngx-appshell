@@ -1,12 +1,16 @@
 {
-  "name": "@appshell/ngx-appshell",
-  "version": "19.0.4",
+  "name": "@opendevstack/ngx-appshell",
+  "version": "19.0.5",
+  "description": "A comprehensive Angular library providing pre-built UI components, directives, and schematics for building modern enterprise applications with Material Design.",
+  "author": "OpenDevStack",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/opendevstack/ods-ngx-appshell.git"
+  },
+  "license": "Apache-2.0",
   "scripts": {
     "build": "tsc -p tsconfig.schematics.json",
     "postbuild": "copyfiles schematics/collection.json schematics/*/schema.json schematics/*/files/**/* schematics/*/files/* ../../dist/ngx-appshell/"
-  },
-  "publishConfig": {
-    "registry": "http://localhost:4873"
   },
   "ng-add": {
     "save": "true"
