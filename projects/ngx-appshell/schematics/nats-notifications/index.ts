@@ -175,7 +175,7 @@ function integrateNotificationsInAppComponent(tree: Tree): void {
     updateImport(
       sourceFile, 
       appComponentPath, 
-      '@appshell/ngx-appshell', 
+      '@opendevstack/ngx-appshell', 
       ['AppShellLayoutComponent', 'AppShellToastService', 'AppShellToastsComponent', 'AppShellNotification']
     )
   );
@@ -349,7 +349,7 @@ function integrateNotificationsInAppComponentTests(tree: Tree): void {
     '@angular/core/testing',
     'rxjs',
     './services/nats.service',
-    '@appshell/ngx-appshell'
+    '@opendevstack/ngx-appshell'
   ];
   
   let updatedSource = sourceText;
