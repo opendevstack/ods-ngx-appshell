@@ -45,9 +45,10 @@ appshell-product-catalog-screen {
             color: var(--appshell-color-secondary-light);
             margin-bottom: 1.25rem;
 
-            mat-icon {
+            appshell-icon, mat-icon {
                 height: 6rem;
                 width: 6rem;
+                font-size: 6rem;
             }
         }
     }

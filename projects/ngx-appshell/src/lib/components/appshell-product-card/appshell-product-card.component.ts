@@ -15,8 +15,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 })
 export class AppShellProductCardComponent implements AfterViewChecked, OnDestroy {
   
-  @ViewChild('labelsChipSet', { static: true, read: ElementRef }) labelsChipSet!: ElementRef<HTMLElement>;
+  @ViewChild('labelsChipSet', { static: false, read: ElementRef }) labelsChipSet?: ElementRef<HTMLElement>;
 
+  loading = input<boolean>(false);
   title = input.required<string>();
   description = input.required<string>();
   image = input<string>();
@@ -44,8 +45,10 @@ export class AppShellProductCardComponent implements AfterViewChecked, OnDestroy
   }
 
   ngAfterViewChecked() {
-    this.hideOverflowingLabels();
-    this.resizeObserver.observe(this.labelsChipSet.nativeElement);
+    if (this.labelsChipSet) {
+      this.hideOverflowingLabels();
+      this.resizeObserver.observe(this.labelsChipSet.nativeElement);
+    }
   }
 
   onClick() {
@@ -53,6 +56,9 @@ export class AppShellProductCardComponent implements AfterViewChecked, OnDestroy
   }
 
   hideOverflowingLabels() {
+    if (!this.labelsChipSet) {
+      return;
+    }
     const twoLinesHeight = 4.5 * 16; // Each label uses 2 rem with a gap of .5 rem where 1 rem = 16px
     const labelsChipSetDiv = this.labelsChipSet.nativeElement.firstChild as HTMLElement;
 

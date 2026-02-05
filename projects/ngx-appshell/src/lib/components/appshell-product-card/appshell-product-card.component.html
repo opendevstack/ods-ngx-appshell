@@ -1,21 +1,43 @@
-<mat-card class="appshell-product-card" appearance="outlined" tabindex="0" (click)="onClick()" (keydown.enter)="onClick()" (keydown.space)="onClick()">
-    <mat-card-header>
-        <mat-card-title-group>
-            <mat-card-title>{{title()}}</mat-card-title>
-            @if (image()) {
-                <img mat-card-image [src]="image()" alt="">
-            }
-        </mat-card-title-group>
-    </mat-card-header>
-    <mat-card-content>
-        {{description()}}
-    </mat-card-content>
-    <mat-card-actions>
-            <mat-chip-set attr.aria-label="{{title()}} label" class="appshell-product-card-labels" #labelsChipSet>
-                @for (label of labels(); track label) {
-                    <appshell-chip [label]="label"></appshell-chip>
+<mat-card class="appshell-product-card" [class.loading]="loading()" appearance="outlined" [attr.tabindex]="loading() ? -1 : 0" (click)="!loading() && onClick()" (keydown.enter)="!loading() && onClick()" (keydown.space)="!loading() && onClick()">
+    @if (loading()) {
+        <mat-card-header>
+            <mat-card-title-group>
+                <mat-card-title>
+                    <div class="skeleton skeleton-title"></div>
+                </mat-card-title>
+                <div class="skeleton skeleton-image"></div>
+            </mat-card-title-group>
+        </mat-card-header>
+        <mat-card-content>
+            <div class="skeleton skeleton-line"></div>
+            <div class="skeleton skeleton-line"></div>
+            <div class="skeleton skeleton-line" style="width: 70%;"></div>
+        </mat-card-content>
+        <mat-card-actions>
+            <div class="skeleton-chips">
+                <div class="skeleton skeleton-chip"></div>
+                <div class="skeleton skeleton-chip"></div>
+            </div>
+        </mat-card-actions>
+    } @else {
+        <mat-card-header>
+            <mat-card-title-group>
+                <mat-card-title>{{title()}}</mat-card-title>
+                @if (image()) {
+                    <img mat-card-image [src]="image()" alt="">
                 }
-                <appshell-chip id="extra-labels" class="tooltip-chip" label="+X"></appshell-chip>
-            </mat-chip-set>
-    </mat-card-actions>
+            </mat-card-title-group>
+        </mat-card-header>
+        <mat-card-content>
+            {{description()}}
+        </mat-card-content>
+        <mat-card-actions>
+                <mat-chip-set attr.aria-label="{{title()}} label" class="appshell-product-card-labels" #labelsChipSet>
+                    @for (label of labels(); track label) {
+                        <appshell-chip [label]="label"></appshell-chip>
+                    }
+                    <appshell-chip id="extra-labels" class="tooltip-chip" label="+X"></appshell-chip>
+                </mat-chip-set>
+        </mat-card-actions>
+    }
 </mat-card>

@@ -126,4 +126,36 @@ describe('ProductCatalogScreenComponent', () => {
 
     expect(component.filteredProducts).toEqual([products[0]]);
   });
+
+  it('should set isLoading to false after the timeout passes', (done) => {
+    jasmine.clock().install();
+    
+    const mockProducts = [
+      { 
+        id: '1',
+        title: 'Product 1',
+        shortDescription: 'Short 1',
+        description: 'Desc 1',
+        image: 'Img 1',
+        authors: [],
+        date: new Date(),
+        tags: [{ label: 'label 1', options: ['value 1']}]
+      }
+    ] as AppShellProduct[];
+
+    mockCatalogService.getProductsList.and.returnValue(of(mockProducts));
+    mockCatalogService.getFilters.and.returnValue(of([]));
+
+    const newComponent = new ProductCatalogScreenComponent(mockCatalogService);
+    
+    expect(newComponent.isLoading).toBe(true);
+    
+    jasmine.clock().tick(3000);
+    
+    expect(newComponent.isLoading).toBe(false);
+    expect(newComponent.products).toEqual(mockProducts);
+    
+    jasmine.clock().uninstall();
+    done();
+  });
 });
