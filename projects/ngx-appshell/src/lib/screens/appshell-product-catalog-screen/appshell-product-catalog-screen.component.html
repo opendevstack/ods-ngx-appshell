@@ -5,7 +5,17 @@
     [filters]="filters()"
     (activeFiltersChange)="activeFiltersChange.emit($event)"></appshell-filters>
 <section class="catalog-main">
-    @if(products().length > 0) {
+    @if(isLoading()) {
+        <div class="products-ctn">
+            @for (i of [1,2,3,4,5,6]; track i) {
+                <appshell-product-card
+                    [loading]="true"
+                    title=""
+                    description=""
+                ></appshell-product-card>
+            }
+        </div>
+    } @else if(products().length > 0) {
         <div class="products-ctn">
             @for (product of products(); track product.id) {
                 <appshell-product-card
@@ -17,8 +27,7 @@
                 ></appshell-product-card>
             }
         </div>
-    }
-    @if(products().length === 0 && (noProductsHtmlMessage() || noProductsIcon())) {
+    } @else if(products().length === 0 && (noProductsHtmlMessage() || noProductsIcon())) {
         <div class="no-results-ctn" role="status" aria-live="polite" tabindex="0">
             @if(noProductsIcon()) {
                 <appshell-icon [class]="'no-results-icon'" [icon]="noProductsIcon()!" />

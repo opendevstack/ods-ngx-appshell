@@ -43,7 +43,7 @@ describe('AppShellProductCardComponent', () => {
   });
 
   it('should hide overflowing labels and show extra label', () => {
-    const labelsChipSetDiv = component.labelsChipSet.nativeElement.firstChild as HTMLElement;
+    const labelsChipSetDiv = component.labelsChipSet?.nativeElement.firstChild as HTMLElement;
     spyOnProperty(labelsChipSetDiv as HTMLElement, 'scrollHeight').and.returnValue(100);
     spyOn(component, 'changeExtraLabel').and.callThrough();
   
@@ -67,7 +67,7 @@ describe('AppShellProductCardComponent', () => {
   }));
   
   it('should not hide labels if there are less than or equal to two labels', () => {
-    const labelsChipSetDiv = component.labelsChipSet.nativeElement.firstChild as HTMLElement;
+    const labelsChipSetDiv = component.labelsChipSet?.nativeElement.firstChild as HTMLElement;
     spyOnProperty(labelsChipSetDiv as HTMLElement, 'scrollHeight').and.returnValue(50);
     labelsChipSetDiv.innerHTML = `
       <div class="label">Label1</div>
@@ -102,6 +102,24 @@ describe('AppShellProductCardComponent', () => {
     const removedLabels = ['Label4', 'Label5', 'Label6'];
     component.changeExtraLabel(labelEl, removedLabels);
     expect(labelEl.querySelector('.tooltip-text')?.textContent).toBe(removedLabels.reverse().join(', '));
+  });
+
+  it('should return early from hideOverflowingLabels when labelsChipSet is undefined', () => {
+    component.labelsChipSet = undefined;
+    
+    expect(() => component.hideOverflowingLabels()).not.toThrow();
+  });
+
+  it('should not process labels when in loading state', () => {
+    fixture = TestBed.createComponent(AppShellProductCardComponent);
+    component = fixture.componentInstance;
+    fixture.componentRef.setInput('loading', true);
+    fixture.componentRef.setInput('title', '');
+    fixture.componentRef.setInput('description', '');
+    fixture.detectChanges();
+
+    expect(component.labelsChipSet).toBeUndefined();
+    expect(() => component.hideOverflowingLabels()).not.toThrow();
   });
 });
 

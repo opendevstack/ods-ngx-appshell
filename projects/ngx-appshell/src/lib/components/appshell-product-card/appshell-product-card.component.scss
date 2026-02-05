@@ -9,6 +9,11 @@
     height: 100%;
     max-width: 35rem;
 
+    &.loading {
+        cursor: default;
+        pointer-events: none;
+    }
+
     &:hover {
         color: var(--appshell-color-secondary-medium);
     }
@@ -109,6 +114,61 @@
                     }
                 }
             }
+        }
+    }
+
+    &.loading mat-card-title-group>div:first-of-type {
+        width: 100%;
+    }
+
+    // Skeleton loading styles
+    .skeleton {
+        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: skeleton-loading 1.5s ease-in-out infinite;
+        border-radius: 0.25rem;
+    }
+
+    @keyframes skeleton-loading {
+        0% {
+            background-position: 200% 0;
+        }
+        100% {
+            background-position: -200% 0;
+        }
+    }
+
+    .skeleton-title {
+        height: 2.5rem;
+        width: 80%;
+    }
+
+    .skeleton-image {
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 0.25rem;
+        flex-shrink: 0;
+    }
+
+    .skeleton-line {
+        height: 1rem;
+        width: 100%;
+        margin-bottom: 0.5rem;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    .skeleton-chips {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+
+        .skeleton-chip {
+            height: 2rem;
+            width: 5rem;
+            border-radius: 1rem;
         }
     }
 }

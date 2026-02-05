@@ -25,6 +25,7 @@ export class AppShellProductCatalogScreenComponent {
   breadcrumbLinks = input.required<AppShellLink[]>();
   products = input.required<AppShellProduct[]>();
   filters = input.required<AppShellFilter[]>();
+  isLoading = input<boolean>(false);
   noProductsIcon = input<string>();
   noProductsHtmlMessage = input<string>();
   activeFiltersChange = output<Map<string, string[]>>();
