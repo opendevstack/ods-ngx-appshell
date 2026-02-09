@@ -1,6 +1,6 @@
 {
   "name": "@opendevstack/ngx-appshell",
-  "version": "19.0.9",
+  "version": "19.0.10",
   "description": "A comprehensive Angular library providing pre-built UI components, directives, and schematics for building modern enterprise applications with Material Design.",
   "author": "OpenDevStack",
   "repository": {

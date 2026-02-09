@@ -15,6 +15,7 @@ export function ngAdd(): Rule {
             createFontsFile(),
             updateStylesScss(),
             updateAngularJson(),
+            createIconsFile(),
             addRequiredProvidersInAppConfig(),
             updateAppComponent()
         ]);
@@ -78,6 +79,19 @@ function createFontsFile(): Rule {
         tree.create(fontsPath, templateContent);
         context.logger.info(`Created ${fontsPath}.`);
         
+        return tree;
+    };
+}
+
+function createIconsFile(): Rule {
+    return (tree: Tree, context: SchematicContext) => {
+        const iconsPath = 'public/assets/icons.json';
+        if (!tree.exists(iconsPath)) {
+            tree.create(iconsPath, "{}");
+            context.logger.info(`Created ${iconsPath}.`);
+        } else {
+            context.logger.info(`${iconsPath} already exists.`);
+        }
         return tree;
     };
 }
