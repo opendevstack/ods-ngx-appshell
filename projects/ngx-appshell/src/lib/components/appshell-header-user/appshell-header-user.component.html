@@ -1,0 +1,22 @@
+<div class="user-ctn">
+    @if (loggedUser() != null) {
+        <button [matMenuTriggerFor]="logoutMenu">
+            @if (loggedUser()!.avatarSrc) {
+                <div class="header-profile-picture" [style.backgroundImage]="'url('+loggedUser()!.avatarSrc+')'"></div>
+            } @else {
+                <appshell-icon [icon]="'person'" aria-label="Guest user icon" />
+            }
+            <div class="user-text">{{ loggedUser()?.fullName }}</div>
+        </button>
+        <mat-menu #logoutMenu="matMenu" xPosition="before" class="appshell-logout-panel">
+            <button mat-menu-item (click)="loggedOut.emit()" (keypress)="loggedOut.emit()" aria-label="Logout">
+                Log Out
+            </button>
+        </mat-menu>
+    } @else {
+        <button (click)="loggedIn.emit()" (keypress)="loggedIn.emit()" aria-label="Login">
+            <appshell-icon [icon]="'person'" aria-label="Guest user icon" />
+            <div class="user-text">Login</div>
+        </button>
+    }
+</div>

@@ -1,22 +1,2 @@
-<appshell-platform-layout
-  [headerVariant]="headerVariant"
-  [applicationSymbol]="applicationSymbol"
-  [applicationLogo]="applicationLogo"
-  [applicationName]="applicationName"
-  [applicationNameLink]="applicationNameLink"
-  [appShellHelpLink]="appShellHelpLink"
-  [appShellNotificationsLink]="appShellNotificationsLink"
-  [appShellNotificationsCount]="appShellNotificationsCount"
-  [headerLinks]="headerLinks"
-  [headerProjectPicker]="headerProjectPicker"
-  [headerSecondaryPicker]="headerSecondaryPicker"
-  [sidenavSections]="sidenavSections"
-  [sidenavLinks]="sidenavLinks"
-  [loggedUser]="loggedUser"
-  [isPlatformPickerOpened]="false"
-  (userLoggedIn)="login()"
-  (userLoggedOut)="logout()"
-  (userProjectPick)="projectPickerChanged($event)"
-  (userSecondaryPick)="secondaryPickerChanged($event)">
-</appshell-platform-layout>
+<router-outlet></router-outlet>
 <appshell-toasts [toastsLimit]="toastLimitInScreen"></appshell-toasts>

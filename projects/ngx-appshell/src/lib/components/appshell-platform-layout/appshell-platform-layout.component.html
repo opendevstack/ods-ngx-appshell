@@ -17,6 +17,7 @@
     (platformPickerClick)="platformPickerClick.emit()"
     (userProjectPick)="userProjectPick.emit($event)"
     (userSecondaryPick)="userSecondaryPick.emit($event)">
+    <ng-content select="extra-icons-header" ngProjectAs="extra-icons"></ng-content>
 </appshell-platform-header>
 
 <section id="appshell-layout-content">

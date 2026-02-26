@@ -1,0 +1,60 @@
+.user-ctn {
+    padding-left: .5rem;
+    padding-right: 1.25rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 100%;
+
+    button {
+        cursor: pointer;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        background-color: transparent;
+        border: none;
+        width: 100%;
+        gap: .5rem;
+        color: var(--header-link-color);
+
+        &:hover {
+            color: var(--header-link-hover-color);
+        }
+
+        .header-profile-picture {
+            width: 1.5rem;
+            height: 1.5rem;
+            border-radius: 50%;
+            background-size: cover;
+            background-position: center;
+            border: 1px solid var(--appshell-color-grey-warm);
+            aspect-ratio: 1;
+        }
+
+        .user-text {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: 0.875rem;
+            font-style: normal;
+            font-weight: 400;
+            font-family: "AppShellTextFont";
+            width: 10rem;
+            line-height: 1.25rem;
+            text-align: start;
+        }
+    }
+}
+
+// Mat-menu panel is projected outside the component host, so must be global
+.appshell-logout-panel {
+    border-radius: 0.125rem!important;
+    border: 1px solid var(--appshell-color-grey-main);
+    box-shadow: none!important;
+    width: 13rem;
+    margin-top: .7rem;
+
+    &>div {
+        padding: 0;
+    }
+}
