@@ -1,0 +1,12 @@
+<a class="header-icon"
+    [appShellLink]="link().anchor"
+    target="{{ link().target || '_self' }}"
+    [matTooltip]="link().label!"
+    attr.aria-label="Visit the {{ link().label }} page">
+    <appshell-icon [icon]="link().icon!" attr.aria-label="{{ link().label }} icon" />
+    @if (badge() > 0) {
+        <div class="header-icon-badge">
+            {{ badge() > 9 ? '9+' : badge() }}
+        </div>
+    }
+</a>

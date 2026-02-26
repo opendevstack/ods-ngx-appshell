@@ -1,0 +1,22 @@
+appshell-layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+
+    #extra-icons-ctn {
+        display: flex;
+        flex-direction: row;
+
+        .extra-icon-btn {
+            border: none;
+            background: none;
+            color: var(--header-link-color);
+            margin: 0 .5rem;
+            cursor: pointer;
+
+            &:hover {
+                color: white;
+            }
+        }
+    }
+}

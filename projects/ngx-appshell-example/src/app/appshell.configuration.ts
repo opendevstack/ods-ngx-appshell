@@ -19,15 +19,15 @@ export class AppShellConfiguration {
     };
     public static headerLinks = [
         {label: 'About Us', anchor: '/'},
-        {label: 'Feedback', anchor: '/product'},
+        {label: 'Feedback', anchor: '/basic-shell'},
         {label: 'Contact', anchor: '/contact'}
     ];
     public static sidenavSections = [
         {
             label: 'SECTION 1',
             links: [
-                {label: 'Page 1', anchor: '/'},
-                {label: 'Page 2', anchor: '/product'},
+                {label: 'Platform Layout', anchor: '/'},
+                {label: 'Basic Layout', anchor: '/basic-shell'},
                 {label: 'Page 3', anchor: 'https://www.google.com'}
             ]
         },

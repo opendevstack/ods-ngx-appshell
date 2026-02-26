@@ -1,0 +1,143 @@
+.header-picker {
+    margin-right: 1.5rem;
+
+    button {
+        cursor: pointer;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        background-color: transparent;
+        border: none;
+        color: var(--header-link-color);
+        font-size: 1rem;
+        font-style: normal;
+        font-weight: 400;
+        font-family: "AppShellTextFont";
+        line-height: 1.5rem;
+        text-align: start;
+        gap: .25rem;
+        padding: 0.5rem;
+        height: 85%;
+        border: 1px solid transparent;
+
+        appshell-icon, mat-icon {
+            width: 1rem;
+            height: 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        &:hover {
+            color: var(--header-link-hover-color);
+        }
+
+        &.active {
+            color: var(--header-link-selected-color);
+            border-bottom: 1px solid var(--header-link-selected-color);
+        }
+    }
+}
+
+// Mat-menu panel is projected outside the component host, so must be global
+.appshell-header-picker-panel {
+    border-radius: 0.125rem!important;
+    border: 1px solid var(--appshell-color-grey-main);
+    box-shadow: none!important;
+    width: 13rem;
+    padding: 0.75rem 0;
+    margin-top: 0.4rem;
+    --mat-menu-item-label-text-color: var(--appshell-color-dark-green-main);
+
+    &>div {
+        padding: 0;
+    }
+
+    .picker-search-ctn {
+        height: 3.75rem;
+        width: 100%;
+        border-bottom: 1px solid var(--appshell-color-grey-strong);
+
+        mat-form-field {
+            width: 86%;
+            margin: 0 7%;
+
+            --mdc-filled-text-field-container-color: var(--appshell-color-grey-light);
+            --mat-form-field-state-layer-color: transparent;
+            --mdc-filled-text-field-active-indicator-color: var(--appshell-color-grey-main);
+            --mdc-filled-text-field-hover-active-indicator-color: var(--appshell-color-grey-strong);
+            --mdc-filled-text-field-focus-active-indicator-color: var(--appshell-color-accent-green-main);
+            --mat-form-field-container-vertical-padding: 0.75rem;
+            --mat-form-field-container-height: 2.75rem;
+
+            .prefix-icon {
+                margin: 0 .5rem;
+            }
+
+            button {
+                background: transparent;
+                border: none;
+                cursor: pointer;
+            }
+        }
+    }
+
+    .picker-options-ctn {
+        max-height: 18rem;
+        overflow-y: auto;
+        color: var(--mat-menu-item-label-text-color);
+
+        .no-options-text {
+            padding: 1rem;
+            font-family: "AppShellTextFont";
+            font-size: 0.875rem;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 1.25rem;
+            text-align: center;
+
+            b {
+                display: block;
+            }
+
+            a {
+                color: #00e;
+            }
+        }
+
+        .clear-search-btn {
+            padding: 0.75rem;
+            height: 3rem;
+            width: 100%;
+            background: none;
+            border: none;
+            text-decoration: underline;
+            text-underline-offset: .4rem;
+            text-decoration-color: var(--appshell-color-accent-green-main);
+            color: var(--appshell-color-dark-green-main);
+            font-family: "AppShellTextFont";
+            font-size: .875rem;
+            font-style: normal;
+            font-weight: 500;
+            line-height: 1.25rem;
+            text-decoration-thickness: 2px;
+            cursor: pointer;
+        }
+    }
+
+    button {
+        &.active {
+            background-color: var(--appshell-color-grey-neutral);
+            border-left: 2px solid var(--appshell-color-accent-green-main);
+        }
+
+        &:focus-visible {
+            outline: 2px solid #0069E5;
+            outline-offset: -.1rem;
+        }
+
+        &:hover {
+            background-color: var(--appshell-color-grey-light);
+        }
+    }
+}

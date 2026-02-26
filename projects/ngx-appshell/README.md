@@ -2,7 +2,7 @@
 
 A comprehensive Angular library providing pre-built UI components, directives, and schematics for building modern enterprise applications with Material Design.
 
-**Version:** 19.0.11
+**Version:** 19.0.12
 **Angular:** >=19.0.0
 
 ## Features

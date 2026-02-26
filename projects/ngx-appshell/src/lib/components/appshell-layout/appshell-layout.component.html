@@ -12,6 +12,7 @@
     (userLoggedIn)="userLoggedIn.emit()"
     (userLoggedOut)="userLoggedOut.emit()"
     (userPick)="userPick.emit($event)">
+    <ng-content select="extra-icons-header" ngProjectAs="extra-icons"></ng-content>
 </appshell-header>
 
 <section id="appshell-layout-content">

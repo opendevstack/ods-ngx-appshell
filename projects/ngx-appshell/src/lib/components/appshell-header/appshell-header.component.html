@@ -20,51 +20,19 @@
             {{link.label}}
         </a>
     }
-    @if (picker() && picker()?.label && picker()?.options && picker()?.options!.length > 0) {
-        <button [matMenuTriggerFor]="pickerMenu" #pickerTrigger="matMenuTrigger" class="header-picker">
-            {{picker()!.label}}
-            <appshell-icon [icon]="pickerTrigger.menuOpen ? 'expand_less' : 'expand_more'" />
-        </button>
-        <mat-menu #pickerMenu="matMenu" xPosition="after" class="appshell-picker-panel">
-            @for (opt of picker()!.options; track opt; let index = $index) {
-                <button mat-menu-item (click)="userPick.emit(opt)" (keypress)="userPick.emit(opt)" [class.active]="picker()?.selected === opt" attr.aria-label="{{opt}}">{{ opt }}</button>
-            }
-        </mat-menu>
+    @if (picker()) {
+        <appshell-header-picker [picker]="picker()!" (pick)="userPick.emit($event)" />
     }
     @if (helpLink() && helpLink()?.icon) {
-        <a class="header-icon" [appShellLink]="helpLink()!.anchor" target="{{helpLink()!.target || '_self'}}" [matTooltip]="helpLink()!.label" aria-label="Visit the help page">
-            <appshell-icon [icon]="helpLink()!.icon!" aria-label="Help icon" />
-        </a>
+        <appshell-header-icon-link [link]="helpLink()!" />
     }
     @if (notificationsLink() && notificationsLink()?.icon) {
-        <a class="header-icon" [appShellLink]="notificationsLink()!.anchor" target="{{notificationsLink()!.target || '_self'}}" [matTooltip]="notificationsLink()!.label" aria-label="Visit the notifications page">
-            <appshell-icon [icon]="notificationsLink()!.icon!" aria-label="Notifications icon" />
-            @if (notificationsCount() > 0) {
-                <div class="notification-count" aria-label="Number of notifications">
-                    {{notificationsCount() > 9 ? '9+' : notificationsCount()}}
-                </div>
-            }
-        </a>
+        <appshell-header-icon-link [link]="notificationsLink()!" [badge]="notificationsCount()" />
     }
+    <ng-content select="extra-icons"></ng-content>
     <div class="separator"></div>
-    <div class="user-ctn">
-        @if (loggedUser() !== null) {
-            <button [matMenuTriggerFor]="logoutMenu">
-                @if (loggedUser()!.avatarSrc) {
-                    <div class="header-profile-picture" [style.backgroundImage]="'url('+loggedUser()!.avatarSrc+')'"></div>
-                } @else {
-                    <appshell-icon [icon]="'person'" aria-label="Guest user icon" />
-                }
-                <div class="user-text">{{loggedUser()?.fullName}}</div>
-            </button>
-            <mat-menu #logoutMenu="matMenu" xPosition="before" class="appshell-logout-panel">
-                <button mat-menu-item (click)="userLoggedOut.emit()" (keypress)="userLoggedOut.emit()" aria-label="Logout">Log Out</button>
-            </mat-menu>
-        } @else {
-            <button (click)="userLoggedIn.emit()" (keypress)="userLoggedIn.emit()" aria-label="Login">
-                <appshell-icon [icon]="'person'" aria-label="Guest user icon" />
-                <div class="user-text">Login</div>
-            </button>
-        }
-    </div>
+    <appshell-header-user
+        [loggedUser]="loggedUser()"
+        (loggedIn)="userLoggedIn.emit()"
+        (loggedOut)="userLoggedOut.emit()" />
 </nav>

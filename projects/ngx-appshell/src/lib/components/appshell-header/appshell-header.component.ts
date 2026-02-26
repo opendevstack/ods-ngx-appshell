@@ -1,5 +1,4 @@
 import { Component, input, output, ViewEncapsulation } from '@angular/core';
-import { MatMenuModule } from '@angular/material/menu';
 import { AppShellUser } from '../../models/appshell-user';
 import { AppShellLinkDirective } from '../../directives/appshell-link.directive';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -7,11 +6,13 @@ import { CommonModule } from '@angular/common';
 import { AppShellLink } from '../../models/appshell-link';
 import { AppShellPicker } from '../../models/appshell-picker';
 import { Router } from '@angular/router';
-import { AppShellIconComponent } from '../appshell-icon/appshell-icon.component';
+import { AppShellHeaderIconLinkComponent } from '../appshell-header-icon-link/appshell-header-icon-link.component';
+import { AppShellHeaderUserComponent } from '../appshell-header-user/appshell-header-user.component';
+import { AppShellHeaderPickerComponent } from '../appshell-header-picker/appshell-header-picker.component';
 
 @Component({
     selector: 'appshell-header',
-    imports: [AppShellLinkDirective, MatTooltipModule, CommonModule, MatMenuModule, AppShellIconComponent],
+    imports: [AppShellLinkDirective, MatTooltipModule, CommonModule, AppShellHeaderIconLinkComponent, AppShellHeaderUserComponent, AppShellHeaderPickerComponent],
     templateUrl: './appshell-header.component.html',
     styleUrl: './appshell-header.component.scss',
     encapsulation: ViewEncapsulation.None
