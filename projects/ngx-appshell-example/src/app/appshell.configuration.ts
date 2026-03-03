@@ -32,7 +32,7 @@ export class AppShellConfiguration {
             ]
         },
         {
-            label: 'SECTION 2',
+            label: 'SECTION 2 THAT REQUIRES MORE THAN TWO LINES',
             links: [
                 {label: 'Page 1', anchor: '/subsection', icon: 'house'},
                 {label: 'Page 2', anchor: '/subsection2', icon: 'house'},

@@ -44,7 +44,7 @@
     border-radius: 0.125rem!important;
     border: 1px solid var(--appshell-color-grey-main);
     box-shadow: none!important;
-    width: 13rem;
+    width: 16rem;
     padding: 0.75rem 0;
     margin-top: 0.4rem;
     --mat-menu-item-label-text-color: var(--appshell-color-dark-green-main);
@@ -126,6 +126,9 @@
     }
 
     button {
+        padding-top: 0.875rem;
+        padding-bottom: 0.875rem;
+
         &.active {
             background-color: var(--appshell-color-grey-neutral);
             border-left: 2px solid var(--appshell-color-accent-green-main);

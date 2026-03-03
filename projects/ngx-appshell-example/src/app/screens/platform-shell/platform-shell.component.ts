@@ -43,7 +43,7 @@ export class PlatformShellComponent implements OnInit, OnDestroy {
   ) {
     this.headerSecondaryPicker = {
       label: 'Catalog: ',
-      options: ['Option 1', 'Option 2', 'Option 3'],
+      options: ['Option 1', 'Option 2', 'A really long option that requires to be included in more than two lines', 'Option 3'],
       selected: 'Option 2'
     };
     this.headerProjectPicker = {
