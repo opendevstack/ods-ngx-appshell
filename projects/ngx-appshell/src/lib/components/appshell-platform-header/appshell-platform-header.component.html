@@ -15,6 +15,7 @@
         <h1>{{ applicationName() }}</h1>
     </div>
 
+    <ng-content select="extra-picker"></ng-content>
 
     @if (projectPicker() && projectPicker()?.label) {
         <appshell-header-picker

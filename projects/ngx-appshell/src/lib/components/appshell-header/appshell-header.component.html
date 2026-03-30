@@ -20,6 +20,7 @@
             {{link.label}}
         </a>
     }
+    <ng-content select="extra-picker"></ng-content>
     @if (picker()) {
         <appshell-header-picker [picker]="picker()!" (pick)="userPick.emit($event)" />
     }
