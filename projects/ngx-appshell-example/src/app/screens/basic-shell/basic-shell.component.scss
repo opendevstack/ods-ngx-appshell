@@ -3,6 +3,15 @@ appshell-layout {
     flex-direction: column;
     min-height: 100vh;
 
+    #extra-picker-ctn {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin: 0 1rem;
+        color: var(--header-link-color);
+        font-size: .875rem;
+    }
+
     #extra-icons-ctn {
         display: flex;
         flex-direction: row;
