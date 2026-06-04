@@ -1,4 +1,4 @@
-import { ApplicationConfig, inject, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, inject, Injector, provideZoneChangeDetection, provideAppInitializer } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideHttpClient, withFetch, withInterceptorsFromDi } from '@angular/common/http';
@@ -7,7 +7,8 @@ import { provideMarkdown } from 'ngx-markdown';
 import { AppConfigService } from './services/app-config.service';
 import { msalProviders } from './azure.config';
 import { IconRegistryService } from 'ngx-appshell';
-import { provideAppInitializer } from '@angular/core';
+import { MsalService } from '@azure/msal-angular';
+import { firstValueFrom } from 'rxjs';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -19,9 +20,14 @@ export const appConfig: ApplicationConfig = {
     provideAppInitializer(() => {
       const appConfigService = inject(AppConfigService);
       const iconService = inject(IconRegistryService);
-      return appConfigService.loadConfig().then(() => 
-        iconService.registerIconsFromManifest('assets/icons.json')
-      );
+      // MsalService is resolved lazily via Injector instead of inject() so that
+      // MSALInstanceFactory only runs after config is loaded. inject() calls are
+      // synchronous and would execute the factory before loadConfig() completes,
+      // producing an MSAL instance with undefined clientId and authority.
+      const injector = inject(Injector);
+      return appConfigService.loadConfig()
+        .then(() => iconService.registerIconsFromManifest('assets/icons.json'))
+        .then(() => firstValueFrom(injector.get(MsalService).initialize()));
     }),
     ...msalProviders,
   ],

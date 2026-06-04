@@ -385,7 +385,7 @@ function addAppInitializerProviderIfMissing(
     const providersContent = providersMatch[1].trim();
     const needsComma = providersContent.length > 0 && !providersContent.endsWith(',');
     
-    const providerCode = `provideAppInitializer(() => {\n      const iconService = inject(IconRegistryService);\n      return iconService.registerIconsFromManifest('assets/icons.json');\n    })`;
+    const providerCode = `provideAppInitializer(() => {\n      const iconService = inject(IconRegistryService);\n      // MsalService is resolved lazily via Injector instead of inject() so that\n      // MSALInstanceFactory only runs after config is loaded. inject() calls are\n      // synchronous and would execute the factory before loadConfig() completes,\n      // producing an MSAL instance with undefined clientId and authority.\n      const injector = inject(Injector);\n      return iconService.registerIconsFromManifest('assets/icons.json')\n        .then(() => firstValueFrom(injector.get(MsalService).initialize()));\n    }),`;
     
     const updatedProviders = providersContent.length > 0
         ? `${providersContent}${needsComma ? ',' : ''}\n    ${providerCode}`
@@ -398,8 +398,17 @@ function addAppInitializerProviderIfMissing(
     const hasInject = sourceFile.statements.some(
         (node) => ts.isImportDeclaration(node) && node.getText().includes('inject')
     );
+    const hasInjector = sourceFile.statements.some(
+        (node) => ts.isImportDeclaration(node) && node.getText().includes('Injector')
+    );
+    const hasMsalService = sourceFile.statements.some(
+        (node) => ts.isImportDeclaration(node) && node.getText().includes('MsalService')
+    );
+    const hasFirstValueFrom = sourceFile.statements.some(
+        (node) => ts.isImportDeclaration(node) && node.getText().includes('firstValueFrom')
+    );
 
-    if (!hasProvideAppInitializer || !hasInject) {
+    if (!hasProvideAppInitializer || !hasInject || !hasInjector) {
         // Check if there's already an import from @angular/core
         const coreImportMatch = content.match(/import\s*{([^}]*)}\s*from\s*['"]@angular\/core['"]/);
         if (coreImportMatch) {
@@ -411,6 +420,9 @@ function addAppInitializerProviderIfMissing(
             if (!hasInject && !imports.includes('inject')) {
                 missingImports.push('inject');
             }
+            if (!hasInjector && !imports.includes('Injector')) {
+                missingImports.push('Injector');
+            }
             if (missingImports.length > 0) {
                 const updatedImports = [...imports, ...missingImports].join(', ');
                 content = content.replace(coreImportMatch[0], `import { ${updatedImports} } from '@angular/core'`);
@@ -419,8 +431,17 @@ function addAppInitializerProviderIfMissing(
             const neededImports = [];
             if (!hasProvideAppInitializer) neededImports.push('provideAppInitializer');
             if (!hasInject) neededImports.push('inject');
+            if (!hasInjector) neededImports.push('Injector');
             content = `import { ${neededImports.join(', ')} } from '@angular/core';\n${content}`;
         }
+    }
+
+    if (!hasMsalService) {
+        content = `import { MsalService } from '@azure/msal-angular';\n${content}`;
+    }
+
+    if (!hasFirstValueFrom) {
+        content = `import { firstValueFrom } from 'rxjs';\n${content}`;
     }
 
     content = `import { IconRegistryService } from '@opendevstack/ngx-appshell';\n${content}`;
@@ -429,6 +450,7 @@ function addAppInitializerProviderIfMissing(
     context.logger.info('Updated providers array to include icon registry app initializer');
     return content;
 }
+
 function updateAppComponent(): Rule {
     return (tree: Tree, context: SchematicContext) => {
         const appComponentPath = 'src/app/app.component.ts';

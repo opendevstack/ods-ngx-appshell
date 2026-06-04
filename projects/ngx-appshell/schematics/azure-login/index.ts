@@ -175,15 +175,20 @@ function addAzureConfigToAppConfig(): Rule {
     sourceText = ensureImport(sourceText, sourceFile, 'msalProviders', './azure.config');
 
     // Update existing provideAppInitializer to include AppConfigService
-    const existingInitializer = /provideAppInitializer\(\(\)\s*=>\s*{\s*const iconService = inject\(IconRegistryService\);\s*return iconService\.registerIconsFromManifest\('assets\/icons\.json'\);\s*}\)/;
+    const existingInitializer = /provideAppInitializer\(\(\)\s*=>\s*{[\s\S]*?const\s+iconService\s*=\s*inject\(IconRegistryService\);[\s\S]*?const\s+injector\s*=\s*inject\(Injector\);[\s\S]*?registerIconsFromManifest\('assets\/icons\.json'\)[\s\S]*?firstValueFrom\(\s*injector\.get\(MsalService\)\.initialize\(\)\s*\)[\s\S]*?}\),?/;
     
     if (sourceText.match(existingInitializer)) {
       const updatedInitializer = `provideAppInitializer(() => {
       const appConfigService = inject(AppConfigService);
       const iconService = inject(IconRegistryService);
-      return appConfigService.loadConfig().then(() => 
-        iconService.registerIconsFromManifest('assets/icons.json')
-      );
+      // MsalService is resolved lazily via Injector instead of inject() so that
+      // MSALInstanceFactory only runs after config is loaded. inject() calls are
+      // synchronous and would execute the factory before loadConfig() completes,
+      // producing an MSAL instance with undefined clientId and authority.
+      const injector = inject(Injector);
+      return appConfigService.loadConfig()
+        .then(() => iconService.registerIconsFromManifest('assets/icons.json'))
+        .then(() => firstValueFrom(injector.get(MsalService).initialize()));
     })`;
       
       sourceText = sourceText.replace(existingInitializer, updatedInitializer);
