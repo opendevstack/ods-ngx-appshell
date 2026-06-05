@@ -9,7 +9,6 @@ import { Router } from "@angular/router";
     providedIn: 'root'
 })
 export class AzureService implements OnDestroy {
-    isIframe = false;
     loginDisplay = false;
     private readonly _destroying$ = new Subject<void>();
 
@@ -25,7 +24,6 @@ export class AzureService implements OnDestroy {
 
     initialize() {
         this.msalService.handleRedirectObservable().subscribe();
-        this.isIframe = window !== window.parent && !window.opener; // Remove this line to use Angular Universal
 
         this.setLoginDisplay();
 
@@ -75,7 +73,8 @@ export class AzureService implements OnDestroy {
             } as AppShellUser;
             
             this.msalService.instance.acquireTokenSilent({
-                scopes: ["User.Read"]
+                scopes: ["User.Read"],
+                account: msalUser
             }).then(response => {
                 fetch('https://graph.microsoft.com/v1.0/me/photo/$value', {
                     headers: {

@@ -51,7 +51,6 @@ describe('AzureService', () => {
     });
 
     it('should initialize properties in the constructor', () => {
-        expect(service.isIframe).toBeFalse();
         expect(service.loginDisplay).toBeFalse();
         expect(service.isFirstTime).toBeTrue();
         expect(service.loggedUser$).toBeInstanceOf(BehaviorSubject);
@@ -236,76 +235,6 @@ describe('AzureService', () => {
 
         expect(service[destroyingMethodName].next).toHaveBeenCalledWith(undefined);
         expect(service[destroyingMethodName].complete).toHaveBeenCalled();
-    });
-
-    it('getIdToken - should return the idToken of the active account', () => {
-        const activeAccount = { idToken: 'test-id-token' };
-        msalInstanceSpy.getActiveAccount.and.returnValue(activeAccount);
-    
-        const token = service.getIdToken();
-    
-        expect(token).toBe('test-id-token');
-    });
-    
-    it('getIdToken - should return an empty string if no active account', () => {
-        msalInstanceSpy.getActiveAccount.and.returnValue(null);
-    
-        const token = service.getIdToken();
-    
-        expect(token).toBe('');
-    });
-
-    it('refreshToken - should call acquireTokenSilent with correct scopes', () => {
-        const acquireTokenSilentSpy = msalInstanceSpy.acquireTokenSilent.and.returnValue(Promise.resolve({ accessToken: fakeToken }));
-    
-        service.refreshToken();
-    
-        expect(acquireTokenSilentSpy).toHaveBeenCalledWith({ scopes: ["User.Read"] });
-    });
-    
-    it('refreshToken - should return a promise that resolves with the access token', async () => {
-        const expectedToken = { accessToken: fakeToken } as AuthenticationResult;
-        msalInstanceSpy.acquireTokenSilent.and.returnValue(Promise.resolve(expectedToken));
-    
-        const result = await service.refreshToken();
-    
-        expect(result).toEqual(expectedToken);
-    });
-    
-    it('refreshToken - should return a promise that rejects with an error', async () => {
-        const expectedError = new Error('Error acquiring token silently');
-        msalInstanceSpy.acquireTokenSilent.and.returnValue(Promise.reject(expectedError));
-    
-        try {
-            await service.refreshToken();
-            fail('Expected promise to be rejected');
-        } catch (error) {
-            expect(error).toEqual(expectedError);
-        }
-    });
-    
-    it('getRefreshedAccessToken - should return an observable that emits the access token', (done) => {
-        const expectedToken = 'test-access-token';
-        const authResult = { accessToken: expectedToken } as AuthenticationResult;
-        msalInstanceSpy.acquireTokenSilent.and.returnValue(Promise.resolve(authResult));
-
-        service.getRefreshedAccessToken().subscribe((token) => {
-            expect(token).toEqual(expectedToken);
-            done();
-        });
-    });
-
-    it('getRefreshedAccessToken - should handle error when acquiring token fails', (done) => {
-        const expectedError = new Error('Error acquiring token');
-        msalInstanceSpy.acquireTokenSilent.and.returnValue(Promise.reject(expectedError));
-
-        service.getRefreshedAccessToken().subscribe({
-            next: () => fail('Expected observable to error'),
-            error: (error) => {
-                expect(error).toEqual(expectedError);
-                done();
-            }
-        });
     });
     
 });

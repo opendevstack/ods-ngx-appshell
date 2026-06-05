@@ -227,13 +227,19 @@ function integrateNotificationsInAppComponent(tree: Tree): void {
       sourceFile,
       appComponentPath,
       `async ngOnInit(): Promise<void> {
-  await this.natsService.initialize(this.natsUrl);
+  if (this.natsUrl) {
+    await this.natsService.initialize(this.natsUrl!);
+  }
   this.azureService.initialize();
   this.azureService.loggedUser$.subscribe((user) => {
     this.loggedUser = user;
-    this.initUserNotifications(user);
+    if (this.natsUrl) {
+      this.initUserNotifications(user);
+    }
   });
-  this.initializeNatsListeners();
+  if (this.natsUrl) {
+    this.initializeNatsListeners();
+  }
 }`
     )
   );
@@ -261,7 +267,9 @@ function integrateNotificationsInAppComponent(tree: Tree): void {
     // validBucketRe = regexp.MustCompile(^[a-zA-Z0-9_-]+$)
     // validKeyRe = regexp.MustCompile(^[-/_=\.a-zA-Z0-9]+$)
     const natsUser = user.username.split('@')[0].replace(/[^a-zA-Z0-9_-]/g, '_')
-    this.natsService.initializeUser(natsUser);
+    if (this.natsUrl) {
+      this.natsService.initializeUser(natsUser);
+    }
     
     // On login, leave 4 seconds for the NATS connection to be established and show a toast with the unread messages count
     setTimeout(() => {

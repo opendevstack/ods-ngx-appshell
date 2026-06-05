@@ -34,7 +34,6 @@ export function MSALInstanceFactory(config: AppConfigService): IPublicClientAppl
       cacheLocation: BrowserCacheLocation.LocalStorage,
     },
     system: {
-      allowNativeBroker: false, // Disables WAM Broker
       loggerOptions: {
         loggerCallback,
         logLevel: LogLevel.Warning,

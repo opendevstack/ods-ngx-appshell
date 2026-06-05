@@ -49,7 +49,6 @@ describe('AzureService', () => {
     });
 
     it('should initialize properties in the constructor', () => {
-        expect(service.isIframe).toBeFalse();
         expect(service.loginDisplay).toBeFalse();
         expect(service.isFirstTime).toBeTrue();
         expect(service.loggedUser$).toBeInstanceOf(BehaviorSubject);

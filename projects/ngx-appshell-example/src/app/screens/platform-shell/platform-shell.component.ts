@@ -61,13 +61,19 @@ export class PlatformShellComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit(): Promise<void> {
-    await this.natsService.initialize(this.natsUrl!);
+    if (this.natsUrl) {
+      await this.natsService.initialize(this.natsUrl!);
+    }
     this.azureService.initialize();
     this.azureService.loggedUser$.subscribe((user) => {
       this.loggedUser = user;
-      this.initUserNotifications(user);
+      if (this.natsUrl) {
+        this.initUserNotifications(user);
+      }
     });
-    this.initializeNatsListeners();
+    if (this.natsUrl) {
+      this.initializeNatsListeners();
+    }
   }
 
   extraHeaderIconClick(iconNum: string) {
@@ -92,7 +98,9 @@ export class PlatformShellComponent implements OnInit, OnDestroy {
   private initUserNotifications(user: AppShellUser | null) {
     if (user) {
       const natsUser = user.username.split('@')[0].replace(/[^a-zA-Z0-9_-]/g, '_');
-      this.natsService.initializeUser(natsUser);
+      if (this.natsUrl) {
+        this.natsService.initializeUser(natsUser);
+      }
 
       setTimeout(() => {
         if (this.appShellNotificationsCount > 0) {

@@ -1,6 +1,6 @@
 {
   "name": "@opendevstack/ngx-appshell",
-  "version": "19.0.14",
+  "version": "19.0.15",
   "description": "A comprehensive Angular library providing pre-built UI components, directives, and schematics for building modern enterprise applications with Material Design.",
   "author": "OpenDevStack",
   "repository": {
@@ -24,8 +24,8 @@
   },
   "dependencies": {
     "@angular/material": "19.2.16",
-    "@azure/msal-angular": "3.1.0",
-    "@azure/msal-browser": "3.27.0",
+    "@azure/msal-angular": "4.1.1",
+    "@azure/msal-browser": "4.30.0",
     "@nats-io/nats-core": "3.0.0",
     "@nats-io/jetstream": "3.0.0",
     "@nats-io/kv": "3.0.0",
