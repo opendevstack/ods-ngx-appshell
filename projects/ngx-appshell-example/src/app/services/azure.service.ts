@@ -27,12 +27,11 @@ export class AzureService implements OnDestroy {
 
         this.setLoginDisplay();
 
-        this.msalService.instance.enableAccountStorageEvents(); // Optional - This will enable ACCOUNT_ADDED and ACCOUNT_REMOVED events emitted when a user logs in or out of another tab or window
         this.msalBroadcastService.msalSubject$
         .pipe(
             filter((msg: EventMessage) =>
-                msg.eventType === EventType.ACCOUNT_ADDED ||
-                msg.eventType === EventType.ACCOUNT_REMOVED
+                msg.eventType === EventType.LOGIN_SUCCESS ||
+                msg.eventType === EventType.LOGOUT_SUCCESS
             )
         )
         .subscribe(() => {
@@ -137,7 +136,7 @@ export class AzureService implements OnDestroy {
     }
 
     logout() {
-        this.msalService.logout();
+        this.msalService.logoutRedirect();
     }
 
     ngOnDestroy(): void {
