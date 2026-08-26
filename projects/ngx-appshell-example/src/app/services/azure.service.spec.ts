@@ -18,7 +18,7 @@ describe('AzureService', () => {
         msalSubject$ = new Subject<EventMessage>();
         inProgress$ = new Subject<InteractionStatus>();
         
-        const msalServiceSpy = jasmine.createSpyObj('MsalService', ['handleRedirectObservable', 'instance', 'loginRedirect', 'logout']);
+        const msalServiceSpy = jasmine.createSpyObj('MsalService', ['handleRedirectObservable', 'instance', 'loginRedirect', 'logoutRedirect']);
         const msalBroadcastServiceSpy = jasmine.createSpyObj('MsalBroadcastService', [], {
             msalSubject$: msalSubject$.asObservable(),
             inProgress$: inProgress$.asObservable()
@@ -58,7 +58,7 @@ describe('AzureService', () => {
     it('initialize method works', () => {
         msalService.handleRedirectObservable.and.returnValue(of({} as AuthenticationResult));
         service.initialize();
-        msalSubject$.next({eventType: EventType.ACCOUNT_ADDED} as EventMessage);
+        msalSubject$.next({eventType: EventType.LOGIN_SUCCESS} as EventMessage);
         inProgress$.next(InteractionStatus.None);
         expect(msalService.handleRedirectObservable).toHaveBeenCalled();
     });
@@ -67,7 +67,7 @@ describe('AzureService', () => {
         msalService.handleRedirectObservable.and.returnValue(of({} as AuthenticationResult));
         msalInstanceSpy.getAllAccounts.and.returnValue([]);
         service.initialize();
-        msalSubject$.next({ eventType: EventType.ACCOUNT_REMOVED } as EventMessage);
+        msalSubject$.next({ eventType: EventType.LOGOUT_SUCCESS } as EventMessage);
         tick();
         expect(mockRouter.navigate).toHaveBeenCalledWith(['/']);
     }));
@@ -168,7 +168,7 @@ describe('AzureService', () => {
 
     it('logout - should call logout on msalService', () => {
         service.logout();
-        expect(msalService.logout).toHaveBeenCalled();
+        expect(msalService.logoutRedirect).toHaveBeenCalled();
     });
 
     it('checkAndSetActiveAccount - should set the first account as active if no active account is set', () => {
