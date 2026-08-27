@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AppShellSelectComponent } from './appshell-select.component';
 
-describe('DropdownSelectComponent', () => {
+describe('AppShellSelectComponent', () => {
   let component: AppShellSelectComponent;
   let fixture: ComponentFixture<AppShellSelectComponent>;
 
@@ -37,28 +37,28 @@ describe('DropdownSelectComponent', () => {
     fixture.componentRef.setInput('value', 'A');
     fixture.detectChanges();
 
-    expect(component.value()).toBe('A');
+    expect(component.selectValue()).toBe('A');
   });
 
   it('should receive array value input', () => {
     fixture.componentRef.setInput('value', ['A', 'B']);
     fixture.detectChanges();
 
-    expect(component.value()).toEqual(['A', 'B']);
+    expect(component.selectValue()).toEqual(['A', 'B']);
   });
 
   it('should emit value change', () => {
-    const emitSpy = spyOn(component.valueChange, 'emit');
+    const emitSpy = spyOn(component.selectValueChange, 'emit');
 
-    component.valueChange.emit('A');
+    component.selectValueChange.emit('A');
 
     expect(emitSpy).toHaveBeenCalledWith('A');
   });
 
   it('should emit array value change', () => {
-    const emitSpy = spyOn(component.valueChange, 'emit');
+    const emitSpy = spyOn(component.selectValueChange, 'emit');
 
-    component.valueChange.emit(['A', 'B']);
+    component.selectValueChange.emit(['A', 'B']);
 
     expect(emitSpy).toHaveBeenCalledWith(['A', 'B']);
   });
