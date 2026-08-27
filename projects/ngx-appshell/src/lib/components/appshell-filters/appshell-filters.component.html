@@ -3,8 +3,7 @@
         <appshell-select [label]="filter.label"
             [options]="filter.options"
             [placeholder]="filter.placeholder"
-            [multipleSelection]="filter.multiple ?? false"
-            [selectValue]="getSelectValue(filter)"
+            [multipleSelection]="filter.multiple ?? true"
             (selectValueChange)="onFilterChange(filter.label, $event)">
         </appshell-select>
     }

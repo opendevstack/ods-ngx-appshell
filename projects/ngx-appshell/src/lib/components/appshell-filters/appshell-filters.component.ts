@@ -36,9 +36,4 @@ export class AppShellFiltersComponent implements OnChanges {
 
     this.activeFiltersChange.emit(this.activeFilters);
   }
-
-  getSelectValue(filter: AppShellFilter): string | string[] {
-    const values = this.activeFilters.get(filter.label) ?? [];
-    return filter.multiple ? values : values[0] ?? '';
-  }
 }
