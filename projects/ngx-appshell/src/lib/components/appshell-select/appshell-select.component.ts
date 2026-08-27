@@ -12,6 +12,8 @@ export class AppShellSelectComponent {
   label = input.required<string>();
   options = input.required<string[]>();
   placeholder = input.required<string>();
+  multipleSelection = input<boolean>(false);
 
-  selectValueChange = output<string[]>();
+  selectValue = input<string | string[]>();
+  selectValueChange = output<string | string[]>();
 }

@@ -17,11 +17,11 @@ export class CatalogService {
       tags: [
         {
           label: 'Filter 1',
-          options: ['Option 1', 'Option 2']
+          options: ['Option 1', 'Option 2', 'Option 3']
         },
         {
           label: 'Filter 2',
-          options: ['Option 5', 'Option 6', 'Option 7', 'Option 8', 'Option 9', 'Option 10', 'Option 11', 'Option 12']
+          options: ['Option 4', 'Option 5']
         }
       ],
       authors: ['author1', 'author2'],
@@ -36,6 +36,10 @@ export class CatalogService {
       image: 'https://placehold.co/300x300',
       tags: [
         {
+          label: 'Filter 1',
+          options: ['Option 1', 'Option 2']
+        },
+        {
           label: 'Filter 3',
           options: ['Option 8']
         }
@@ -49,7 +53,16 @@ export class CatalogService {
       shortDescription: 'Short description of product 3',
       description: 'Longer Description of product 3',
       image: 'https://placehold.co/300x300',
-      tags: [],
+      tags: [
+        {
+          label: 'Filter 2',
+          options: ['Option 5', 'Option 6']
+        },
+        {
+          label: 'Filter 3',
+          options: ['Option 7', 'Option 8']
+        }
+      ],
       authors: ['author1', 'author2'],
       date: new Date(),
       link: 'https://www.google.com'
@@ -60,14 +73,23 @@ export class CatalogService {
       shortDescription: 'Short description of product 4',
       description: 'Longer Description of product 4',
       image: 'https://placehold.co/300x300',
-      tags: [],
+      tags: [
+        {
+          label: 'Filter 1',
+          options: ['Option 3']
+        },
+        {
+          label: 'Filter 3',
+          options: ['Option 9']
+        }
+      ],
       authors: ['author1', 'author2'],
       date: new Date(),
       link: 'https://www.google.com'
     } as AppShellProduct
   ];
   private filters: AppShellFilter[] = [
-    {label: 'Filter 1', options: ['Option 1', 'Option 2', 'Option 3'], placeholder: 'Select an option'} as AppShellFilter,
+    {label: 'Filter 1', options: ['Option 1', 'Option 2', 'Option 3'], placeholder: 'Select an option', multiple: true} as AppShellFilter,
     {label: 'Filter 2', options: ['Option 4', 'Option 5', 'Option 6'], placeholder: 'Select an option'} as AppShellFilter,
     {label: 'Filter 3', options: ['Option 7', 'Option 8', 'Option 9'], placeholder: 'Select an option'} as AppShellFilter
   ];

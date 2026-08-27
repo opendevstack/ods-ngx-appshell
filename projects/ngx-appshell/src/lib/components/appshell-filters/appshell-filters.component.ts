@@ -11,7 +11,7 @@ import { MatButtonModule } from '@angular/material/button';
 })
 export class AppShellFiltersComponent implements OnChanges {
   filters = input<AppShellFilter[]>();
-  
+
   activeFilters: Map<string, string[]> = new Map<string, string[]>();
   activeFiltersChange = output<Map<string, string[]>>();
 
@@ -33,7 +33,7 @@ export class AppShellFiltersComponent implements OnChanges {
     } else {
       this.activeFilters.set(label, values);
     }
-    
+
     this.activeFiltersChange.emit(this.activeFilters);
   }
 }
