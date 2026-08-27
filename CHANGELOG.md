@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog, and this project follows Semantic Versioning.
 
+## [Unreleased]
+- Added multiple selection support for the AppShellSelectComponent.
+- Added multiple selection support for the AppShellFiltersComponent.
+- Updated the AppShell example project to showcase the multiple selection of the select component.
+
 ## [19.0.15]
 
 Library version: `@opendevstack/ngx-appshell@19.0.15`
