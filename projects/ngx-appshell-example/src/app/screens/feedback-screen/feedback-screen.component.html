@@ -11,6 +11,17 @@
         <appshell-feedback [feedback]="shortSurvey" (submitted)="onSubmitted($event)" />
     </section>
 
+    <section>
+        <h2>Floating tab</h2>
+        <p>
+            The same questionnaire behind a tab on the edge of the screen, opened in a dialog.
+            Hidden here once it has been answered, which is the host's decision to make.
+        </p>
+        <appshell-feedback-launcher
+            [hidden]="alreadyAsked"
+            (submitted)="onLauncherSubmitted($event)" />
+    </section>
+
     @if (lastAnswers) {
         <section>
             <h2>Last emitted answers</h2>

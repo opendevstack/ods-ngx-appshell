@@ -1,10 +1,15 @@
 import { Component } from '@angular/core';
 import { JsonPipe } from '@angular/common';
-import { AppShellFeedbackComponent, AppShellFeedback, AppShellFeedbackAnswers } from 'ngx-appshell';
+import {
+    AppShellFeedbackComponent,
+    AppShellFeedbackLauncherComponent,
+    AppShellFeedback,
+    AppShellFeedbackAnswers
+} from 'ngx-appshell';
 
 @Component({
     selector: 'app-feedback-screen',
-    imports: [AppShellFeedbackComponent, JsonPipe],
+    imports: [AppShellFeedbackComponent, AppShellFeedbackLauncherComponent, JsonPipe],
     templateUrl: './feedback-screen.component.html',
     styleUrl: './feedback-screen.component.scss'
 })
@@ -41,5 +46,16 @@ export class FeedbackScreenComponent {
 
     onDismissed(): void {
         this.lastAnswers = undefined;
+    }
+
+    /**
+     * A real product would remember this per person and keep the tab hidden on
+     * later visits; the component leaves that decision to whoever embeds it.
+     */
+    alreadyAsked = false;
+
+    onLauncherSubmitted(answers: AppShellFeedbackAnswers): void {
+        this.lastAnswers = answers;
+        this.alreadyAsked = true;
     }
 }
