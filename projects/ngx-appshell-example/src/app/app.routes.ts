@@ -4,6 +4,7 @@ import { ProductViewScreenComponent } from './screens/product-view-screen/produc
 import { NotificationsScreenComponent } from './screens/notifications-screen/notifications-screen.component';
 import { PlatformShellComponent } from './screens/platform-shell/platform-shell.component';
 import { BasicShellComponent } from './screens/basic-shell/basic-shell.component';
+import { FeedbackScreenComponent } from './screens/feedback-screen/feedback-screen.component';
 
 export const routes: Routes = [
 	{
@@ -13,6 +14,7 @@ export const routes: Routes = [
 			{ path: '', component: ProductCatalogScreenComponent },
 			{ path: 'item/:id', component: ProductViewScreenComponent },
 			{ path: 'notifications', component: NotificationsScreenComponent },
+			{ path: 'feedback', component: FeedbackScreenComponent },
 		],
 	},
 	{

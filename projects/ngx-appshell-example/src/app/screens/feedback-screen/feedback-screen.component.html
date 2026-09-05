@@ -1,0 +1,20 @@
+<div class="feedback-screen">
+    <section>
+        <h2>Default questionnaire</h2>
+        <p>Rendered with no configuration at all.</p>
+        <appshell-feedback (submitted)="onSubmitted($event)" (dismissed)="onDismissed()" />
+    </section>
+
+    <section>
+        <h2>A questionnaire supplied by the host</h2>
+        <p>The same component with its own questions and wording.</p>
+        <appshell-feedback [feedback]="shortSurvey" (submitted)="onSubmitted($event)" />
+    </section>
+
+    @if (lastAnswers) {
+        <section>
+            <h2>Last emitted answers</h2>
+            <pre>{{ lastAnswers | json }}</pre>
+        </section>
+    }
+</div>
