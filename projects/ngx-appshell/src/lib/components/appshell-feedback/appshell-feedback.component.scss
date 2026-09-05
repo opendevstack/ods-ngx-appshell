@@ -117,6 +117,30 @@ appshell-feedback {
         flex-wrap: wrap;
         gap: 0.625rem;
         margin-top: 0.25rem;
+
+        // Material rounds the chip itself but leaves the cell and the button
+        // inside it square, and it is the button that takes the hover colour —
+        // so hovering drew a green rectangle inside a pill. Both have to be
+        // rounded, and in that order: `inherit` reads the parent, so the cell
+        // has to pick the radius up from the chip before the button can pick it
+        // up from the cell.
+        mat-chip-option .mdc-evolution-chip__cell,
+        mat-chip-option .mdc-evolution-chip__action {
+            border-radius: inherit;
+        }
+    }
+
+    // A scale is a line from one end to the other, so its points spread across
+    // the row: the first sits under "Very inefficient" and the last under
+    // "Very efficient", instead of huddling on the left while the labels part.
+    .feedback-options--scale {
+        flex-wrap: nowrap;
+        justify-content: space-between;
+        gap: 0.5rem;
+
+        mat-chip-option {
+            flex: 1;
+        }
     }
 
     // The ends of a scale, sitting under its first and last option.

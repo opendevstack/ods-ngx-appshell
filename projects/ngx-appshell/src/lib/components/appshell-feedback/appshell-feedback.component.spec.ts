@@ -139,6 +139,28 @@ describe('AppShellFeedbackComponent', () => {
         expect(component.currentUnanswered()).toBeTrue();
     });
 
+    // The chip listbox matches its value against the option strings it rendered.
+    // Holding a scale answer as a number made that match fail, so the chip the
+    // person had just pressed went straight back to unselected.
+    it('should hold a scale answer as text so the chosen option stays chosen', () => {
+        component.next();
+        component.answer(component.current(), 4);
+
+        expect(component.currentAnswer()).toBe('4');
+        expect(component.currentOptions()).toContain('4');
+    });
+
+    it('should mark the chosen point of a scale in the rendered listbox', () => {
+        component.next();
+        fixture.detectChanges();
+        component.onSelectionChange(component.current(), ['4']);
+        fixture.detectChanges();
+
+        const listbox: HTMLElement = fixture.nativeElement.querySelector('mat-chip-listbox');
+        expect(listbox).toBeTruthy();
+        expect(component.currentAnswer()).toBe('4');
+    });
+
     // --- emitting ---
 
     it('should emit every answer under its question id, and send nothing itself', () => {

@@ -172,13 +172,21 @@ export class AppShellFeedbackComponent {
             });
     });
 
-    /** Records an answer without moving: navigating back must find it again. */
+    /**
+     * Records an answer without moving: navigating back must find it again.
+     *
+     * Answers are held as text, including the numbers on a scale. The chip
+     * listbox compares its value against the option strings it rendered, so
+     * storing a scale answer as a number made the selection fail to match and
+     * the chip the person had just pressed went straight back to unselected.
+     * Scales become numbers on the way out, in `submit`.
+     */
     answer(question: AppShellFeedbackQuestion, value: string | number | undefined): void {
         const next = { ...this._answers() };
         if (value === undefined || String(value).trim() === '') {
             delete next[question.id];
         } else {
-            next[question.id] = question.type === 'scale' ? Number(value) : value;
+            next[question.id] = String(value);
         }
         this._answers.set(next);
     }
@@ -219,8 +227,18 @@ export class AppShellFeedbackComponent {
         if (!this.canSubmit()) {
             return;
         }
-        this.submitted.emit({ ...this._answers() });
+        this.submitted.emit(this.answersForEmission());
         this._done.set(true);
+    }
+
+    /** Scale answers leave as numbers; everything else as the text it is. */
+    private answersForEmission(): AppShellFeedbackAnswers {
+        const byId = new Map(this.questions().map(q => [q.id, q]));
+        const out: AppShellFeedbackAnswers = {};
+        for (const [id, value] of Object.entries(this._answers())) {
+            out[id] = byId.get(id)?.type === 'scale' ? Number(value) : value;
+        }
+        return out;
     }
 
     dismiss(): void {

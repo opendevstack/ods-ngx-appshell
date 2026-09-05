@@ -45,6 +45,7 @@
             } @else {
                 <mat-chip-listbox
                     class="feedback-options"
+                    [class.feedback-options--scale]="current().type === 'scale'"
                     [attr.aria-labelledby]="'appshell-feedback-' + current().id"
                     [value]="currentAnswer() !== undefined ? [currentAnswer()] : []"
                     (change)="onSelectionChange(current(), $event.value)">
