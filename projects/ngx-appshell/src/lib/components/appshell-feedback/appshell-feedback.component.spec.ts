@@ -93,6 +93,26 @@ describe('AppShellFeedbackComponent', () => {
         expect(component.progress()).toBe('Question 2 of 5');
     });
 
+    it('should move focus to the question that just appeared', async () => {
+        component.next();
+        fixture.detectChanges();
+        await fixture.whenStable();
+
+        const heading: HTMLElement = fixture.nativeElement.querySelector('.feedback-question');
+        expect(document.activeElement).toBe(heading);
+    });
+
+    it('should keep the question heading out of the tab order', () => {
+        const heading: HTMLElement = fixture.nativeElement.querySelector('.feedback-question');
+        expect(heading.getAttribute('tabindex')).toBe('-1');
+    });
+
+    it('should label the answers with the question they belong to', () => {
+        const listbox: HTMLElement = fixture.nativeElement.querySelector('mat-chip-listbox');
+        const heading: HTMLElement = fixture.nativeElement.querySelector('.feedback-question');
+        expect(listbox.getAttribute('aria-labelledby')).toBe(heading.id);
+    });
+
     // --- validation ---
 
     it('should hold the step back until a mandatory question is answered', () => {

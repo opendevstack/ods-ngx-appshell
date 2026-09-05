@@ -16,7 +16,8 @@
              screen reader announces the new question rather than staying silent. -->
         <section class="feedback-step" role="group" [attr.aria-label]="current().label">
             <p class="feedback-progress" aria-live="polite">{{ progress() }}</p>
-            <h3 class="feedback-question" [id]="'appshell-feedback-' + current().id">{{ current().label }}</h3>
+            <h3 class="feedback-question" tabindex="-1" #questionHeading
+                [id]="'appshell-feedback-' + current().id">{{ current().label }}</h3>
 
             @if (current().type === 'text') {
                 <mat-form-field class="feedback-text">

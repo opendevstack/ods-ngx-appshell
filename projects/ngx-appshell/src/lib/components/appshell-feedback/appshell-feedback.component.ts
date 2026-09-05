@@ -1,4 +1,4 @@
-import { Component, computed, input, output, signal, ViewEncapsulation } from '@angular/core';
+import { Component, computed, ElementRef, input, output, signal, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -99,6 +99,8 @@ export class AppShellFeedbackComponent {
     /** The person dismissed the questionnaire instead of answering it. */
     dismissed = output<void>();
 
+    @ViewChild('questionHeading') questionHeadingEl?: ElementRef<HTMLElement>;
+
     private readonly _index = signal(0);
     private readonly _answers = signal<AppShellFeedbackAnswers>({});
     private readonly _done = signal(false);
@@ -193,13 +195,27 @@ export class AppShellFeedbackComponent {
     next(): void {
         if (!this.isLast()) {
             this._index.set(this._index() + 1);
+            this.focusQuestion();
         }
     }
 
     back(): void {
         if (!this.isFirst()) {
             this._index.set(this._index() - 1);
+            this.focusQuestion();
         }
+    }
+
+    /**
+     * Move focus to the question that just appeared.
+     *
+     * Without this the keyboard stays on the button that was pressed, so someone
+     * tabbing through has to walk backwards to reach the answers, and a screen
+     * reader says nothing at all about the new question. The heading takes focus
+     * only programmatically, so it never joins the tab order itself.
+     */
+    private focusQuestion(): void {
+        queueMicrotask(() => this.questionHeadingEl?.nativeElement.focus());
     }
 
     submit(): void {

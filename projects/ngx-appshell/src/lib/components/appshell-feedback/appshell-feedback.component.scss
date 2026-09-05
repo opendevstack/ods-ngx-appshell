@@ -62,6 +62,9 @@
 
     .feedback-question {
         margin: 0;
+        // Focused programmatically on every step so the change is announced;
+        // it is not a tab stop, so it needs no ring of its own.
+        outline: none;
         font-family: "AppShellHeadingFont";
         font-size: 1rem;
         line-height: 1.5rem;
