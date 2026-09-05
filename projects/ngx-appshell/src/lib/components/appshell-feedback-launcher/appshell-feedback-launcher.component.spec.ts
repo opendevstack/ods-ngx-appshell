@@ -27,20 +27,31 @@ describe('AppShellFeedbackLauncherComponent', () => {
 
     // --- the tab ---
 
-    it('should show a tab labelled Feedback by default', () => {
-        const tab: HTMLElement = fixture.nativeElement.querySelector('.appshell-feedback-launcher');
-        expect(tab).toBeTruthy();
-        expect(tab.textContent?.trim()).toContain('Feedback');
+    it('should show a round action button by default, named for assistive technology', () => {
+        const trigger: HTMLElement = fixture.nativeElement.querySelector('.appshell-feedback-launcher');
+        expect(trigger).toBeTruthy();
+        // The round shape carries no visible text, so the name lives in the label.
+        expect(trigger.classList).not.toContain('appshell-feedback-launcher--tab');
+        expect(trigger.getAttribute('aria-label')).toBe('Feedback');
     });
 
-    it('should take its label and side from the host', () => {
+    it('should spell the label out when it takes the side-strip shape', () => {
+        fixture.componentRef.setInput('shape', 'tab');
         fixture.componentRef.setInput('label', 'Tell us');
+        fixture.detectChanges();
+
+        const trigger: HTMLElement = fixture.nativeElement.querySelector('.appshell-feedback-launcher');
+        expect(trigger.classList).toContain('appshell-feedback-launcher--tab');
+        expect(trigger.textContent).toContain('Tell us');
+        expect(trigger.getAttribute('aria-label')).toBe('Tell us');
+    });
+
+    it('should take its side from the host', () => {
         fixture.componentRef.setInput('side', 'left');
         fixture.detectChanges();
 
-        const tab: HTMLElement = fixture.nativeElement.querySelector('.appshell-feedback-launcher');
-        expect(tab.textContent?.trim()).toContain('Tell us');
-        expect(tab.classList).toContain('appshell-feedback-launcher--left');
+        const trigger: HTMLElement = fixture.nativeElement.querySelector('.appshell-feedback-launcher');
+        expect(trigger.classList).toContain('appshell-feedback-launcher--left');
     });
 
     it('should hide the tab when the host says this person was already asked', () => {

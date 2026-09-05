@@ -12,12 +12,19 @@
     </section>
 
     <section>
-        <h2>Floating tab</h2>
+        <h2>Floating trigger</h2>
         <p>
-            The same questionnaire behind a tab on the edge of the screen, opened in a dialog.
-            Hidden here once it has been answered, which is the host's decision to make.
+            The same questionnaire behind a trigger, opened in a dialog. A round action button in
+            the corner by default, or a strip against the side. Hidden here once it has been
+            answered, which is the host's decision to make.
         </p>
         <appshell-feedback-launcher
+            [hidden]="alreadyAsked"
+            (submitted)="onLauncherSubmitted($event)" />
+        <appshell-feedback-launcher
+            shape="tab"
+            side="left"
+            label="Tell us"
             [hidden]="alreadyAsked"
             (submitted)="onLauncherSubmitted($event)" />
     </section>

@@ -1,65 +1,102 @@
-// A vertical tab against the edge of the viewport. Every colour comes from the
-// palette in ../../styles/palette.css: no literal belongs in a shared component.
+// The trigger comes in two shapes. Every colour resolves from the palette in
+// ../../styles/palette.css: no literal belongs in a shared component.
 //
-// Deliberately not a mat-button: that carries `position: relative`, which loaded
-// after this file and quietly won, leaving the tab sitting in the page flow
-// instead of pinned to the edge. A plain button styled here has nothing to fight.
+// Deliberately not a mat-button: that carries `position: relative` from a
+// stylesheet loaded after this one, which quietly won and left the trigger
+// sitting in the page flow instead of pinned to the viewport.
 .appshell-feedback-launcher {
     position: fixed;
-    top: 50%;
-    right: 0;
-    transform: translateY(-50%) translateX(0);
-    transform-origin: center right;
     z-index: 100;
-
     display: flex;
-    flex-direction: row;
     align-items: center;
-    gap: 0.5rem;
+    justify-content: center;
 
-    padding: 0.75rem 0.5rem;
-    border: 1px solid var(--appshell-color-grey-warm);
-    border-right: none;
-    border-radius: 0.5rem 0 0 0.5rem;
-
-    background-color: var(--appshell-color-primary-main);
-    color: var(--appshell-color-primary-contrast);
+    border: none;
+    cursor: pointer;
+    background-color: var(--appshell-color-accent-green-main);
+    color: var(--appshell-color-secondary-main);
     font-family: "AppShellTextFont";
     font-size: 0.875rem;
     font-weight: 600;
-    cursor: pointer;
 
-    // The label reads bottom-to-top so the tab stays narrow against the edge.
-    .launcher-label {
-        writing-mode: vertical-rl;
-        transform: rotate(180deg);
-        letter-spacing: 0.03em;
-    }
+    // Lifted off the page rather than outlined, so it reads as floating above
+    // the content instead of being part of it.
+    box-shadow: 0 0.25rem 1rem -0.25rem var(--appshell-color-secondary-medium);
+    transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 
     appshell-icon, mat-icon {
-        width: 1.125rem;
-        height: 1.125rem;
+        width: 1.5rem;
+        height: 1.5rem;
+        font-size: 1.5rem;
     }
 
     &:hover {
-        background-color: var(--appshell-color-primary-dark);
+        background-color: var(--appshell-color-accent-green-dark);
+        box-shadow: 0 0.5rem 1.25rem -0.25rem var(--appshell-color-secondary-medium);
+        transform: translateY(-1px);
+    }
+
+    &:active {
+        transform: translateY(0);
     }
 
     &:focus-visible {
         outline: 2px solid var(--appshell-color-blue-medium);
-        outline-offset: 2px;
+        outline-offset: 3px;
     }
 
+    // Default: a round action button in the bottom corner.
+    inset-block-end: 1.5rem;
+    inset-inline-end: 1.5rem;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+
     &--left {
-        right: auto;
-        left: 0;
-        border: 1px solid var(--appshell-color-grey-warm);
-        border-left: none;
-        border-radius: 0 0.5rem 0.5rem 0;
+        inset-inline-end: auto;
+        inset-inline-start: 1.5rem;
+    }
+
+    // A vertical strip against the side, centred on the viewport.
+    &--tab {
+        inset-block-end: auto;
+        top: 50%;
+        transform: translateY(-50%);
+        width: auto;
+        height: auto;
+        gap: 0.5rem;
+        padding: 0.875rem 0.5rem;
+        border-radius: 0.5rem 0 0 0.5rem;
+        inset-inline-end: 0;
+
+        // The label reads bottom-to-top so the strip stays narrow.
+        .launcher-label {
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            letter-spacing: 0.03em;
+        }
+
+        &:hover {
+            transform: translateY(-50%) translateX(-2px);
+        }
+
+        &:active {
+            transform: translateY(-50%);
+        }
+
+        &.appshell-feedback-launcher--left {
+            inset-inline-start: 0;
+            inset-inline-end: auto;
+            border-radius: 0 0.5rem 0.5rem 0;
+
+            &:hover {
+                transform: translateY(-50%) translateX(2px);
+            }
+        }
     }
 }
 
-// The dialog only frames the questionnaire, which brings its own card.
+// The dialog only frames the questionnaire, which brings its own surface.
 .appshell-feedback-dialog .mat-mdc-dialog-surface {
     padding: 0;
     background: transparent;

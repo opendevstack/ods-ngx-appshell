@@ -9,9 +9,10 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 - Added the AppShellFeedbackComponent, a questionnaire that asks one question at a time, ships a
   default five-question UX set, accepts a questionnaire of its own, and emits the answers instead
   of sending them. Showcased in the example application under `/feedback`.
-- Added the AppShellFeedbackLauncherComponent, an edge tab that opens that questionnaire in a
-  dialog, so a product gets the whole experience without rebuilding the trigger. Focus trapping,
-  Escape to close and focus restoration come from the Material dialog.
+- Added the AppShellFeedbackLauncherComponent, a floating trigger that opens that questionnaire
+  in a dialog, so a product gets the whole experience without rebuilding it. Round action button
+  in the corner by default, or a strip against the side. Focus trapping, Escape to close and
+  focus restoration come from the Material dialog.
 
 ## [19.0.15]
 

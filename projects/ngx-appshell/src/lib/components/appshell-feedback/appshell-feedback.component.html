@@ -16,6 +16,13 @@
              screen reader announces the new question rather than staying silent. -->
         <section class="feedback-step" role="group" [attr.aria-label]="current().label">
             <p class="feedback-progress" aria-live="polite">{{ progress() }}</p>
+            <!-- Where you are, at a glance. The text above says it for anyone
+                 who cannot see this, so the track itself is decoration. -->
+            <div class="feedback-track" aria-hidden="true">
+                @for (step of questions(); track step.id; let i = $index) {
+                    <span class="feedback-track-step" [class.is-reached]="i <= index()"></span>
+                }
+            </div>
             <h3 class="feedback-question" tabindex="-1" #questionHeading
                 [id]="'appshell-feedback-' + current().id">{{ current().label }}</h3>
 

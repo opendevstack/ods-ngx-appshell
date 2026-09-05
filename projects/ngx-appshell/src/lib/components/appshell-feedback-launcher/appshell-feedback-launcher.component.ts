@@ -1,5 +1,6 @@
 import { Component, TemplateRef, ViewChild, ViewEncapsulation, computed, inject, input, output, signal } from '@angular/core';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { AppShellFeedback, AppShellFeedbackAnswers } from '../../models/appshell-feedback';
 import { AppShellFeedbackComponent } from '../appshell-feedback/appshell-feedback.component';
 import { AppShellIconComponent } from '../appshell-icon/appshell-icon.component';
@@ -27,7 +28,7 @@ const NO_QUESTIONNAIRE: AppShellFeedback = { questions: [] };
  */
 @Component({
     selector: 'appshell-feedback-launcher',
-    imports: [MatDialogModule, AppShellFeedbackComponent, AppShellIconComponent],
+    imports: [MatDialogModule, MatTooltipModule, AppShellFeedbackComponent, AppShellIconComponent],
     templateUrl: './appshell-feedback-launcher.component.html',
     styleUrl: './appshell-feedback-launcher.component.scss',
     encapsulation: ViewEncapsulation.None
@@ -40,7 +41,13 @@ export class AppShellFeedbackLauncherComponent {
     label = input<string>('Feedback');
     /** Material symbol shown on the tab. */
     icon = input<string>('rate_review');
-    /** Which edge the tab sits against. */
+    /**
+     * How the trigger looks. `fab` is a round action button in the bottom
+     * corner, the shape people expect; `tab` is a vertical strip against the
+     * side, which is what the Onboarding Hub has used until now.
+     */
+    shape = input<'fab' | 'tab'>('fab');
+    /** Which side the trigger sits against. */
     side = input<'left' | 'right'>('right');
     /** Hide the tab entirely, e.g. once this person has already answered. */
     hidden = input<boolean>(false);
