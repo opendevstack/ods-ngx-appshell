@@ -6,14 +6,25 @@
 // loaded after this one, so the container stayed white however the palette was
 // set. A plain element has nothing to fight, and the theming actually holds.
 //
-// The chip selection and the primary button follow the Material theme rather
-// than these variables, exactly as the library's own components do. A product
-// retheming itself changes both — they are one design system, not two.
+// The chip selection and the primary button come from the Material theme, which
+// appshell.theme.scss builds out of these same variables — the accent ramp
+// (--appshell-color-accent-green-*) for both. So a product that sets the palette
+// gets the whole component, controls included, and nothing here has to reach
+// into Material's own tokens.
+// The host is a custom element, which is inline until told otherwise. Left that
+// way it collapses around its content: on a 390px screen the card came out 85px
+// wide, one word per line, with the options clipped.
+appshell-feedback {
+    display: block;
+}
+
 .appshell-feedback {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+    width: 100%;
     max-width: 32rem;
+    box-sizing: border-box;
     padding: 1.5rem;
     border: 1px solid var(--appshell-color-grey-warm);
     border-radius: 0.5rem;
