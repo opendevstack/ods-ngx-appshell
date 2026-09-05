@@ -61,11 +61,11 @@
             </button>
 
             @if (isLast()) {
-                <button mat-flat-button class="feedback-submit" (click)="submit()" [disabled]="!canSubmit()">
+                <button mat-flat-button color="accent" class="feedback-submit" (click)="submit()" [disabled]="!canSubmit()">
                     {{ text().submitLabel }}
                 </button>
             } @else {
-                <button mat-flat-button class="feedback-next" (click)="next()" [disabled]="currentUnanswered()">
+                <button mat-flat-button color="accent" class="feedback-next" (click)="next()" [disabled]="currentUnanswered()">
                     {{ text().nextLabel }}
                 </button>
             }
@@ -75,7 +75,7 @@
             <appshell-icon [icon]="'check_circle'" aria-hidden="true" />
             <h2 class="feedback-title">{{ text().successTitle }}</h2>
             <p class="feedback-subtitle">{{ text().successMessage }}</p>
-            <button mat-flat-button class="feedback-close" (click)="dismiss()">{{ text().closeLabel }}</button>
+            <button mat-flat-button color="accent" class="feedback-close" (click)="dismiss()">{{ text().closeLabel }}</button>
         </section>
     }
 </mat-card>
