@@ -44,6 +44,7 @@ The library provides the following components:
 
 ### UI Components
 - **appshell-chip** - Material chip component wrapper
+- **appshell-feedback** - UX questionnaire asked one question at a time, emitting the answers
 - **appshell-icon** - Icon display component
 - **appshell-filters** - Filtering UI component
 - **appshell-select** - Enhanced select dropdown
