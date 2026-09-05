@@ -1,0 +1,81 @@
+<mat-card class="appshell-feedback">
+    @if (!done()) {
+        <div class="feedback-header">
+            <div>
+                <h2 class="feedback-title">{{ text().title }}</h2>
+                @if (isFirst() && text().subtitle) {
+                    <p class="feedback-subtitle">{{ text().subtitle }}</p>
+                }
+            </div>
+            <button class="feedback-dismiss" mat-button (click)="dismiss()" [attr.aria-label]="text().closeLabel">
+                <appshell-icon [icon]="'close'" aria-hidden="true" />
+            </button>
+        </div>
+
+        <!-- One question at a time. The region is re-labelled on every step so a
+             screen reader announces the new question rather than staying silent. -->
+        <section class="feedback-step" role="group" [attr.aria-label]="current().label">
+            <p class="feedback-progress" aria-live="polite">{{ progress() }}</p>
+            <h3 class="feedback-question" [id]="'appshell-feedback-' + current().id">{{ current().label }}</h3>
+
+            @if (current().type === 'text') {
+                <mat-form-field class="feedback-text">
+                    <textarea
+                        matInput
+                        rows="4"
+                        [attr.maxlength]="current().maxLength ?? null"
+                        [placeholder]="current().placeholder ?? ''"
+                        [attr.aria-labelledby]="'appshell-feedback-' + current().id"
+                        [ngModel]="currentAnswer() ?? ''"
+                        (ngModelChange)="answer(current(), $event)"></textarea>
+                </mat-form-field>
+                @if (current().maxLength) {
+                    <p class="feedback-counter" aria-live="polite">
+                        {{ commentLength() }} / {{ current().maxLength }}
+                    </p>
+                }
+            } @else {
+                <mat-chip-listbox
+                    class="feedback-options"
+                    [attr.aria-labelledby]="'appshell-feedback-' + current().id"
+                    [value]="currentAnswer() !== undefined ? [currentAnswer()] : []"
+                    (change)="onSelectionChange(current(), $event.value)">
+                    @for (option of currentOptions(); track option) {
+                        <mat-chip-option [value]="option">{{ option }}</mat-chip-option>
+                    }
+                </mat-chip-listbox>
+
+                <!-- A scale means nothing without its ends spelled out. -->
+                @if (current().type === 'scale' && (current().minLabel || current().maxLabel)) {
+                    <div class="feedback-scale-ends">
+                        <span>{{ current().minLabel }}</span>
+                        <span>{{ current().maxLabel }}</span>
+                    </div>
+                }
+            }
+        </section>
+
+        <div class="feedback-actions">
+            <button mat-button class="feedback-back" (click)="back()" [disabled]="isFirst()">
+                {{ text().backLabel }}
+            </button>
+
+            @if (isLast()) {
+                <button mat-flat-button class="feedback-submit" (click)="submit()" [disabled]="!canSubmit()">
+                    {{ text().submitLabel }}
+                </button>
+            } @else {
+                <button mat-flat-button class="feedback-next" (click)="next()" [disabled]="currentUnanswered()">
+                    {{ text().nextLabel }}
+                </button>
+            }
+        </div>
+    } @else {
+        <section class="feedback-success" role="status">
+            <appshell-icon [icon]="'check_circle'" aria-hidden="true" />
+            <h2 class="feedback-title">{{ text().successTitle }}</h2>
+            <p class="feedback-subtitle">{{ text().successMessage }}</p>
+            <button mat-flat-button class="feedback-close" (click)="dismiss()">{{ text().closeLabel }}</button>
+        </section>
+    }
+</mat-card>

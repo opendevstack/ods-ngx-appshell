@@ -1,0 +1,127 @@
+// Every colour here resolves from the palette in ../../styles/palette.css, so a
+// product with its own theme gets this component in its own colours for free.
+// Nothing in this file is a literal.
+.appshell-feedback {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 32rem;
+    padding: 1.5rem;
+    border: 1px solid var(--appshell-color-grey-warm);
+    border-radius: 0.5rem;
+    background-color: var(--appshell-color-white-main);
+    color: var(--appshell-color-secondary-main);
+    font-family: "AppShellTextFont";
+
+    .feedback-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 1rem;
+    }
+
+    .feedback-title {
+        margin: 0;
+        font-family: "AppShellHeadingFont";
+        font-size: 1.25rem;
+        line-height: 1.75rem;
+        color: var(--appshell-color-secondary-main);
+    }
+
+    .feedback-subtitle {
+        margin: 0.25rem 0 0;
+        font-size: 0.875rem;
+        line-height: 1.25rem;
+        color: var(--appshell-color-grey-strong);
+    }
+
+    .feedback-dismiss {
+        min-width: auto;
+        padding: 0.25rem;
+        color: var(--appshell-color-grey-strong);
+
+        &:hover {
+            color: var(--appshell-color-secondary-main);
+        }
+    }
+
+    .feedback-step {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .feedback-progress {
+        margin: 0;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+        color: var(--appshell-color-grey-strong);
+    }
+
+    .feedback-question {
+        margin: 0;
+        font-family: "AppShellHeadingFont";
+        font-size: 1rem;
+        line-height: 1.5rem;
+        font-weight: 400;
+    }
+
+    .feedback-options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    // The ends of a scale, sitting under its first and last option.
+    .feedback-scale-ends {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.75rem;
+        color: var(--appshell-color-grey-strong);
+    }
+
+    .feedback-text {
+        width: 100%;
+    }
+
+    .feedback-counter {
+        margin: 0;
+        text-align: end;
+        font-size: 0.75rem;
+        color: var(--appshell-color-grey-strong);
+    }
+
+    .feedback-actions {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+    }
+
+    .feedback-success {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+        text-align: center;
+        padding: 1rem 0;
+
+        appshell-icon, mat-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            font-size: 2.5rem;
+            color: var(--appshell-color-success-dark);
+        }
+    }
+
+    // Keep the focus ring visible against the card: keyboard is the only way
+    // through this questionnaire for some of the people answering it.
+    button:focus-visible,
+    mat-chip-option:focus-visible,
+    textarea:focus-visible {
+        outline: 2px solid var(--appshell-color-blue-medium);
+        outline-offset: 2px;
+    }
+}
