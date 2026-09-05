@@ -6,6 +6,9 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ## [Unreleased]
 - Added multiple selection support for the AppShellSelectComponent and AppShellFiltersComponent.
+- Added the AppShellFeedbackComponent, a questionnaire that asks one question at a time, ships a
+  default five-question UX set, accepts a questionnaire of its own, and emits the answers instead
+  of sending them. Showcased in the example application under `/feedback`.
 
 ## [19.0.15]
 
