@@ -114,6 +114,25 @@ describe('AppShellFeedbackLauncherComponent', () => {
         expect(component.isOpen()).toBeTrue();
     });
 
+    it('should build a fresh questionnaire every time it is reopened', fakeAsync(() => {
+        const question = () => document.querySelector('.feedback-question')?.textContent?.trim();
+
+        component.open();
+        fixture.detectChanges();
+        expect(question()).toBe('Did you achieve what you came for today?');
+
+        component.close();
+        flush();
+        fixture.detectChanges();
+        // Closing takes the questionnaire with it, so nothing survives to be
+        // shown again - no half-answered form, no lingering success state.
+        expect(document.querySelector('appshell-feedback')).toBeNull();
+
+        component.open();
+        fixture.detectChanges();
+        expect(question()).toBe('Did you achieve what you came for today?');
+    }));
+
     it('should ask the default questions when the host supplies none', () => {
         expect(component.questionnaire().questions).toEqual([]);
 
