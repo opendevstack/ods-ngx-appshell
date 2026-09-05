@@ -49,7 +49,6 @@ export interface AppShellFeedback {
     backLabel?: string;
     nextLabel?: string;
     submitLabel?: string;
-    skipLabel?: string;
 
     /** Shown in place of the questions once the answers have been emitted. */
     successTitle?: string;

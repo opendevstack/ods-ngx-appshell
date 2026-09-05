@@ -1,6 +1,14 @@
 // Every colour here resolves from the palette in ../../styles/palette.css, so a
 // product with its own theme gets this component in its own colours for free.
 // Nothing in this file is a literal.
+//
+// Deliberately not a mat-card: that paints its own surface from a stylesheet
+// loaded after this one, so the container stayed white however the palette was
+// set. A plain element has nothing to fight, and the theming actually holds.
+//
+// The chip selection and the primary button follow the Material theme rather
+// than these variables, exactly as the library's own components do. A product
+// retheming itself changes both — they are one design system, not two.
 .appshell-feedback {
     display: flex;
     flex-direction: column;
