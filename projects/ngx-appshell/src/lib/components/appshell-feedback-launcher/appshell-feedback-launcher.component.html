@@ -1,0 +1,22 @@
+@if (!hidden()) {
+    <button
+        class="appshell-feedback-launcher"
+        [class.appshell-feedback-launcher--left]="side() === 'left'"
+        type="button"
+        (click)="open()"
+        [attr.aria-haspopup]="'dialog'"
+        [attr.aria-expanded]="isOpen()"
+        [attr.aria-label]="label()">
+        <appshell-icon [icon]="icon()" aria-hidden="true" />
+        <span class="launcher-label">{{ label() }}</span>
+    </button>
+}
+
+<!-- Rendered into the dialog, not here, so the questionnaire is only ever built
+     once the tab has actually been pressed. -->
+<ng-template #dialogContent>
+    <appshell-feedback
+        [feedback]="questionnaire()"
+        (submitted)="onSubmitted($event)"
+        (dismissed)="close()" />
+</ng-template>

@@ -1,0 +1,67 @@
+// A vertical tab against the edge of the viewport. Every colour comes from the
+// palette in ../../styles/palette.css: no literal belongs in a shared component.
+//
+// Deliberately not a mat-button: that carries `position: relative`, which loaded
+// after this file and quietly won, leaving the tab sitting in the page flow
+// instead of pinned to the edge. A plain button styled here has nothing to fight.
+.appshell-feedback-launcher {
+    position: fixed;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%) translateX(0);
+    transform-origin: center right;
+    z-index: 100;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+
+    padding: 0.75rem 0.5rem;
+    border: 1px solid var(--appshell-color-grey-warm);
+    border-right: none;
+    border-radius: 0.5rem 0 0 0.5rem;
+
+    background-color: var(--appshell-color-primary-main);
+    color: var(--appshell-color-primary-contrast);
+    font-family: "AppShellTextFont";
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+
+    // The label reads bottom-to-top so the tab stays narrow against the edge.
+    .launcher-label {
+        writing-mode: vertical-rl;
+        transform: rotate(180deg);
+        letter-spacing: 0.03em;
+    }
+
+    appshell-icon, mat-icon {
+        width: 1.125rem;
+        height: 1.125rem;
+    }
+
+    &:hover {
+        background-color: var(--appshell-color-primary-dark);
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--appshell-color-blue-medium);
+        outline-offset: 2px;
+    }
+
+    &--left {
+        right: auto;
+        left: 0;
+        border: 1px solid var(--appshell-color-grey-warm);
+        border-left: none;
+        border-radius: 0 0.5rem 0.5rem 0;
+    }
+}
+
+// The dialog only frames the questionnaire, which brings its own card.
+.appshell-feedback-dialog .mat-mdc-dialog-surface {
+    padding: 0;
+    background: transparent;
+    box-shadow: none;
+}
