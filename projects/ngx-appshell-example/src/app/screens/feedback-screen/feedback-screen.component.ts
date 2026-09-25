@@ -15,10 +15,28 @@ import {
 })
 export class FeedbackScreenComponent {
 
-    /** Left as the default questionnaire: no configuration, five questions. */
     lastAnswers?: AppShellFeedbackAnswers;
 
-    /** The same component asked to carry a different questionnaire. */
+    /**
+     * The widget as designed: the four standard steps plus the optional,
+     * product-specific fifth one. An empty question list means "the standard
+     * questions"; `{product}` in their wording becomes the product name.
+     */
+    standard: AppShellFeedback = {
+        questions: [],
+        productName: 'Onboarding Hub',
+        productQuestion: {
+            id: 'productQuestion',
+            type: 'choice',
+            label: 'Which data product were you looking for?',
+            options: ['Customer 360', 'Clinical trials', 'Supply chain', 'Not listed']
+        }
+    };
+
+    /** Without the product-specific step: four steps, and the fourth one submits. */
+    fourSteps: AppShellFeedback = { questions: [], productName: 'Onboarding Hub' };
+
+    /** The same component asked to carry a different questionnaire and wording. */
     shortSurvey: AppShellFeedback = {
         title: 'One question',
         subtitle: 'A shorter questionnaire, supplied by the host.',

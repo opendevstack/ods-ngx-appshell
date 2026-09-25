@@ -1,8 +1,14 @@
 <div class="feedback-screen">
     <section>
-        <h2>Default questionnaire</h2>
-        <p>Rendered with no configuration at all.</p>
-        <appshell-feedback (submitted)="onSubmitted($event)" (dismissed)="onDismissed()" />
+        <h2>Standard questionnaire</h2>
+        <p>The four standard steps and an optional, product-specific fifth one, which submits.</p>
+        <appshell-feedback [feedback]="standard" (submitted)="onSubmitted($event)" (dismissed)="onDismissed()" />
+    </section>
+
+    <section>
+        <h2>Four steps</h2>
+        <p>Without the product-specific step, the fourth step says "Submit" instead of "Next".</p>
+        <appshell-feedback [feedback]="fourSteps" (submitted)="onSubmitted($event)" (dismissed)="onDismissed()" />
     </section>
 
     <section>
@@ -14,17 +20,19 @@
     <section>
         <h2>Floating trigger</h2>
         <p>
-            The same questionnaire behind a trigger, opened in a dialog. A round action button in
-            the corner by default, or a strip against the side. Hidden here once it has been
-            answered, which is the host's decision to make.
+            The same questionnaire behind a trigger, opened in a dialog: the round action button in
+            the bottom corner (the default) or the tab against the right edge (<code>shape="tab"</code>,
+            <code>side="left"</code> for the other edge). Both float above the page and its side menu.
+            Hidden here once it has been answered, which is the host's decision to make.
         </p>
         <appshell-feedback-launcher
+            [feedback]="standard"
             [hidden]="alreadyAsked"
             (submitted)="onLauncherSubmitted($event)" />
         <appshell-feedback-launcher
             shape="tab"
-            side="left"
-            label="Tell us"
+            label="Feedback"
+            [feedback]="standard"
             [hidden]="alreadyAsked"
             (submitted)="onLauncherSubmitted($event)" />
     </section>
