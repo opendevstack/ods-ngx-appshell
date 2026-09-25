@@ -1,3 +1,6 @@
+<!-- Rendered into the overlay container, above the page's own chrome: see the
+     constructor. -->
+<ng-template #trigger>
 @if (!hidden()) {
     <button
         class="appshell-feedback-launcher"
@@ -6,7 +9,7 @@
         type="button"
         (click)="open()"
         [matTooltip]="shape() === 'fab' ? label() : ''"
-        matTooltipPosition="left"
+        [matTooltipPosition]="side() === 'left' ? 'right' : 'left'"
         [attr.aria-haspopup]="'dialog'"
         [attr.aria-expanded]="isOpen()"
         [attr.aria-label]="label()">
@@ -16,6 +19,7 @@
         }
     </button>
 }
+</ng-template>
 
 <!-- Rendered into the dialog, not here, so the questionnaire is only ever built
      once the trigger has actually been pressed. -->

@@ -1,6 +1,10 @@
 import { ComponentFixture, TestBed, fakeAsync, flush } from '@angular/core/testing';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { AppShellFeedbackLauncherComponent } from './appshell-feedback-launcher.component';
+import { AppShellFeedbackAnswers } from '../../models/appshell-feedback';
+
+/** The first standard step, as its heading reads (a required question also carries an asterisk). */
+const FIRST_QUESTION = 'What did you come here to do today?';
 
 describe('AppShellFeedbackLauncherComponent', () => {
     let component: AppShellFeedbackLauncherComponent;
@@ -25,10 +29,25 @@ describe('AppShellFeedbackLauncherComponent', () => {
         expect(component).toBeTruthy();
     });
 
+    // --- where the trigger lives ---
+
+    it('should draw the trigger in the overlay container, outside the page layout', () => {
+        const trigger = document.querySelector<HTMLElement>('.appshell-feedback-launcher')!;
+        // Not inside its own element, which in the AppShell layout sits under the
+        // side menu's stacking context, but in the CDK overlay container on <body>.
+        expect(fixture.nativeElement.contains(trigger)).toBeFalse();
+        expect(trigger.closest('.cdk-overlay-container')).not.toBeNull();
+    });
+
+    it('should take the trigger away with the component', () => {
+        fixture.destroy();
+        expect(document.querySelector('.appshell-feedback-launcher')).toBeNull();
+    });
+
     // --- the tab ---
 
     it('should show a round action button by default, named for assistive technology', () => {
-        const trigger: HTMLElement = fixture.nativeElement.querySelector('.appshell-feedback-launcher');
+        const trigger = document.querySelector<HTMLElement>('.appshell-feedback-launcher')!;
         expect(trigger).toBeTruthy();
         // The round shape carries no visible text, so the name lives in the label.
         expect(trigger.classList).not.toContain('appshell-feedback-launcher--tab');
@@ -40,7 +59,7 @@ describe('AppShellFeedbackLauncherComponent', () => {
         fixture.componentRef.setInput('label', 'Tell us');
         fixture.detectChanges();
 
-        const trigger: HTMLElement = fixture.nativeElement.querySelector('.appshell-feedback-launcher');
+        const trigger = document.querySelector<HTMLElement>('.appshell-feedback-launcher')!;
         expect(trigger.classList).toContain('appshell-feedback-launcher--tab');
         expect(trigger.textContent).toContain('Tell us');
         expect(trigger.getAttribute('aria-label')).toBe('Tell us');
@@ -50,18 +69,18 @@ describe('AppShellFeedbackLauncherComponent', () => {
         fixture.componentRef.setInput('side', 'left');
         fixture.detectChanges();
 
-        const trigger: HTMLElement = fixture.nativeElement.querySelector('.appshell-feedback-launcher');
+        const trigger = document.querySelector<HTMLElement>('.appshell-feedback-launcher')!;
         expect(trigger.classList).toContain('appshell-feedback-launcher--left');
     });
 
     it('should hide the tab when the host says this person was already asked', () => {
         fixture.componentRef.setInput('hidden', true);
         fixture.detectChanges();
-        expect(fixture.nativeElement.querySelector('.appshell-feedback-launcher')).toBeNull();
+        expect(document.querySelector('.appshell-feedback-launcher')).toBeNull();
     });
 
     it('should tell assistive technology the tab opens a dialog', () => {
-        const tab: HTMLElement = fixture.nativeElement.querySelector('.appshell-feedback-launcher');
+        const tab = document.querySelector<HTMLElement>('.appshell-feedback-launcher')!;
         expect(tab.getAttribute('aria-haspopup')).toBe('dialog');
         expect(tab.getAttribute('aria-expanded')).toBe('false');
     });
@@ -81,7 +100,7 @@ describe('AppShellFeedbackLauncherComponent', () => {
         component.open();
         fixture.detectChanges();
 
-        const tab: HTMLElement = fixture.nativeElement.querySelector('.appshell-feedback-launcher');
+        const tab = document.querySelector<HTMLElement>('.appshell-feedback-launcher')!;
         expect(tab.getAttribute('aria-expanded')).toBe('true');
     });
 
@@ -113,14 +132,14 @@ describe('AppShellFeedbackLauncherComponent', () => {
     }));
 
     it('should pass the answers straight through without closing the dialog', () => {
-        let received: Record<string, string | number> | undefined;
+        let received: AppShellFeedbackAnswers | undefined;
         component.submitted.subscribe(a => received = a);
 
         component.open();
         fixture.detectChanges();
-        component.onSubmitted({ taskSuccess: 'Yes' });
+        component.onSubmitted({ goalAchieved: 'Yes', goal: ['Other'] });
 
-        expect(received).toEqual({ taskSuccess: 'Yes' });
+        expect(received).toEqual({ goalAchieved: 'Yes', goal: ['Other'] });
         // The questionnaire shows its own success state; closing here would take it away.
         expect(component.isOpen()).toBeTrue();
     });
@@ -130,7 +149,7 @@ describe('AppShellFeedbackLauncherComponent', () => {
 
         component.open();
         fixture.detectChanges();
-        expect(question()).toBe('Did you achieve what you came for today?');
+        expect(question()).toContain(FIRST_QUESTION);
 
         component.close();
         flush();
@@ -141,7 +160,7 @@ describe('AppShellFeedbackLauncherComponent', () => {
 
         component.open();
         fixture.detectChanges();
-        expect(question()).toBe('Did you achieve what you came for today?');
+        expect(question()).toContain(FIRST_QUESTION);
     }));
 
     it('should ask the default questions when the host supplies none', () => {
@@ -152,7 +171,7 @@ describe('AppShellFeedbackLauncherComponent', () => {
 
         const questions = document.querySelectorAll('.feedback-question');
         expect(questions.length).toBe(1);
-        expect(questions[0].textContent?.trim()).toBe('Did you achieve what you came for today?');
+        expect(questions[0].textContent).toContain(FIRST_QUESTION);
     });
 
     it('should ask a supplied questionnaire instead', () => {
@@ -164,6 +183,6 @@ describe('AppShellFeedbackLauncherComponent', () => {
         component.open();
         fixture.detectChanges();
 
-        expect(document.querySelector('.feedback-question')?.textContent?.trim()).toBe('Only one?');
+        expect(document.querySelector('.feedback-question')?.textContent).toContain('Only one?');
     });
 });

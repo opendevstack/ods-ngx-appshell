@@ -1,4 +1,9 @@
-import { Component, TemplateRef, ViewChild, ViewEncapsulation, computed, inject, input, output, signal } from '@angular/core';
+import { Overlay, OverlayRef } from '@angular/cdk/overlay';
+import { TemplatePortal } from '@angular/cdk/portal';
+import {
+    Component, OnDestroy, TemplateRef, ViewChild, ViewContainerRef, ViewEncapsulation,
+    afterNextRender, computed, inject, input, output, signal
+} from '@angular/core';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { AppShellFeedback, AppShellFeedbackAnswers } from '../../models/appshell-feedback';
@@ -33,7 +38,7 @@ const NO_QUESTIONNAIRE: AppShellFeedback = { questions: [] };
     styleUrl: './appshell-feedback-launcher.component.scss',
     encapsulation: ViewEncapsulation.None
 })
-export class AppShellFeedbackLauncherComponent {
+export class AppShellFeedbackLauncherComponent implements OnDestroy {
 
     /** Questionnaire to ask. Omit it for the five default questions. */
     feedback = input<AppShellFeedback>();
@@ -60,9 +65,32 @@ export class AppShellFeedbackLauncherComponent {
     opened = output<void>();
 
     @ViewChild('dialogContent') dialogContentTpl!: TemplateRef<unknown>;
+    @ViewChild('trigger') triggerTpl!: TemplateRef<unknown>;
 
     private readonly dialog = inject(MatDialog);
     private dialogRef?: MatDialogRef<unknown>;
+
+    private readonly overlay = inject(Overlay);
+    private readonly viewContainerRef = inject(ViewContainerRef);
+    private triggerRef?: OverlayRef;
+
+    constructor() {
+        // The trigger is drawn in the CDK overlay container, a child of <body>,
+        // not where this element sits. Inside the AppShell layout that is
+        // mat-sidenav-content, a stacking context at z-index 1 under the side
+        // menu at 2: whatever the trigger's own z-index, a tab on the left went
+        // under the menu and could be neither seen nor clicked. In the overlay
+        // container it floats above the page chrome in any host layout, and the
+        // dialog it opens, added to the same container later, still lands on top.
+        afterNextRender(() => {
+            this.triggerRef = this.overlay.create({ panelClass: 'appshell-feedback-launcher-pane' });
+            this.triggerRef.attach(new TemplatePortal(this.triggerTpl, this.viewContainerRef));
+        });
+    }
+
+    ngOnDestroy(): void {
+        this.triggerRef?.dispose();
+    }
 
     private readonly _open = signal(false);
     readonly isOpen = this._open.asReadonly();
@@ -79,8 +107,16 @@ export class AppShellFeedbackLauncherComponent {
             // Stated rather than assumed: the questionnaire is modal, and the
             // dialog did not carry aria-modal on its own.
             ariaModal: true,
-            autoFocus: 'first-tabbable',
-            restoreFocus: true
+            // The question, not the first tabbable element: that is the close
+            // cross, so the dialog opened on it and one Enter dismissed the
+            // questionnaire. The question heading takes focus programmatically
+            // only, and is what a screen reader should announce first.
+            autoFocus: '.feedback-question',
+            restoreFocus: true,
+            // The card's own width. Left to size itself, the dialog shrank to its
+            // content and the questionnaire came out narrower than designed.
+            width: '25rem',
+            maxWidth: 'calc(100vw - 2rem)'
         });
         // One exit for every way out — Escape, the backdrop, or the
         // questionnaire's own close button — so `dismissed` is reported once and
