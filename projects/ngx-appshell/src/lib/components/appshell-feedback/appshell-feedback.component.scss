@@ -1,16 +1,16 @@
-// Every colour here resolves from the palette in ../../styles/palette.css, so a
-// product with its own theme gets this component in its own colours for free.
-// Nothing in this file is a literal.
+// The feedback widget design, drawn with the AppShell's own template: the
+// floating-container look of appshell-toast (0.125rem corners, a grey-medium
+// hairline, the same soft shadow), the theme's 16px body and button type, and
+// colours only from ../../styles/palette.css.
+//
+// Measurements follow the design at 1:1 with that 16px body: a 25rem card with
+// 1.25rem padding, 28px option rows, small 13px checkboxes and radios, and
+// 104x48 buttons. The controls are native inputs styled here: Material's are
+// 18px boxes in a 40px halo, twice what the design draws.
 //
 // Deliberately not a mat-card: that paints its own surface from a stylesheet
 // loaded after this one, so the container stayed white however the palette was
 // set. A plain element has nothing to fight, and the theming actually holds.
-//
-// The chip selection and the primary button come from the Material theme, which
-// appshell.theme.scss builds out of these same variables — the accent ramp
-// (--appshell-color-accent-green-*) for both. So a product that sets the palette
-// gets the whole component, controls included, and nothing here has to reach
-// into Material's own tokens.
 
 // The host is a custom element, which is inline until told otherwise. Left that
 // way it collapses around its content: on a 390px screen the card came out 85px
@@ -22,88 +22,94 @@ appshell-feedback {
 .appshell-feedback {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
     width: 100%;
-    max-width: 32rem;
+    max-width: 25rem;
     box-sizing: border-box;
-    padding: 2rem;
-    border: 1px solid var(--appshell-color-grey-warm);
-    border-radius: 0.75rem;
+    padding: 1.25rem;
+    border: 1px solid var(--appshell-color-grey-medium);
+    border-radius: 0.125rem;
     background-color: var(--appshell-color-white-main);
-    color: var(--appshell-color-secondary-main);
+    // appshell-toast's elevation, so every floating AppShell surface lifts alike.
+    box-shadow: 0 2px 12px 0 rgb(0 0 0 / 5%);
+    color: var(--appshell-color-black-main);
     font-family: "AppShellTextFont";
+    font-size: 1rem;
+    line-height: 1.5rem;
+    letter-spacing: normal;
 
+    // "Step 1 of 5" on the left, the cross on the right, on one line.
     .feedback-header {
         display: flex;
-        align-items: flex-start;
+        align-items: center;
         justify-content: space-between;
         gap: 1rem;
+        min-height: 1.5rem;
     }
 
-    .feedback-title {
+    .feedback-progress {
         margin: 0;
-        font-family: "AppShellHeadingFont";
-        font-size: 1.375rem;
-        line-height: 1.875rem;
-        letter-spacing: -0.01em;
-        color: var(--appshell-color-secondary-main);
-    }
 
-    .feedback-subtitle {
-        margin: 0.375rem 0 0;
-        font-size: 0.9375rem;
-        line-height: 1.5rem;
-        color: var(--appshell-color-grey-strong);
+        strong {
+            font-weight: 700;
+        }
     }
 
     .feedback-dismiss {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
         flex-shrink: 0;
-        min-width: auto;
-        padding: 0.25rem;
-        color: var(--appshell-color-grey-strong);
+        margin-left: auto;
+        width: 1.5rem;
+        height: 1.5rem;
+        padding: 0;
+        border: 0;
+        border-radius: 0.125rem;
+        background: transparent;
+        color: var(--appshell-color-grey-dark);
+        cursor: pointer;
 
+        // The theme tints every button on hover; the cross stays a bare glyph.
         &:hover {
-            color: var(--appshell-color-secondary-main);
+            background-color: transparent;
+            color: var(--appshell-color-black-main);
         }
+
+        appshell-icon, mat-icon {
+            width: 1.25rem;
+            height: 1.25rem;
+            font-size: 1.25rem;
+            line-height: 1.25rem;
+        }
+    }
+
+    .feedback-title {
+        margin: 1rem 0 0;
+        font-family: "AppShellHeadingFont";
+        font-size: 1.25rem;
+        line-height: 1.75rem;
+    }
+
+    .feedback-subtitle {
+        margin: 0.25rem 0 0;
+        color: var(--appshell-color-grey-strong);
     }
 
     .feedback-step {
         display: flex;
         flex-direction: column;
-        gap: 1rem;
-    }
-
-    .feedback-progress {
+        min-width: 0;
         margin: 0;
-        font-size: 0.6875rem;
-        font-weight: 700;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        color: var(--appshell-color-grey-strong);
+        padding: 0;
+        border: 0;
     }
 
-    // One segment per question, filled up to where the person is standing.
-    .feedback-track {
-        display: flex;
-        gap: 0.25rem;
-        margin-top: -0.5rem;
-    }
-
-    .feedback-track-step {
-        flex: 1;
-        height: 0.1875rem;
-        border-radius: 0.125rem;
-        background-color: var(--appshell-color-grey-medium);
-        transition: background-color 0.25s ease;
-
-        &.is-reached {
-            background-color: var(--appshell-color-accent-green-main);
-        }
-    }
-
+    // Padding, not margin: browsers lay a fieldset's legend out apart from the
+    // other children and drop its top margin.
     .feedback-question {
-        margin: 0.25rem 0 0;
-        font-family: "AppShellHeadingFont";
+        width: 100%;
+        margin: 0;
+        padding: 0.5625rem 0 0;
         font-size: 1.125rem;
         line-height: 1.625rem;
         font-weight: 400;
@@ -112,101 +118,224 @@ appshell-feedback {
         outline: none;
     }
 
+    .feedback-required {
+        color: var(--appshell-color-error-medium);
+    }
+
+    .feedback-sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+    }
+
+    // One answer per 28px row, a clear gap under the question.
     .feedback-options {
         display: flex;
-        flex-wrap: wrap;
-        gap: 0.625rem;
-        margin-top: 0.25rem;
-
-        // Material rounds the chip itself but leaves the cell and the button
-        // inside it square, and it is the button that takes the hover colour —
-        // so hovering drew a green rectangle inside a pill. Both have to be
-        // rounded, and in that order: `inherit` reads the parent, so the cell
-        // has to pick the radius up from the chip before the button can pick it
-        // up from the cell.
-        mat-chip-option .mdc-evolution-chip__cell,
-        mat-chip-option .mdc-evolution-chip__action {
-            border-radius: inherit;
-        }
+        flex-direction: column;
+        margin-top: 1.6875rem;
     }
 
-    // A scale is a line from one end to the other, so its points spread across
-    // the row: the first sits under "Very inefficient" and the last under
-    // "Very efficient", instead of huddling on the left while the labels part.
-    .feedback-options--scale {
-        flex-wrap: nowrap;
-        justify-content: space-between;
-        gap: 0.5rem;
-
-        mat-chip-option {
-            flex: 1;
-        }
-    }
-
-    // The ends of a scale, sitting under its first and last option.
-    .feedback-scale-ends {
+    .feedback-option {
         display: flex;
-        justify-content: space-between;
-        gap: 1rem;
-        margin-top: -0.25rem;
-        font-size: 0.75rem;
-        line-height: 1rem;
-        color: var(--appshell-color-grey-strong);
+        align-items: center;
+        gap: 0.6875rem;
+        min-height: 1.75rem;
+        cursor: pointer;
     }
 
-    .feedback-text {
+    // Small native controls, as drawn: a 13px box or circle with a thin grey rim.
+    .feedback-checkbox,
+    .feedback-radio {
+        appearance: none;
+        display: inline-grid;
+        place-content: center;
+        flex-shrink: 0;
+        width: 0.8125rem;
+        height: 0.8125rem;
+        margin: 0;
+        border: 1.5px solid var(--appshell-color-grey-strong);
+        background-color: var(--appshell-color-white-main);
+        cursor: pointer;
+    }
+
+    .feedback-checkbox {
+        border-radius: 0.125rem;
+
+        // Ticked: the accent fill with the dark check the theme puts on green.
+        &:checked {
+            border-color: var(--appshell-color-accent-green-main);
+            background-color: var(--appshell-color-accent-green-main);
+
+            &::after {
+                content: "";
+                width: 0.1875rem;
+                height: 0.4375rem;
+                margin-top: -0.125rem;
+                border: solid var(--appshell-color-accent-green-contrast);
+                border-width: 0 2px 2px 0;
+                transform: rotate(45deg);
+            }
+        }
+    }
+
+    .feedback-radio {
+        border-radius: 50%;
+
+        &:checked {
+            border-color: var(--appshell-color-black-main);
+
+            &::after {
+                content: "";
+                width: 0.4375rem;
+                height: 0.4375rem;
+                border-radius: 50%;
+                background-color: var(--appshell-color-black-main);
+            }
+        }
+    }
+
+    // The satisfaction scale: "3  Neutral", the meaning small and grey.
+    .feedback-options--scale {
+        .feedback-scale-point {
+            min-width: 0.625rem;
+        }
+
+        .feedback-scale-label {
+            margin-left: 0.25rem;
+            font-size: 0.75rem;
+            color: var(--appshell-color-grey-strong);
+        }
+    }
+
+    .feedback-field {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+
+    // The standalone text step keeps the same gap under the question as the lists.
+    .feedback-step > .feedback-field:not(.feedback-followup) {
+        margin-top: 1.6875rem;
+    }
+
+    .feedback-field-label {
+        color: var(--appshell-color-black-main);
+    }
+
+    .feedback-textarea {
+        box-sizing: border-box;
         width: 100%;
-        margin-top: 0.25rem;
+        min-height: 6.25rem;
+        padding: 0.5rem 0.75rem;
+        border: 1px solid var(--appshell-color-grey-main);
+        border-radius: 0.125rem;
+        background-color: var(--appshell-color-white-main);
+        color: var(--appshell-color-black-main);
+        font: inherit;
+        resize: vertical;
+
+        &::placeholder {
+            color: var(--appshell-color-grey-main);
+        }
+
+        &:focus {
+            border-color: var(--appshell-color-black-main);
+        }
     }
 
     .feedback-counter {
-        margin: -0.5rem 0 0;
+        margin: -0.25rem 0 0;
         text-align: end;
         font-size: 0.75rem;
         color: var(--appshell-color-grey-strong);
     }
 
-    // Set apart from the questions, so the way forward is never mistaken for one
-    // of the answers.
+    // Back and Next together at the bottom right; alone on the first step.
     .feedback-actions {
         display: flex;
-        align-items: center;
-        justify-content: space-between;
+        justify-content: flex-end;
         gap: 0.75rem;
-        padding-top: 1.25rem;
-        border-top: 1px solid var(--appshell-color-grey-medium);
+        margin-top: 2rem;
+    }
+
+    .feedback-button {
+        min-width: 6.5rem;
+        height: 3rem;
+        padding: 0 1.5rem;
+        border: 1px solid transparent;
+        border-radius: 0.125rem;
+        font-family: inherit;
+        font-size: 1rem;
+        font-weight: 500;
+        line-height: 1.5rem;
+        cursor: pointer;
+        transition: background-color 0.15s ease;
+    }
+
+    .feedback-button--primary {
+        background-color: var(--appshell-color-accent-green-main);
+        color: var(--appshell-color-accent-green-contrast);
+
+        // The theme's own hover for buttons: the medium accent.
+        &:hover:not(:disabled) {
+            background-color: var(--appshell-color-accent-green-medium);
+        }
+
+        // A flat grey block, as drawn, rather than a faded green.
+        &:disabled {
+            background-color: color-mix(in srgb, var(--appshell-color-grey-main) 35%, var(--appshell-color-white-main));
+            color: var(--appshell-color-grey-strong);
+            cursor: default;
+        }
+    }
+
+    .feedback-button--secondary {
+        border-color: var(--appshell-color-black-main);
+        background-color: var(--appshell-color-white-main);
+        color: var(--appshell-color-black-main);
+
+        &:hover {
+            background-color: var(--appshell-color-grey-light);
+        }
     }
 
     .feedback-success {
         display: flex;
         flex-direction: column;
-        align-items: center;
-        gap: 1rem;
+        align-items: stretch;
         text-align: center;
-        padding: 2rem 0 1.5rem;
 
-        appshell-icon, mat-icon {
-            width: 3rem;
-            height: 3rem;
-            font-size: 3rem;
-            color: var(--appshell-color-accent-green-dark);
+        .feedback-success-title {
+            margin: 0.75rem 0 0;
+            font-family: "AppShellHeadingFont";
+            font-size: 1.25rem;
+            line-height: 1.75rem;
+            font-weight: 700;
         }
 
-        .feedback-subtitle {
-            max-width: 22rem;
+        .feedback-success-message {
+            margin: 1.5rem 0 0;
+            padding: 0 1rem;
         }
 
+        // Full width, as the only way on from the thank-you.
         .feedback-close {
-            margin-top: 0.5rem;
+            width: 100%;
+            margin-top: 1.5rem;
         }
     }
 
-    // Keep the focus ring visible against the surface: keyboard is the only way
-    // through this questionnaire for some of the people answering it.
-    button:focus-visible,
-    mat-chip-option:focus-visible,
-    textarea:focus-visible {
-        outline: 2px solid var(--appshell-color-blue-medium);
-        outline-offset: 2px;
+    // The theme's focus ring (appshell.theme.scss) already covers buttons; the
+    // native inputs get a matching one, since keyboard is the only way through
+    // this questionnaire for some of the people answering it.
+    .feedback-checkbox:focus-visible,
+    .feedback-radio:focus-visible,
+    .feedback-textarea:focus-visible {
+        outline: 2px solid var(--appshell-color-blue-main);
+        outline-offset: 0.2rem;
     }
 }

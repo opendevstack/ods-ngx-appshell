@@ -1,90 +1,142 @@
-<div class="appshell-feedback">
+<div class="appshell-feedback" [class.appshell-feedback--done]="done()">
+    <div class="feedback-header">
+        @if (!done()) {
+            <p class="feedback-progress" aria-live="polite">
+                <strong>{{ progressParts().strong }}</strong>{{ progressParts().rest }}
+            </p>
+        }
+        <button type="button" class="feedback-dismiss" (click)="dismiss()" [attr.aria-label]="text().closeLabel">
+            <appshell-icon [icon]="'close'" aria-hidden="true" />
+        </button>
+    </div>
+
     @if (!done()) {
-        <div class="feedback-header">
-            <div>
-                <h2 class="feedback-title">{{ text().title }}</h2>
-                @if (isFirst() && text().subtitle) {
-                    <p class="feedback-subtitle">{{ text().subtitle }}</p>
-                }
-            </div>
-            <button class="feedback-dismiss" mat-button (click)="dismiss()" [attr.aria-label]="text().closeLabel">
-                <appshell-icon [icon]="'close'" aria-hidden="true" />
-            </button>
-        </div>
+        @if (text().title) {
+            <h2 class="feedback-title">{{ text().title }}</h2>
+        }
+        @if (isFirst() && text().subtitle) {
+            <p class="feedback-subtitle">{{ text().subtitle }}</p>
+        }
 
-        <!-- One question at a time. The region is re-labelled on every step so a
-             screen reader announces the new question rather than staying silent. -->
-        <section class="feedback-step" role="group" [attr.aria-label]="current().label">
-            <p class="feedback-progress" aria-live="polite">{{ progress() }}</p>
-            <!-- Where you are, at a glance. The text above says it for anyone
-                 who cannot see this, so the track itself is decoration. -->
-            <div class="feedback-track" aria-hidden="true">
-                @for (step of questions(); track step.id; let i = $index) {
-                    <span class="feedback-track-step" [class.is-reached]="i <= index()"></span>
-                }
-            </div>
-            <h3 class="feedback-question" tabindex="-1" #questionHeading
-                [id]="'appshell-feedback-' + current().id">{{ current().label }}</h3>
+        <!-- One question at a time. A fieldset whose legend is the question, so a
+             screen reader announces the question together with its answers. -->
+        <fieldset class="feedback-step">
+            <legend class="feedback-question" tabindex="-1" #questionHeading [id]="uid + '-question'">
+                {{ currentLabel() }}@if (currentRequired()) {<span class="feedback-required" aria-hidden="true">&nbsp;*</span><span class="feedback-sr-only"> ({{ text().requiredLabel }})</span>}
+            </legend>
 
-            @if (current().type === 'text') {
-                <mat-form-field class="feedback-text">
-                    <textarea
-                        matInput
-                        rows="4"
-                        [attr.maxlength]="current().maxLength ?? null"
-                        [placeholder]="current().placeholder ?? ''"
-                        [attr.aria-labelledby]="'appshell-feedback-' + current().id"
-                        [ngModel]="currentAnswer() ?? ''"
-                        (ngModelChange)="answer(current(), $event)"></textarea>
-                </mat-form-field>
-                @if (current().maxLength) {
-                    <p class="feedback-counter" aria-live="polite">
-                        {{ commentLength() }} / {{ current().maxLength }}
-                    </p>
+            @switch (current().type) {
+                @case ('multiple') {
+                    <div class="feedback-options">
+                        @for (option of currentOptions(); track option) {
+                            <label class="feedback-option">
+                                <input
+                                    type="checkbox"
+                                    class="feedback-checkbox"
+                                    [checked]="isSelected(current(), option)"
+                                    (change)="toggle(current(), option, $any($event.target).checked)">
+                                <span>{{ option }}</span>
+                            </label>
+                        }
+                    </div>
                 }
-            } @else {
-                <mat-chip-listbox
-                    class="feedback-options"
-                    [class.feedback-options--scale]="current().type === 'scale'"
-                    [attr.aria-labelledby]="'appshell-feedback-' + current().id"
-                    [value]="currentAnswer() !== undefined ? [currentAnswer()] : []"
-                    (change)="onSelectionChange(current(), $event.value)">
-                    @for (option of currentOptions(); track option) {
-                        <mat-chip-option [value]="option">{{ option }}</mat-chip-option>
-                    }
-                </mat-chip-listbox>
-
-                <!-- A scale means nothing without its ends spelled out. -->
-                @if (current().type === 'scale' && (current().minLabel || current().maxLabel)) {
-                    <div class="feedback-scale-ends">
-                        <span>{{ current().minLabel }}</span>
-                        <span>{{ current().maxLabel }}</span>
+                @case ('choice') {
+                    <div class="feedback-options">
+                        @for (option of currentOptions(); track option) {
+                            <label class="feedback-option">
+                                <input
+                                    type="radio"
+                                    class="feedback-radio"
+                                    [name]="uid + '-' + current().id"
+                                    [value]="option"
+                                    [checked]="isSelected(current(), option)"
+                                    (change)="answer(current(), option)">
+                                <span>{{ option }}</span>
+                            </label>
+                        }
+                    </div>
+                }
+                @case ('scale') {
+                    <div class="feedback-options feedback-options--scale">
+                        @for (point of currentOptions(); track point; let i = $index, count = $count) {
+                            <label class="feedback-option">
+                                <input
+                                    type="radio"
+                                    class="feedback-radio"
+                                    [name]="uid + '-' + current().id"
+                                    [value]="point"
+                                    [checked]="isSelected(current(), point)"
+                                    (change)="answer(current(), point)">
+                                <span class="feedback-scale-point">{{ point }}</span>
+                                @if (scaleLabel(current(), i, count); as pointLabel) {
+                                    <span class="feedback-scale-label">{{ pointLabel }}</span>
+                                }
+                            </label>
+                        }
+                    </div>
+                }
+                @case ('text') {
+                    <div class="feedback-field">
+                        @if (current().inputLabel) {
+                            <label class="feedback-field-label" [for]="uid + '-input'">{{ current().inputLabel }}</label>
+                        }
+                        <textarea
+                            class="feedback-textarea"
+                            rows="5"
+                            [id]="uid + '-input'"
+                            [attr.maxlength]="current().maxLength ?? null"
+                            [attr.placeholder]="current().placeholder ?? null"
+                            [attr.aria-labelledby]="current().inputLabel ? null : uid + '-question'"
+                            [attr.aria-required]="currentRequired()"
+                            [value]="currentAnswer() ?? ''"
+                            (input)="answer(current(), $any($event.target).value)"></textarea>
+                        @if (current().maxLength) {
+                            <p class="feedback-counter">{{ textLength() }} / {{ current().maxLength }}</p>
+                        }
                     </div>
                 }
             }
-        </section>
+
+            <!-- "Other" → "What was it?", "No" → "What prevented you…": opens only
+                 while the option that asks for it is picked. -->
+            @if (currentFollowUp(); as followUp) {
+                <div class="feedback-field feedback-followup">
+                    <label class="feedback-field-label" [for]="uid + '-followup'">{{ followUp.label }}</label>
+                    <textarea
+                        class="feedback-textarea"
+                        rows="5"
+                        [id]="uid + '-followup'"
+                        [attr.maxlength]="followUp.maxLength ?? null"
+                        [attr.placeholder]="followUp.placeholder ?? null"
+                        [value]="followUpText()"
+                        (input)="answerFollowUp(current(), $any($event.target).value)"></textarea>
+                </div>
+            }
+        </fieldset>
 
         <div class="feedback-actions">
-            <button mat-button class="feedback-back" (click)="back()" [disabled]="isFirst()">
-                {{ text().backLabel }}
-            </button>
-
+            @if (!isFirst()) {
+                <button type="button" class="feedback-button feedback-button--secondary feedback-back" (click)="back()">
+                    {{ text().backLabel }}
+                </button>
+            }
             @if (isLast()) {
-                <button mat-flat-button color="accent" class="feedback-submit" (click)="submit()" [disabled]="!canSubmit()">
+                <button type="button" class="feedback-button feedback-button--primary feedback-submit" (click)="submit()" [disabled]="!canSubmit()">
                     {{ text().submitLabel }}
                 </button>
             } @else {
-                <button mat-flat-button color="accent" class="feedback-next" (click)="next()" [disabled]="currentUnanswered()">
+                <button type="button" class="feedback-button feedback-button--primary feedback-next" (click)="next()" [disabled]="currentUnanswered()">
                     {{ text().nextLabel }}
                 </button>
             }
         </div>
     } @else {
         <section class="feedback-success" role="status">
-            <appshell-icon [icon]="'check_circle'" aria-hidden="true" />
-            <h2 class="feedback-title">{{ text().successTitle }}</h2>
-            <p class="feedback-subtitle">{{ text().successMessage }}</p>
-            <button mat-flat-button color="accent" class="feedback-close" (click)="dismiss()">{{ text().closeLabel }}</button>
+            <h2 class="feedback-success-title">{{ text().successTitle }}</h2>
+            <p class="feedback-success-message">{{ text().successMessage }}</p>
+            <button type="button" class="feedback-button feedback-button--primary feedback-close" (click)="dismiss()">
+                {{ text().closeLabel }}
+            </button>
         </section>
     }
 </div>
