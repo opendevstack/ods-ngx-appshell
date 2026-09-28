@@ -25,6 +25,18 @@
     box-shadow: 0 2px 12px 0 rgb(0 0 0 / 5%);
     transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 
+    // Default: a round action button in the bottom corner, at Material's FAB
+    // margins — 1.5rem (24px) from both edges, 1rem (16px) on phones — plus the
+    // device's safe area, so a notch or home indicator never overlaps it.
+    // Declared before any nested rule: Sass deprecates declarations that follow
+    // one (mixed-decls), and the build warned on each of these.
+    --appshell-feedback-launcher-edge: 1.5rem;
+    inset-block-end: calc(var(--appshell-feedback-launcher-edge) + env(safe-area-inset-bottom, 0px));
+    inset-inline-end: calc(var(--appshell-feedback-launcher-edge) + env(safe-area-inset-right, 0px));
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+
     appshell-icon, mat-icon {
         width: 1.5rem;
         height: 1.5rem;
@@ -64,16 +76,6 @@
             transform: translateY(-50%);
         }
     }
-
-    // Default: a round action button in the bottom corner, at Material's FAB
-    // margins — 1.5rem (24px) from both edges, 1rem (16px) on phones — plus the
-    // device's safe area, so a notch or home indicator never overlaps it.
-    --appshell-feedback-launcher-edge: 1.5rem;
-    inset-block-end: calc(var(--appshell-feedback-launcher-edge) + env(safe-area-inset-bottom, 0px));
-    inset-inline-end: calc(var(--appshell-feedback-launcher-edge) + env(safe-area-inset-right, 0px));
-    width: 3.5rem;
-    height: 3.5rem;
-    border-radius: 50%;
 
     @media (width < 600px) {
         --appshell-feedback-launcher-edge: 1rem;
