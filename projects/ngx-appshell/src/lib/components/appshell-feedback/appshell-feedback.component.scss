@@ -285,10 +285,11 @@ appshell-feedback {
             background-color: var(--appshell-color-accent-green-medium);
         }
 
-        // A flat grey block, as drawn, rather than a faded green.
+        // As drawn: a flat #D9D9D9 block carrying the theme's dark green text,
+        // muted to three quarters, rather than a faded green or a grey label.
         &:disabled {
-            background-color: color-mix(in srgb, var(--appshell-color-grey-main) 35%, var(--appshell-color-white-main));
-            color: var(--appshell-color-grey-strong);
+            background-color: color-mix(in srgb, var(--appshell-color-grey-main) 30%, var(--appshell-color-white-main));
+            color: color-mix(in srgb, var(--appshell-color-accent-green-contrast) 75%, transparent);
             cursor: default;
         }
     }
