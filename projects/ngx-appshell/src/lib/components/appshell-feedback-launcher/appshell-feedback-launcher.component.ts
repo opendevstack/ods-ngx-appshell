@@ -1,9 +1,10 @@
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import {
-    Component, OnDestroy, TemplateRef, ViewChild, ViewContainerRef, ViewEncapsulation,
+    Component, DestroyRef, OnDestroy, TemplateRef, ViewChild, ViewContainerRef, ViewEncapsulation,
     afterNextRender, computed, inject, input, output, signal
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { AppShellFeedback, AppShellFeedbackAnswers } from '../../models/appshell-feedback';
@@ -68,6 +69,7 @@ export class AppShellFeedbackLauncherComponent implements OnDestroy {
     @ViewChild('trigger') triggerTpl!: TemplateRef<unknown>;
 
     private readonly dialog = inject(MatDialog);
+    private readonly destroyRef = inject(DestroyRef);
     private dialogRef?: MatDialogRef<unknown>;
 
     private readonly overlay = inject(Overlay);
@@ -88,7 +90,15 @@ export class AppShellFeedbackLauncherComponent implements OnDestroy {
         });
     }
 
+    /**
+     * Leaving the page with the dialog open used to leave the dialog behind:
+     * it outlived this component, and closing it later ran this component's
+     * handler and emitted on a destroyed output (NG0953). The dialog now goes
+     * with the component, and its closure is no longer listened to.
+     */
     ngOnDestroy(): void {
+        this.dialogRef?.close();
+        this.dialogRef = undefined;
         this.triggerRef?.dispose();
     }
 
@@ -121,7 +131,7 @@ export class AppShellFeedbackLauncherComponent implements OnDestroy {
         // One exit for every way out — Escape, the backdrop, or the
         // questionnaire's own close button — so `dismissed` is reported once and
         // from a single place.
-        this.dialogRef.afterClosed().subscribe(() => {
+        this.dialogRef.afterClosed().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
             this._open.set(false);
             this.dialogRef = undefined;
             this.dismissed.emit();

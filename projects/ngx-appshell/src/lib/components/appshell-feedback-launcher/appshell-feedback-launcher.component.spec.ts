@@ -131,6 +131,24 @@ describe('AppShellFeedbackLauncherComponent', () => {
         expect(component.isOpen()).toBeFalse();
     }));
 
+    it('should close its dialog when it is destroyed, and not report anything afterwards', fakeAsync(() => {
+        let dismissed = 0;
+        component.dismissed.subscribe(() => dismissed++);
+
+        component.open();
+        fixture.detectChanges();
+        expect(document.querySelector('appshell-feedback')).not.toBeNull();
+
+        // Leaving the page with the questionnaire open: the dialog goes too,
+        // and its later closure no longer reaches the destroyed component
+        // (it used to emit on a destroyed output, NG0953).
+        fixture.destroy();
+        flush();
+
+        expect(document.querySelector('appshell-feedback')).toBeNull();
+        expect(dismissed).toBe(0);
+    }));
+
     it('should pass the answers straight through without closing the dialog', () => {
         let received: AppShellFeedbackAnswers | undefined;
         component.submitted.subscribe(a => received = a);
