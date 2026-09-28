@@ -6,6 +6,8 @@ import {
     AppShellFeedbackQuestion
 } from '../../models/appshell-feedback';
 import { AppShellIconComponent } from '../appshell-icon/appshell-icon.component';
+import { AppShellFeedbackOptionsComponent, appShellFeedbackScaleLabel } from '../appshell-feedback-options/appshell-feedback-options.component';
+import { AppShellFeedbackTextFieldComponent } from '../appshell-feedback-text-field/appshell-feedback-text-field.component';
 
 /**
  * The standard four steps: what the person came to do, whether they managed it,
@@ -86,9 +88,9 @@ let nextInstanceId = 0;
  */
 @Component({
     selector: 'appshell-feedback',
-    // Native controls, styled to the widget design: Material's checkbox and radio
-    // are 18px boxes in a 40px halo, twice the size the design draws them.
-    imports: [AppShellIconComponent],
+    // The answers are drawn by two presentational pieces of their own: the
+    // checkbox, radio and scale lists, and the free-text field.
+    imports: [AppShellIconComponent, AppShellFeedbackOptionsComponent, AppShellFeedbackTextFieldComponent],
     templateUrl: './appshell-feedback.component.html',
     styleUrl: './appshell-feedback.component.scss',
     encapsulation: ViewEncapsulation.None
@@ -184,11 +186,14 @@ export class AppShellFeedbackComponent {
         return q ? this._answers()[q.id] : undefined;
     });
 
-    /** Characters typed in the text answer on screen, for its counter. */
-    readonly textLength = computed(() => {
+    /** The text answer on screen, empty until something is typed. */
+    readonly textAnswer = computed(() => {
         const answer = this.currentAnswer();
-        return typeof answer === 'string' ? answer.length : 0;
+        return typeof answer === 'string' ? answer : '';
     });
+
+    /** Characters typed in the text answer on screen, for its counter. */
+    readonly textLength = computed(() => this.textAnswer().length);
 
     /** The follow-up field of the question on screen, while its option is picked. */
     readonly currentFollowUp = computed<AppShellFeedbackFollowUp | undefined>(() => {
@@ -222,14 +227,7 @@ export class AppShellFeedbackComponent {
 
     /** Label of one point of a scale: its own label, or the end labels on the ends. */
     scaleLabel(question: AppShellFeedbackQuestion, pointIndex: number, pointCount: number): string {
-        const own = question.optionLabels?.[pointIndex];
-        if (own) {
-            return own;
-        }
-        if (pointIndex === 0) {
-            return question.minLabel ?? '';
-        }
-        return pointIndex === pointCount - 1 ? question.maxLabel ?? '' : '';
+        return appShellFeedbackScaleLabel(question, pointIndex, pointCount);
     }
 
     isSelected(question: AppShellFeedbackQuestion, option: string): boolean {

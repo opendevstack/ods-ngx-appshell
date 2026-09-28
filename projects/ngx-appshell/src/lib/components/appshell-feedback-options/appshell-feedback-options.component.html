@@ -1,0 +1,51 @@
+@switch (question().type) {
+    @case ('multiple') {
+        <div class="feedback-options">
+            @for (option of options(); track option) {
+                <label class="feedback-option">
+                    <input
+                        type="checkbox"
+                        class="feedback-checkbox"
+                        [checked]="isPicked(option)"
+                        (change)="onToggle(option, $event)">
+                    <span>{{ option }}</span>
+                </label>
+            }
+        </div>
+    }
+    @case ('scale') {
+        <div class="feedback-options feedback-options--scale">
+            @for (point of options(); track point; let i = $index, count = $count) {
+                <label class="feedback-option">
+                    <input
+                        type="radio"
+                        class="feedback-radio"
+                        [name]="name()"
+                        [value]="point"
+                        [checked]="isPicked(point)"
+                        (change)="picked.emit(point)">
+                    <span class="feedback-scale-point">{{ point }}</span>
+                    @if (scaleLabel(i, count); as pointLabel) {
+                        <span class="feedback-scale-label">{{ pointLabel }}</span>
+                    }
+                </label>
+            }
+        </div>
+    }
+    @default {
+        <div class="feedback-options">
+            @for (option of options(); track option) {
+                <label class="feedback-option">
+                    <input
+                        type="radio"
+                        class="feedback-radio"
+                        [name]="name()"
+                        [value]="option"
+                        [checked]="isPicked(option)"
+                        (change)="picked.emit(option)">
+                    <span>{{ option }}</span>
+                </label>
+            }
+        </div>
+    }
+}

@@ -4,9 +4,9 @@
 // colours only from ../../styles/palette.css.
 //
 // Measurements follow the design at 1:1 with that 16px body: a 25rem card with
-// 1.25rem padding, 28px option rows, small 13px checkboxes and radios, and
-// 104x48 buttons. The controls are native inputs styled here: Material's are
-// 18px boxes in a 40px halo, twice what the design draws.
+// 1.25rem padding and 104x48 buttons. The answers (28px option rows, 13px native
+// checkboxes and radios, the free-text field) are drawn by
+// appshell-feedback-options and appshell-feedback-text-field.
 //
 // Deliberately not a mat-card: that paints its own surface from a stylesheet
 // loaded after this one, so the container stayed white however the palette was
@@ -131,127 +131,15 @@ appshell-feedback {
         white-space: nowrap;
     }
 
-    // One answer per 28px row, a clear gap under the question.
-    .feedback-options {
-        display: flex;
-        flex-direction: column;
+    // A text step keeps the lists' gap under the question; a follow-up sits
+    // closer, under the option that opened it. The answers themselves are drawn
+    // by appshell-feedback-options and appshell-feedback-text-field.
+    .feedback-step > appshell-feedback-text-field {
         margin-top: 1.6875rem;
-    }
 
-    .feedback-option {
-        display: flex;
-        align-items: center;
-        gap: 0.6875rem;
-        min-height: 1.75rem;
-        cursor: pointer;
-    }
-
-    // Small native controls, as drawn: a 13px box or circle with a thin grey rim.
-    .feedback-checkbox,
-    .feedback-radio {
-        appearance: none;
-        display: inline-grid;
-        place-content: center;
-        flex-shrink: 0;
-        width: 0.8125rem;
-        height: 0.8125rem;
-        margin: 0;
-        border: 1.5px solid var(--appshell-color-grey-strong);
-        background-color: var(--appshell-color-white-main);
-        cursor: pointer;
-    }
-
-    .feedback-checkbox {
-        border-radius: 0.125rem;
-
-        // Ticked: the accent fill with the dark check the theme puts on green.
-        &:checked {
-            border-color: var(--appshell-color-accent-green-main);
-            background-color: var(--appshell-color-accent-green-main);
-
-            &::after {
-                content: "";
-                width: 0.1875rem;
-                height: 0.4375rem;
-                margin-top: -0.125rem;
-                border: solid var(--appshell-color-accent-green-contrast);
-                border-width: 0 2px 2px 0;
-                transform: rotate(45deg);
-            }
+        &.feedback-followup {
+            margin-top: 1rem;
         }
-    }
-
-    .feedback-radio {
-        border-radius: 50%;
-
-        &:checked {
-            border-color: var(--appshell-color-black-main);
-
-            &::after {
-                content: "";
-                width: 0.4375rem;
-                height: 0.4375rem;
-                border-radius: 50%;
-                background-color: var(--appshell-color-black-main);
-            }
-        }
-    }
-
-    // The satisfaction scale: "3  Neutral", the meaning small and grey.
-    .feedback-options--scale {
-        .feedback-scale-point {
-            min-width: 0.625rem;
-        }
-
-        .feedback-scale-label {
-            margin-left: 0.25rem;
-            font-size: 0.75rem;
-            color: var(--appshell-color-grey-strong);
-        }
-    }
-
-    .feedback-field {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-        margin-top: 1rem;
-    }
-
-    // The standalone text step keeps the same gap under the question as the lists.
-    .feedback-step > .feedback-field:not(.feedback-followup) {
-        margin-top: 1.6875rem;
-    }
-
-    .feedback-field-label {
-        color: var(--appshell-color-black-main);
-    }
-
-    .feedback-textarea {
-        box-sizing: border-box;
-        width: 100%;
-        min-height: 6.25rem;
-        padding: 0.5rem 0.75rem;
-        border: 1px solid var(--appshell-color-grey-main);
-        border-radius: 0.125rem;
-        background-color: var(--appshell-color-white-main);
-        color: var(--appshell-color-black-main);
-        font: inherit;
-        resize: vertical;
-
-        &::placeholder {
-            color: var(--appshell-color-grey-main);
-        }
-
-        &:focus {
-            border-color: var(--appshell-color-black-main);
-        }
-    }
-
-    .feedback-counter {
-        margin: -0.25rem 0 0;
-        text-align: end;
-        font-size: 0.75rem;
-        color: var(--appshell-color-grey-strong);
     }
 
     // Back and Next together at the bottom right; alone on the first step.
@@ -330,13 +218,4 @@ appshell-feedback {
         }
     }
 
-    // The theme's focus ring (appshell.theme.scss) already covers buttons; the
-    // native inputs get a matching one, since keyboard is the only way through
-    // this questionnaire for some of the people answering it.
-    .feedback-checkbox:focus-visible,
-    .feedback-radio:focus-visible,
-    .feedback-textarea:focus-visible {
-        outline: 2px solid var(--appshell-color-blue-main);
-        outline-offset: 0.2rem;
-    }
 }

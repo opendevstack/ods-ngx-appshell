@@ -1,0 +1,92 @@
+// The answers of a feedback step, drawn from the AppShell palette
+// (../../styles/palette.css): one answer per 28px row, and small native
+// checkboxes and radios, as the feedback widget design draws them — Material's
+// are 18px boxes in a 40px halo, twice that size.
+
+appshell-feedback-options {
+    display: block;
+
+    // A clear gap under the question, one answer per 28px row.
+    .feedback-options {
+        display: flex;
+        flex-direction: column;
+        margin-top: 1.6875rem;
+    }
+
+    .feedback-option {
+        display: flex;
+        align-items: center;
+        gap: 0.6875rem;
+        min-height: 1.75rem;
+        cursor: pointer;
+    }
+
+    // A 13px box or circle with a thin grey rim.
+    .feedback-checkbox,
+    .feedback-radio {
+        appearance: none;
+        display: inline-grid;
+        place-content: center;
+        flex-shrink: 0;
+        width: 0.8125rem;
+        height: 0.8125rem;
+        margin: 0;
+        border: 1.5px solid var(--appshell-color-grey-strong);
+        background-color: var(--appshell-color-white-main);
+        cursor: pointer;
+
+        // The theme's focus ring, since keyboard is the only way through the
+        // questionnaire for some of the people answering it.
+        &:focus-visible {
+            outline: 2px solid var(--appshell-color-blue-main);
+            outline-offset: 0.2rem;
+        }
+    }
+
+    // Ticked: the accent fill with the dark check the theme puts on green.
+    .feedback-checkbox {
+        border-radius: 0.125rem;
+
+        &:checked {
+            border-color: var(--appshell-color-accent-green-main);
+            background-color: var(--appshell-color-accent-green-main);
+
+            &::after {
+                content: "";
+                width: 0.1875rem;
+                height: 0.4375rem;
+                margin-top: -0.125rem;
+                border: solid var(--appshell-color-accent-green-contrast);
+                border-width: 0 2px 2px 0;
+                transform: rotate(45deg);
+            }
+        }
+    }
+
+    .feedback-radio {
+        border-radius: 50%;
+
+        &:checked {
+            border-color: var(--appshell-color-black-main);
+
+            &::after {
+                content: "";
+                width: 0.4375rem;
+                height: 0.4375rem;
+                border-radius: 50%;
+                background-color: var(--appshell-color-black-main);
+            }
+        }
+    }
+
+    // The satisfaction scale: "3  Neutral", the meaning small and grey.
+    .feedback-scale-point {
+        min-width: 0.625rem;
+    }
+
+    .feedback-scale-label {
+        margin-left: 0.25rem;
+        font-size: 0.75rem;
+        color: var(--appshell-color-grey-strong);
+    }
+}

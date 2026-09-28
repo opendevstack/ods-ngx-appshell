@@ -3,6 +3,8 @@ export * from './appshell-chip/appshell-chip.component';
 export * from './appshell-page-header/appshell-page-header.component';
 export * from './appshell-feedback/appshell-feedback.component';
 export * from './appshell-feedback-launcher/appshell-feedback-launcher.component';
+export * from './appshell-feedback-options/appshell-feedback-options.component';
+export * from './appshell-feedback-text-field/appshell-feedback-text-field.component';
 export * from './appshell-filters/appshell-filters.component';
 export * from './appshell-header/appshell-header.component';
 export * from './appshell-icon/appshell-icon.component';

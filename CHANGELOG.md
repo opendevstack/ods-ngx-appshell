@@ -19,10 +19,15 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
   Submit instead of Next. Styled after appshell-toast (0.125rem corners, grey-medium hairline, the
   same shadow) with the theme's 16px type and small native checkboxes and radios, as in the design.
   Showcased in the example application under `/feedback`.
+- Added AppShellFeedbackOptionsComponent and AppShellFeedbackTextFieldComponent, the presentational
+  pieces that draw the questionnaire's answers: checkboxes, radio buttons and the labelled scale; and
+  a captioned textarea whose counter appears once the text reaches 80% of its cap. Exported so other
+  forms can reuse them; they also keep each component's styles within the style budget.
 - Added the AppShellFeedbackLauncherComponent, a floating trigger that opens that questionnaire
   in a dialog, so a product gets the whole experience without rebuilding it. Round action button
   in the corner by default, or a strip against the side. Focus trapping, Escape to close and
-  focus restoration come from the Material dialog.
+  focus restoration come from the Material dialog. Destroying the launcher closes a dialog it left
+  open and stops listening to it.
 
 ## [19.0.15]
 

@@ -1,0 +1,18 @@
+<div class="feedback-field">
+    @if (label()) {
+        <label class="feedback-field-label" [for]="fieldId()">{{ label() }}</label>
+    }
+    <textarea
+        class="feedback-textarea"
+        rows="5"
+        [id]="fieldId()"
+        [attr.maxlength]="maxLength() ?? null"
+        [attr.placeholder]="placeholder() ?? null"
+        [attr.aria-labelledby]="labelledBy()"
+        [attr.aria-required]="required()"
+        [value]="value()"
+        (input)="onInput($event)"></textarea>
+    @if (counterVisible()) {
+        <p class="feedback-counter">{{ value().length }} / {{ maxLength() }}</p>
+    }
+</div>
