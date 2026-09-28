@@ -24,7 +24,7 @@ export class FeedbackScreenComponent {
      */
     standard: AppShellFeedback = {
         questions: [],
-        productName: 'Onboarding Hub',
+        productName: 'YourProduct',
         productQuestion: {
             id: 'productQuestion',
             type: 'choice',
@@ -34,7 +34,7 @@ export class FeedbackScreenComponent {
     };
 
     /** Without the product-specific step: four steps, and the fourth one submits. */
-    fourSteps: AppShellFeedback = { questions: [], productName: 'Onboarding Hub' };
+    fourSteps: AppShellFeedback = { questions: [], productName: 'YourProduct' };
 
     /** The same component asked to carry a different questionnaire and wording. */
     shortSurvey: AppShellFeedback = {

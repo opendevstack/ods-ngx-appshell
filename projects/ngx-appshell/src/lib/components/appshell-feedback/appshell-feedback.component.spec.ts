@@ -5,7 +5,7 @@ import { AppShellFeedback, AppShellFeedbackAnswers, AppShellFeedbackQuestion } f
 
 const CUSTOM: AppShellFeedback = {
     title: 'Two quick questions',
-    productName: 'Data Hub',
+    productName: 'AnotherProduct',
     questions: [
         { id: 'mood', type: 'choice', label: 'How did {product} go?', options: ['Well', 'Badly'] },
         { id: 'why', type: 'text', label: 'Why?', required: false, maxLength: 40 }
@@ -14,7 +14,7 @@ const CUSTOM: AppShellFeedback = {
 
 /** The four standard steps plus an optional, product-specific fifth one. */
 const FIVE_STEPS = (defaults: AppShellFeedbackQuestion[]): AppShellFeedback => ({
-    productName: 'Onboarding Hub',
+    productName: 'YourProduct',
     questions: [
         ...defaults,
         {
@@ -106,10 +106,10 @@ describe('AppShellFeedbackComponent', () => {
     });
 
     it('should fall back to the standard steps when the supplied list is empty', () => {
-        fixture.componentRef.setInput('feedback', { questions: [], productName: 'Onboarding Hub' });
+        fixture.componentRef.setInput('feedback', { questions: [], productName: 'YourProduct' });
         fixture.detectChanges();
         expect(component.total()).toBe(4);
-        expect(component.text().productName).toBe('Onboarding Hub');
+        expect(component.text().productName).toBe('YourProduct');
     });
 
     it('should ask the supplied questions instead of the defaults', () => {
@@ -154,8 +154,8 @@ describe('AppShellFeedbackComponent', () => {
     it('should put the host product name wherever {product} is written', () => {
         fixture.componentRef.setInput('feedback', CUSTOM);
         fixture.detectChanges();
-        expect(component.currentLabel()).toBe('How did Data Hub go?');
-        expect(component.text().successMessage).toBe('Your feedback helps us shape the future of Data Hub.');
+        expect(component.currentLabel()).toBe('How did AnotherProduct go?');
+        expect(component.text().successMessage).toBe('Your feedback helps us shape the future of AnotherProduct.');
     });
 
     it('should leave the raw question untouched while replacing the product on screen', () => {

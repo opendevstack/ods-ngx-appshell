@@ -65,7 +65,7 @@ export interface AppShellFeedbackQuestion {
 export interface AppShellFeedback {
     questions: AppShellFeedbackQuestion[];
 
-    /** The product being rated, e.g. "Onboarding Hub". Defaults to "this product". */
+    /** The product being rated, e.g. "YourProduct". Defaults to "this product". */
     productName?: string;
 
     /**

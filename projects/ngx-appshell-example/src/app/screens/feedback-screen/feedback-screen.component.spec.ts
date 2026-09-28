@@ -26,7 +26,7 @@ describe('FeedbackScreenComponent', () => {
   });
 
   it('should name the product for the standard questionnaire', () => {
-    expect(component.standard.productName).toBe('Onboarding Hub');
+    expect(component.standard.productName).toBe('YourProduct');
     expect(component.standard.questions).toEqual([]);
   });
 

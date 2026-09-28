@@ -49,7 +49,7 @@ export class AppShellFeedbackLauncherComponent implements OnDestroy {
     /**
      * How the trigger looks. `fab` is a round action button in the bottom
      * corner, the shape people expect; `tab` is a vertical strip against the
-     * side, which is what the Onboarding Hub has used until now.
+     * side of the page.
      */
     shape = input<'fab' | 'tab'>('fab');
     /** Which side the trigger sits against. */
