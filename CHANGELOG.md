@@ -5,7 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on Keep a Changelog, and this project follows Semantic Versioning.
 
 ## [Unreleased]
-- Added multiple selection support for the AppShellSelectComponent and AppShellFiltersComponent.
+
+### Added
+### Changed
+### Fixed
+
+## [19.0.16]
+
+Library version: `@opendevstack/ngx-appshell@19.0.16`
+
+### Added
 - Added the AppShellFeedbackComponent, a questionnaire that asks one step at a time and emits the
   answers instead of sending them. Ships the standard four steps of the feedback widget design (what
   the person came to do, whether they achieved it, CSAT 1-5 and the reason for the rating); a host can
@@ -28,6 +37,9 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
   in the corner by default, or a strip against the side. Focus trapping, Escape to close and
   focus restoration come from the Material dialog. Destroying the launcher closes a dialog it left
   open and stops listening to it.
+
+### Changed
+- Added multiple selection support for the AppShellSelectComponent and AppShellFiltersComponent.
 
 ## [19.0.15]
 
