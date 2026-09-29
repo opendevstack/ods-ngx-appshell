@@ -1,0 +1,91 @@
+<div class="appshell-feedback" [class.appshell-feedback--done]="done()">
+    <div class="feedback-header">
+        @if (!done()) {
+            <p class="feedback-progress" aria-live="polite">
+                <strong>{{ progressParts().strong }}</strong>{{ progressParts().rest }}
+            </p>
+        }
+        <button type="button" class="feedback-dismiss" (click)="dismiss()" [attr.aria-label]="text().closeLabel">
+            <appshell-icon [icon]="'close'" aria-hidden="true" />
+        </button>
+    </div>
+
+    @if (!done()) {
+        @if (text().title) {
+            <h2 class="feedback-title">{{ text().title }}</h2>
+        }
+        @if (isFirst() && text().subtitle) {
+            <p class="feedback-subtitle">{{ text().subtitle }}</p>
+        }
+
+        <!-- One question at a time. A fieldset whose legend is the question, so a
+             screen reader announces the question together with its answers. -->
+        <fieldset class="feedback-step">
+            <legend class="feedback-question" tabindex="-1" #questionHeading [id]="uid + '-question'">
+                {{ currentLabel() }}@if (currentRequired()) {<span class="feedback-required" aria-hidden="true">&nbsp;*</span><span class="feedback-sr-only"> ({{ text().requiredLabel }})</span>}
+            </legend>
+
+            @switch (current().type) {
+                @case ('text') {
+                    <appshell-feedback-text-field
+                        [fieldId]="uid + '-input'"
+                        [label]="current().inputLabel"
+                        [labelledBy]="current().inputLabel ? null : uid + '-question'"
+                        [placeholder]="current().placeholder"
+                        [maxLength]="current().maxLength"
+                        [required]="currentRequired()"
+                        [value]="textAnswer()"
+                        (valueChange)="answer(current(), $event)" />
+                }
+                @default {
+                    <appshell-feedback-options
+                        [question]="current()"
+                        [options]="currentOptions()"
+                        [name]="uid + '-' + current().id"
+                        [answer]="currentAnswer()"
+                        (picked)="answer(current(), $event)"
+                        (toggled)="toggle(current(), $event.option, $event.checked)" />
+                }
+            }
+
+            <!-- "Other" → "What was it?", "No" → "What prevented you…": opens only
+                 while the option that asks for it is picked. -->
+            @if (currentFollowUp(); as followUp) {
+                <appshell-feedback-text-field
+                    class="feedback-followup"
+                    [fieldId]="uid + '-followup'"
+                    [label]="followUp.label"
+                    [placeholder]="followUp.placeholder"
+                    [maxLength]="followUp.maxLength"
+                    [showCounter]="false"
+                    [value]="followUpText()"
+                    (valueChange)="answerFollowUp(current(), $event)" />
+            }
+        </fieldset>
+
+        <div class="feedback-actions">
+            @if (!isFirst()) {
+                <button type="button" class="feedback-button feedback-button--secondary feedback-back" (click)="back()">
+                    {{ text().backLabel }}
+                </button>
+            }
+            @if (isLast()) {
+                <button type="button" class="feedback-button feedback-button--primary feedback-submit" (click)="submit()" [disabled]="!canSubmit()">
+                    {{ text().submitLabel }}
+                </button>
+            } @else {
+                <button type="button" class="feedback-button feedback-button--primary feedback-next" (click)="next()" [disabled]="currentUnanswered()">
+                    {{ text().nextLabel }}
+                </button>
+            }
+        </div>
+    } @else {
+        <section class="feedback-success" role="status">
+            <h2 class="feedback-success-title">{{ text().successTitle }}</h2>
+            <p class="feedback-success-message">{{ text().successMessage }}</p>
+            <button type="button" class="feedback-button feedback-button--primary feedback-close" (click)="dismiss()">
+                {{ text().closeLabel }}
+            </button>
+        </section>
+    }
+</div>

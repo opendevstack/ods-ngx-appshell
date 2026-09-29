@@ -1,0 +1,50 @@
+// A free-text answer, drawn from the AppShell palette (../../styles/palette.css)
+// with the theme's 0.125rem corners.
+
+appshell-feedback-text-field {
+    display: block;
+
+    .feedback-field {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .feedback-field-label {
+        color: var(--appshell-color-black-main);
+    }
+
+    .feedback-textarea {
+        box-sizing: border-box;
+        width: 100%;
+        min-height: 6.25rem;
+        padding: 0.5rem 0.75rem;
+        border: 1px solid var(--appshell-color-grey-main);
+        border-radius: 0.125rem;
+        background-color: var(--appshell-color-white-main);
+        color: var(--appshell-color-black-main);
+        font: inherit;
+        resize: vertical;
+
+        &::placeholder {
+            color: var(--appshell-color-grey-main);
+        }
+
+        &:focus {
+            border-color: var(--appshell-color-black-main);
+        }
+
+        // The theme's focus ring, as on every other AppShell control.
+        &:focus-visible {
+            outline: 2px solid var(--appshell-color-blue-main);
+            outline-offset: 0.2rem;
+        }
+    }
+
+    .feedback-counter {
+        margin: -0.25rem 0 0;
+        text-align: end;
+        font-size: 0.75rem;
+        color: var(--appshell-color-grey-strong);
+    }
+}

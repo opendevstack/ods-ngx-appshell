@@ -1,0 +1,221 @@
+// The feedback widget design, drawn with the AppShell's own template: the
+// floating-container look of appshell-toast (0.125rem corners, a grey-medium
+// hairline, the same soft shadow), the theme's 16px body and button type, and
+// colours only from ../../styles/palette.css.
+//
+// Measurements follow the design at 1:1 with that 16px body: a 25rem card with
+// 1.25rem padding and 104x48 buttons. The answers (28px option rows, 13px native
+// checkboxes and radios, the free-text field) are drawn by
+// appshell-feedback-options and appshell-feedback-text-field.
+//
+// Deliberately not a mat-card: that paints its own surface from a stylesheet
+// loaded after this one, so the container stayed white however the palette was
+// set. A plain element has nothing to fight, and the theming actually holds.
+
+// The host is a custom element, which is inline until told otherwise. Left that
+// way it collapses around its content: on a 390px screen the card came out 85px
+// wide, one word per line, with the options clipped.
+appshell-feedback {
+    display: block;
+}
+
+.appshell-feedback {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 25rem;
+    box-sizing: border-box;
+    padding: 1.25rem;
+    border: 1px solid var(--appshell-color-grey-medium);
+    border-radius: 0.125rem;
+    background-color: var(--appshell-color-white-main);
+    // appshell-toast's elevation, so every floating AppShell surface lifts alike.
+    box-shadow: 0 2px 12px 0 rgb(0 0 0 / 5%);
+    color: var(--appshell-color-black-main);
+    font-family: "AppShellTextFont";
+    font-size: 1rem;
+    line-height: 1.5rem;
+    letter-spacing: normal;
+
+    // "Step 1 of 5" on the left, the cross on the right, on one line.
+    .feedback-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        min-height: 1.5rem;
+    }
+
+    .feedback-progress {
+        margin: 0;
+
+        strong {
+            font-weight: 700;
+        }
+    }
+
+    .feedback-dismiss {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        margin-left: auto;
+        width: 1.5rem;
+        height: 1.5rem;
+        padding: 0;
+        border: 0;
+        border-radius: 0.125rem;
+        background: transparent;
+        color: var(--appshell-color-grey-dark);
+        cursor: pointer;
+
+        // The theme tints every button on hover; the cross stays a bare glyph.
+        &:hover {
+            background-color: transparent;
+            color: var(--appshell-color-black-main);
+        }
+
+        appshell-icon, mat-icon {
+            width: 1.25rem;
+            height: 1.25rem;
+            font-size: 1.25rem;
+            line-height: 1.25rem;
+        }
+    }
+
+    .feedback-title {
+        margin: 1rem 0 0;
+        font-family: "AppShellHeadingFont";
+        font-size: 1.25rem;
+        line-height: 1.75rem;
+    }
+
+    .feedback-subtitle {
+        margin: 0.25rem 0 0;
+        color: var(--appshell-color-grey-strong);
+    }
+
+    .feedback-step {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        margin: 0;
+        padding: 0;
+        border: 0;
+    }
+
+    // Padding, not margin: browsers lay a fieldset's legend out apart from the
+    // other children and drop its top margin.
+    .feedback-question {
+        width: 100%;
+        margin: 0;
+        padding: 0.5625rem 0 0;
+        font-size: 1.125rem;
+        line-height: 1.625rem;
+        font-weight: 400;
+        // Focused programmatically on every step so the change is announced;
+        // it is not a tab stop, so it needs no ring of its own.
+        outline: none;
+    }
+
+    .feedback-required {
+        color: var(--appshell-color-error-medium);
+    }
+
+    .feedback-sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+    }
+
+    // A text step keeps the lists' gap under the question; a follow-up sits
+    // closer, under the option that opened it. The answers themselves are drawn
+    // by appshell-feedback-options and appshell-feedback-text-field.
+    .feedback-step > appshell-feedback-text-field {
+        margin-top: 1.6875rem;
+
+        &.feedback-followup {
+            margin-top: 1rem;
+        }
+    }
+
+    // Back and Next together at the bottom right; alone on the first step.
+    .feedback-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.75rem;
+        margin-top: 2rem;
+    }
+
+    .feedback-button {
+        min-width: 6.5rem;
+        height: 3rem;
+        padding: 0 1.5rem;
+        border: 1px solid transparent;
+        border-radius: 0.125rem;
+        font-family: inherit;
+        font-size: 1rem;
+        font-weight: 500;
+        line-height: 1.5rem;
+        cursor: pointer;
+        transition: background-color 0.15s ease;
+    }
+
+    .feedback-button--primary {
+        background-color: var(--appshell-color-accent-green-main);
+        color: var(--appshell-color-accent-green-contrast);
+
+        // The theme's own hover for buttons: the medium accent.
+        &:hover:not(:disabled) {
+            background-color: var(--appshell-color-accent-green-medium);
+        }
+
+        // As drawn: a flat #D9D9D9 block carrying the theme's dark green text,
+        // muted to three quarters, rather than a faded green or a grey label.
+        &:disabled {
+            background-color: color-mix(in srgb, var(--appshell-color-grey-main) 30%, var(--appshell-color-white-main));
+            color: color-mix(in srgb, var(--appshell-color-accent-green-contrast) 75%, transparent);
+            cursor: default;
+        }
+    }
+
+    .feedback-button--secondary {
+        border-color: var(--appshell-color-black-main);
+        background-color: var(--appshell-color-white-main);
+        color: var(--appshell-color-black-main);
+
+        &:hover {
+            background-color: var(--appshell-color-grey-light);
+        }
+    }
+
+    .feedback-success {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+
+        .feedback-success-title {
+            margin: 0.75rem 0 0;
+            font-family: "AppShellHeadingFont";
+            font-size: 1.25rem;
+            line-height: 1.75rem;
+            font-weight: 700;
+        }
+
+        .feedback-success-message {
+            margin: 1.5rem 0 0;
+            padding: 0 1rem;
+        }
+
+        // Full width, as the only way on from the thank-you.
+        .feedback-close {
+            width: 100%;
+            margin-top: 1.5rem;
+        }
+    }
+
+}

@@ -44,6 +44,20 @@ The library provides the following components:
 
 ### UI Components
 - **appshell-chip** - Material chip component wrapper
+- **appshell-feedback** - Feedback questionnaire asked one step at a time (goal, goal achievement, CSAT 1-5
+  and its reason, plus an optional product-specific step), emitting the answers. Questions are `choice`,
+  `multiple`, `scale` (with `optionLabels`) or `text` (with `inputLabel`); a `followUp` opens a free-text
+  field under one option. `{product}` in any string becomes `productName`. The last step submits: step 4
+  of the standard four, step 5 when `productQuestion` adds the product-specific step. The standard steps
+  are exported as `APPSHELL_FEEDBACK_STANDARD_QUESTIONS`, so a product can change only its own part
+  (e.g. the goals in step 1) and keep the rest
+- **appshell-feedback-launcher** - Floating trigger that opens the feedback questionnaire in a dialog;
+  destroying it closes a dialog it left open
+- **appshell-feedback-options** - The answers of a questionnaire step, as the feedback design draws them:
+  checkboxes (`multiple`), radio buttons (`choice`) or a labelled scale (`scale`). Presentational: it
+  shows the `answer` it is given and emits `picked` / `toggled`
+- **appshell-feedback-text-field** - A captioned five-row textarea whose counter appears once the text
+  reaches 80% of `maxLength`. Presentational: it shows `value` and emits `valueChange`
 - **appshell-icon** - Icon display component
 - **appshell-filters** - Filtering UI component
 - **appshell-select** - Enhanced select dropdown

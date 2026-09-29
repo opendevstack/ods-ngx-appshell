@@ -8,3 +8,4 @@ export * from './appshell-user';
 export * from './appshell-picker';
 export * from './appshell-notification';
 export * from './appshell-toast';
+export * from './appshell-feedback';

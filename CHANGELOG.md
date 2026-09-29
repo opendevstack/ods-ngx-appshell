@@ -6,6 +6,28 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ## [Unreleased]
 - Added multiple selection support for the AppShellSelectComponent and AppShellFiltersComponent.
+- Added the AppShellFeedbackComponent, a questionnaire that asks one step at a time and emits the
+  answers instead of sending them. Ships the standard four steps of the feedback widget design (what
+  the person came to do, whether they achieved it, CSAT 1-5 and the reason for the rating); a host can
+  add the optional product-specific fifth step with `productQuestion`, adjust the exported
+  `APPSHELL_FEEDBACK_STANDARD_QUESTIONS` (e.g. its own goals in step 1) or supply a questionnaire of
+  its own. Question types:
+  `choice` (radio buttons), `multiple` (checkboxes), `scale` (radio buttons with a label per point via
+  `optionLabels`) and `text` (with an optional `inputLabel`); a `followUp` opens a free-text field under
+  one option ("Other", "No") and is emitted only while that option is picked. `{product}` in any
+  string is replaced by `productName`. Required questions carry an asterisk, and the last step shows
+  Submit instead of Next. Styled after appshell-toast (0.125rem corners, grey-medium hairline, the
+  same shadow) with the theme's 16px type and small native checkboxes and radios, as in the design.
+  Showcased in the example application under `/feedback`.
+- Added AppShellFeedbackOptionsComponent and AppShellFeedbackTextFieldComponent, the presentational
+  pieces that draw the questionnaire's answers: checkboxes, radio buttons and the labelled scale; and
+  a captioned textarea whose counter appears once the text reaches 80% of its cap. Exported so other
+  forms can reuse them; they also keep each component's styles within the style budget.
+- Added the AppShellFeedbackLauncherComponent, a floating trigger that opens that questionnaire
+  in a dialog, so a product gets the whole experience without rebuilding it. Round action button
+  in the corner by default, or a strip against the side. Focus trapping, Escape to close and
+  focus restoration come from the Material dialog. Destroying the launcher closes a dialog it left
+  open and stops listening to it.
 
 ## [19.0.15]
 
