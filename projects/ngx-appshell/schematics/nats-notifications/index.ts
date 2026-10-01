@@ -228,7 +228,11 @@ function integrateNotificationsInAppComponent(tree: Tree): void {
       appComponentPath,
       `async ngOnInit(): Promise<void> {
   if (this.natsUrl) {
-    await this.natsService.initialize(this.natsUrl!);
+    try {
+      await this.natsService.initialize(this.natsUrl!);
+    } catch {
+      this.natsUrl = undefined;
+    }
   }
   this.azureService.initialize();
   this.azureService.loggedUser$.subscribe((user) => {
