@@ -16,7 +16,7 @@ describe('AzureService', () => {
 
     beforeEach(() => {
         msalSubject$ = new Subject<EventMessage>();
-        inProgress$ = new Subject<InteractionStatus>();
+        inProgress$ = new BehaviorSubject<InteractionStatus>(InteractionStatus.Startup);
         
         const msalServiceSpy = jasmine.createSpyObj('MsalService', ['handleRedirectObservable', 'instance', 'loginRedirect', 'logoutRedirect']);
         const msalBroadcastServiceSpy = jasmine.createSpyObj('MsalBroadcastService', [], {
@@ -61,6 +61,72 @@ describe('AzureService', () => {
         msalSubject$.next({eventType: EventType.LOGIN_SUCCESS} as EventMessage);
         inProgress$.next(InteractionStatus.None);
         expect(msalService.handleRedirectObservable).toHaveBeenCalled();
+    });
+
+    it('initialize - should not restart login while a redirect response is pending', () => {
+        const redirectResponse$ = new Subject<AuthenticationResult | null>();
+        msalService.handleRedirectObservable.and.returnValue(redirectResponse$);
+        msalInstanceSpy.getAllAccounts.and.returnValue([]);
+        msalInstanceSpy.getActiveAccount.and.returnValue(null);
+        spyOn(service, 'login');
+
+        service.initialize();
+        inProgress$.next(InteractionStatus.None);
+
+        expect(service.login).not.toHaveBeenCalled();
+    });
+
+    it('initialize - should not restart login when MSAL becomes idle before rejecting the redirect', () => {
+        const redirectResponse$ = new Subject<AuthenticationResult | null>();
+        const error = new Error('Redirect token exchange failed');
+        msalService.handleRedirectObservable.and.returnValue(redirectResponse$);
+        msalInstanceSpy.getAllAccounts.and.returnValue([]);
+        msalInstanceSpy.getActiveAccount.and.returnValue(null);
+        spyOn(service, 'login');
+        spyOn(console, 'error');
+
+        service.initialize();
+        inProgress$.next(InteractionStatus.HandleRedirect);
+        inProgress$.next(InteractionStatus.None);
+        redirectResponse$.error(error);
+
+        expect(service.login).not.toHaveBeenCalled();
+        expect(service.isFirstTime).toBeFalse();
+        expect(console.error).toHaveBeenCalledWith('Error handling login redirect', error);
+    });
+
+    it('initialize - should restore the account after the redirect without restarting login', () => {
+        const redirectResponse$ = new Subject<AuthenticationResult | null>();
+        const account = { username: 'testuser' };
+        msalService.handleRedirectObservable.and.returnValue(redirectResponse$);
+        msalInstanceSpy.getAllAccounts.and.returnValue([]);
+        msalInstanceSpy.getActiveAccount.and.returnValue(null);
+        spyOn(service, 'login');
+        spyOn(service, 'refreshLoggedUser');
+        msalInstanceSpy.setActiveAccount.calls.reset();
+
+        service.initialize();
+        msalInstanceSpy.getAllAccounts.and.returnValue([account]);
+        inProgress$.next(InteractionStatus.None);
+        redirectResponse$.next({ account } as AuthenticationResult);
+        redirectResponse$.complete();
+
+        expect(msalInstanceSpy.setActiveAccount).toHaveBeenCalledWith(account);
+        expect(service.login).not.toHaveBeenCalled();
+        expect(service.refreshLoggedUser).toHaveBeenCalledTimes(1);
+    });
+
+    it('initialize - should start login once after a completed empty redirect on first load', () => {
+        msalService.handleRedirectObservable.and.returnValue(of(null));
+        msalInstanceSpy.getAllAccounts.and.returnValue([]);
+        msalInstanceSpy.getActiveAccount.and.returnValue(null);
+        spyOn(service, 'login');
+
+        service.initialize();
+        inProgress$.next(InteractionStatus.None);
+        inProgress$.next(InteractionStatus.None);
+
+        expect(service.login).toHaveBeenCalledTimes(1);
     });
 
     it('initialize - should set window.location.pathname to "/" when all accounts are removed', fakeAsync(() => {
