@@ -24,7 +24,8 @@ export function azureLoginGenerator(): Rule {
       
       addAzureServiceToAppComponent(),
       addTestsToAppComponent(),
-      addAzureConfigToAppConfig()
+      addAzureConfigToAppConfig(),
+      addRedirectBridgeToMain()
     ]);
   };
 }
@@ -159,6 +160,47 @@ function addTestsToAppComponent(): Rule {
     tree.overwrite(appComponentSpecPath, sourceText);
     context.logger.info(`Updated ${appComponentSpecPath} successfully`);
     
+    return tree;
+  };
+}
+
+function addRedirectBridgeToMain(): Rule {
+  return (tree: Tree, context: SchematicContext) => {
+    const mainPath = 'src/main.ts';
+    let sourceText = readFileContent(tree, mainPath, context);
+    if (!sourceText || sourceText.includes('broadcastResponseToMainFrame')) return tree;
+
+    const sourceFile = ts.createSourceFile(mainPath, sourceText, ts.ScriptTarget.Latest, true);
+    const bootstrapStatement = sourceFile.statements.find(statement => {
+      if (!ts.isExpressionStatement(statement)) return false;
+      let expression = statement.expression;
+      while (ts.isCallExpression(expression) && ts.isPropertyAccessExpression(expression.expression)) {
+        expression = expression.expression.expression;
+      }
+      return ts.isCallExpression(expression) && ts.isIdentifier(expression.expression) &&
+        expression.expression.text === 'bootstrapApplication';
+    });
+
+    if (!bootstrapStatement) {
+      context.logger.error(`Could not find bootstrapApplication in ${mainPath}`);
+      return tree;
+    }
+
+    const bootstrap = bootstrapStatement.getText(sourceFile).split('\n').map(line => `  ${line}`).join('\n');
+    const bridgeBootstrap = `const isAuthCallback = new URLSearchParams(window.location.search).has('state') ||
+  new URLSearchParams(window.location.hash.slice(1)).has('state');
+
+if (isAuthCallback) {
+  broadcastResponseToMainFrame().catch((err) => console.error('Error processing authentication callback', err));
+} else {
+${bootstrap}
+}`;
+
+    sourceText = sourceText.slice(0, bootstrapStatement.getStart(sourceFile)) + bridgeBootstrap +
+      sourceText.slice(bootstrapStatement.getEnd());
+    sourceText = ensureImport(sourceText, sourceFile, 'broadcastResponseToMainFrame', '@azure/msal-browser/redirect-bridge');
+    tree.overwrite(mainPath, sourceText);
+    context.logger.info(`Added MSAL redirect bridge to ${mainPath}`);
     return tree;
   };
 }
