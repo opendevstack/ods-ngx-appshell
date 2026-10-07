@@ -8,8 +8,14 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ### Added
 ### Changed
-- Upgraded MSAL libraries ("@azure/msal-angular" from "4.1.1" to "5.3.1" and "@azure/msal-browser" from "4.30.0" to "5.16.0") and adapt the code and schematics to work with this newer versions.
 ### Fixed
+
+## [19.0.17]
+
+Library version: `@opendevstack/ngx-appshell@19.0.17`
+
+### Changed
+- Upgraded MSAL libraries ("@azure/msal-angular" from "4.1.1" to "5.3.1" and "@azure/msal-browser" from "4.30.0" to "5.16.0") and adapt the code and schematics to work with this newer versions.
 
 ## [19.0.16]
 
