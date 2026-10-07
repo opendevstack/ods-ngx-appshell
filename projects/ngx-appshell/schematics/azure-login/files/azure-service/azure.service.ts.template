@@ -23,8 +23,6 @@ export class AzureService implements OnDestroy {
     ) {}
 
     initialize() {
-        this.msalService.handleRedirectObservable().subscribe();
-
         this.setLoginDisplay();
 
         this.msalBroadcastService.msalSubject$
@@ -42,14 +40,21 @@ export class AzureService implements OnDestroy {
             }
         });
 
-        this.msalBroadcastService.inProgress$
+        this.msalService.handleRedirectObservable()
         .pipe(
+            switchMap(() => this.msalBroadcastService.inProgress$),
             filter((status: InteractionStatus) => status === InteractionStatus.None),
             takeUntil(this._destroying$)
         )
-        .subscribe(() => {
-            this.setLoginDisplay();
-            this.checkAndSetActiveAccount();
+        .subscribe({
+            next: () => {
+                this.setLoginDisplay();
+                this.checkAndSetActiveAccount();
+            },
+            error: error => {
+                this.isFirstTime = false;
+                console.error('Error handling login redirect', error);
+            }
         });
     }
 

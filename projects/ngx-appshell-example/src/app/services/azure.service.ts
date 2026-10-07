@@ -1,7 +1,7 @@
 import { Inject, Injectable, OnDestroy } from "@angular/core";
 import { MSAL_GUARD_CONFIG, MsalBroadcastService, MsalGuardConfiguration, MsalService } from "@azure/msal-angular";
 import { EventMessage, EventType, InteractionStatus, RedirectRequest } from "@azure/msal-browser";
-import { BehaviorSubject, filter, Subject, takeUntil } from "rxjs";
+import { BehaviorSubject, filter, Subject, switchMap, takeUntil } from "rxjs";
 import { AppShellUser } from "ngx-appshell";
 import { Router } from "@angular/router";
 
@@ -23,8 +23,6 @@ export class AzureService implements OnDestroy {
     ) {}
 
     initialize() {
-        this.msalService.handleRedirectObservable().subscribe();
-
         this.setLoginDisplay();
 
         this.msalBroadcastService.msalSubject$
@@ -42,14 +40,21 @@ export class AzureService implements OnDestroy {
             }
         });
 
-        this.msalBroadcastService.inProgress$
+        this.msalService.handleRedirectObservable()
         .pipe(
+            switchMap(() => this.msalBroadcastService.inProgress$),
             filter((status: InteractionStatus) => status === InteractionStatus.None),
             takeUntil(this._destroying$)
         )
-        .subscribe(() => {
-            this.setLoginDisplay();
-            this.checkAndSetActiveAccount();
+        .subscribe({
+            next: () => {
+                this.setLoginDisplay();
+                this.checkAndSetActiveAccount();
+            },
+            error: error => {
+                this.isFirstTime = false;
+                console.error('Error handling login redirect', error);
+            }
         });
     }
 
