@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, fakeAsync, flush } from '@angular/core/testing';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { AppShellFeedbackLauncherComponent } from './appshell-feedback-launcher.component';
-import { AppShellFeedbackAnswers } from '../../models/appshell-feedback';
+import { AppShellFeedbackAnswers, AppShellFeedbackSave } from '../../models/appshell-feedback';
 
 /** The first standard step, as its heading reads (a required question also carries an asterisk). */
 const FIRST_QUESTION = 'What did you come here to do today?';
@@ -202,5 +202,100 @@ describe('AppShellFeedbackLauncherComponent', () => {
         fixture.detectChanges();
 
         expect(document.querySelector('.feedback-question')?.textContent).toContain('Only one?');
+    });
+
+    // --- saving through the host ---
+
+    describe('with a save', () => {
+        /** A save the test settles by hand. */
+        const pendingSave = () => {
+            let settle!: (value: unknown) => void;
+            const save: AppShellFeedbackSave = () => new Promise(resolve => settle = resolve);
+            return { save, settle: (v?: unknown) => settle(v) };
+        };
+
+        const answers: AppShellFeedbackAnswers = { foundIt: 'Yes' };
+
+        beforeEach(() => {
+            fixture.componentRef.setInput('feedback', {
+                questions: [{ id: 'foundIt', type: 'choice', label: 'Found it?', options: ['Yes', 'No'] }]
+            });
+        });
+
+        it('should hand the questionnaire a save that ends in the host\'s own', async () => {
+            const received: AppShellFeedbackAnswers[] = [];
+            fixture.componentRef.setInput('save', (a: AppShellFeedbackAnswers) => { received.push(a); return Promise.resolve(); });
+            fixture.detectChanges();
+
+            expect(await component.dialogSave()!(answers)).toBeTrue();
+            expect(received).toEqual([answers]);
+        });
+
+        it('should report the answers once, after they are saved', async () => {
+            const pending = pendingSave();
+            fixture.componentRef.setInput('save', pending.save);
+            fixture.detectChanges();
+            const emitted: AppShellFeedbackAnswers[] = [];
+            component.submitted.subscribe(a => emitted.push(a));
+
+            const running = component.dialogSave()!(answers);
+            expect(emitted).toEqual([]);
+            pending.settle();
+            await running;
+            // The questionnaire emits too once it shows its thank-you; that must
+            // not report the same answers a second time.
+            component.onSubmitted(answers);
+
+            expect(emitted).toEqual([answers]);
+        });
+
+        it('should still report saved answers when the dialog was closed while saving', fakeAsync(() => {
+            const pending = pendingSave();
+            fixture.componentRef.setInput('save', pending.save);
+            fixture.detectChanges();
+            const emitted: AppShellFeedbackAnswers[] = [];
+            component.submitted.subscribe(a => emitted.push(a));
+
+            component.open();
+            fixture.detectChanges();
+            const radio = document.querySelector<HTMLInputElement>('.feedback-radio')!;
+            radio.click();
+            fixture.detectChanges();
+            document.querySelector<HTMLButtonElement>('.feedback-submit')!.click();
+            fixture.detectChanges();
+
+            component.close();
+            flush();
+            expect(document.querySelector('appshell-feedback')).toBeNull();
+
+            pending.settle();
+            flush();
+            expect(emitted).toEqual([answers]);
+        }));
+
+        it('should not report a failed save', async () => {
+            fixture.componentRef.setInput('save', () => Promise.reject(new Error('500')));
+            fixture.detectChanges();
+            const emitted: AppShellFeedbackAnswers[] = [];
+            component.submitted.subscribe(a => emitted.push(a));
+
+            expect(await component.dialogSave()!(answers)).toBeFalse();
+            expect(emitted).toEqual([]);
+        });
+
+        it('should not report anything once the launcher itself is gone', async () => {
+            const pending = pendingSave();
+            fixture.componentRef.setInput('save', pending.save);
+            fixture.detectChanges();
+            const emitted: AppShellFeedbackAnswers[] = [];
+            component.submitted.subscribe(a => emitted.push(a));
+
+            const running = component.dialogSave()!(answers);
+            fixture.destroy();
+            pending.settle();
+
+            expect(await running).toBeTrue();
+            expect(emitted).toEqual([]);
+        });
     });
 });

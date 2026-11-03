@@ -26,6 +26,7 @@
 <ng-template #dialogContent>
     <appshell-feedback
         [feedback]="questionnaire()"
+        [save]="dialogSave()"
         (submitted)="onSubmitted($event)"
         (dismissed)="close()" />
 </ng-template>

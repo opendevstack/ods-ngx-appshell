@@ -7,9 +7,10 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { AppShellFeedback, AppShellFeedbackAnswers } from '../../models/appshell-feedback';
+import { AppShellFeedback, AppShellFeedbackAnswers, AppShellFeedbackSave } from '../../models/appshell-feedback';
 import { AppShellFeedbackComponent } from '../appshell-feedback/appshell-feedback.component';
 import { AppShellIconComponent } from '../appshell-icon/appshell-icon.component';
+import { runFeedbackSave } from '../appshell-feedback/run-feedback-save';
 
 /** Kept out of the template: a fresh literal there would be a new input on
  *  every change detection pass. An empty list makes the questionnaire ask
@@ -57,10 +58,30 @@ export class AppShellFeedbackLauncherComponent implements OnDestroy {
     side = input<'left' | 'right'>('right');
     /** Hide the tab entirely, e.g. once this person has already answered. */
     hidden = input<boolean>(false);
+    /**
+     * Stores the answers before the questionnaire thanks the person; a failed
+     * save keeps them on the last step to try again. See `appshell-feedback`.
+     */
+    save = input<AppShellFeedbackSave>();
 
     /** What the dialog renders: the supplied questionnaire, or the defaults. */
     readonly questionnaire = computed(() => this.feedback() ?? NO_QUESTIONNAIRE);
 
+    /**
+     * The host's `save`, wrapped so the launcher reports the answers itself.
+     *
+     * The person can close the dialog while the save is still running. The
+     * questionnaire goes with the dialog and can no longer emit, but the save
+     * goes on and may well succeed: the launcher outlives the dialog, so it is
+     * the launcher that says so, and the host still learns that this person
+     * has answered.
+     */
+    readonly dialogSave = computed<AppShellFeedbackSave | undefined>(() => {
+        const save = this.save();
+        return save ? answers => this.saveAndReport(save, answers) : undefined;
+    });
+
+    /** The answers, once submitted (and saved, when there is a `save`). */
     submitted = output<AppShellFeedbackAnswers>();
     dismissed = output<void>();
     opened = output<void>();
@@ -71,6 +92,8 @@ export class AppShellFeedbackLauncherComponent implements OnDestroy {
     private readonly dialog = inject(MatDialog);
     private readonly destroyRef = inject(DestroyRef);
     private dialogRef?: MatDialogRef<unknown>;
+
+    private destroyed = false;
 
     private readonly overlay = inject(Overlay);
     private readonly viewContainerRef = inject(ViewContainerRef);
@@ -97,6 +120,7 @@ export class AppShellFeedbackLauncherComponent implements OnDestroy {
      * with the component, and its closure is no longer listened to.
      */
     ngOnDestroy(): void {
+        this.destroyed = true;
         this.dialogRef?.close();
         this.dialogRef = undefined;
         this.triggerRef?.dispose();
@@ -145,6 +169,18 @@ export class AppShellFeedbackLauncherComponent implements OnDestroy {
     onSubmitted(answers: AppShellFeedbackAnswers): void {
         // The dialog stays open on purpose: the questionnaire shows its own
         // success state, and closing it here would snatch that away.
-        this.submitted.emit(answers);
+        // With a `save`, `saveAndReport` has already emitted these answers.
+        if (!this.save()) {
+            this.submitted.emit(answers);
+        }
+    }
+
+    /** Runs the host's save and, once it succeeds, emits the answers. */
+    private async saveAndReport(save: AppShellFeedbackSave, answers: AppShellFeedbackAnswers): Promise<boolean> {
+        const saved = await runFeedbackSave(save, answers);
+        if (saved && !this.destroyed) {
+            this.submitted.emit(answers);
+        }
+        return saved;
     }
 }
