@@ -50,9 +50,12 @@ The library provides the following components:
   field under one option. `{product}` in any string becomes `productName`. The last step submits: step 4
   of the standard four, step 5 when `productQuestion` adds the product-specific step. The standard steps
   are exported as `APPSHELL_FEEDBACK_STANDARD_QUESTIONS`, so a product can change only its own part
-  (e.g. the goals in step 1) and keep the rest
+  (e.g. the goals in step 1) and keep the rest. Pass `save` (returning a Promise or an Observable) to
+  wait for the answers to be stored: "Sending…" while it runs, the thank-you once it succeeds, and an
+  error with "Try again" on the last step when it fails (rejects, errors or gives back `false`)
 - **appshell-feedback-launcher** - Floating trigger that opens the feedback questionnaire in a dialog;
-  destroying it closes a dialog it left open
+  destroying it closes a dialog it left open. Takes the same `save`, and still reports saved answers
+  when the dialog was closed while saving
 - **appshell-feedback-options** - The answers of a questionnaire step, as the feedback design draws them:
   checkboxes (`multiple`), radio buttons (`choice`) or a labelled scale (`scale`). Presentational: it
   shows the `answer` it is given and emits `picked` / `toggled`
