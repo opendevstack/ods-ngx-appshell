@@ -1,13 +1,17 @@
-import { Component, computed, ElementRef, input, output, signal, ViewChild, ViewEncapsulation } from '@angular/core';
+import {
+    afterNextRender, Component, computed, DestroyRef, ElementRef, inject, Injector, input, output, signal, ViewChild, ViewEncapsulation
+} from '@angular/core';
 import {
     AppShellFeedback,
     AppShellFeedbackAnswers,
     AppShellFeedbackFollowUp,
-    AppShellFeedbackQuestion
+    AppShellFeedbackQuestion,
+    AppShellFeedbackSave
 } from '../../models/appshell-feedback';
 import { AppShellIconComponent } from '../appshell-icon/appshell-icon.component';
 import { AppShellFeedbackOptionsComponent, appShellFeedbackScaleLabel } from '../appshell-feedback-options/appshell-feedback-options.component';
 import { AppShellFeedbackTextFieldComponent } from '../appshell-feedback-text-field/appshell-feedback-text-field.component';
+import { runFeedbackSave } from './run-feedback-save';
 
 /**
  * The standard four steps: what the person came to do, whether they managed it,
@@ -71,10 +75,19 @@ const DEFAULTS: Required<Omit<AppShellFeedback, 'questions' | 'title' | 'subtitl
     requiredLabel: 'required',
     successTitle: 'Thank you!',
     successMessage: 'Your feedback helps us shape the future of {product}.',
-    closeLabel: 'Close'
+    closeLabel: 'Close',
+    sendingLabel: 'Sending…',
+    errorMessage: 'Your feedback could not be sent. Please try again.',
+    retryLabel: 'Try again'
 };
 
 type StoredAnswer = string | string[];
+
+/**
+ * Where the questionnaire stands: being answered, waiting for `save`, back on
+ * the last step after `save` failed, or thanking the person.
+ */
+type FeedbackStatus = 'answering' | 'sending' | 'failed' | 'done';
 
 /** Several questionnaires can share a page; ids and radio names must not collide. */
 let nextInstanceId = 0;
@@ -85,6 +98,10 @@ let nextInstanceId = 0;
  * The component collects answers and emits them; it never sends them anywhere.
  * Where they go, and whether this person should have been asked at all, depend
  * on the host application's own storage and identity, so both stay with the host.
+ *
+ * A host that passes `save` lets the questionnaire wait for the answers to be
+ * stored: the thank-you appears only once they are, and a failed save leaves
+ * the person on the last step with an error and a way to send them again.
  */
 @Component({
     selector: 'appshell-feedback',
@@ -100,19 +117,39 @@ export class AppShellFeedbackComponent {
     /** Questionnaire and wording. Omit it to ask the four standard questions. */
     feedback = input<AppShellFeedback>({ questions: DEFAULT_QUESTIONS });
 
-    /** Answers, keyed by question id, emitted once on submit. */
+    /**
+     * Stores the answers before the thank-you appears. Without it the answers
+     * are emitted and the thank-you shows at once, whatever the host does next.
+     */
+    save = input<AppShellFeedbackSave>();
+
+    /**
+     * Answers, keyed by question id, emitted once the questionnaire is
+     * finished: on submit, or once `save` has succeeded when there is one.
+     */
     submitted = output<AppShellFeedbackAnswers>();
     /** The person closed the questionnaire, before or after answering it. */
     dismissed = output<void>();
 
     @ViewChild('questionHeading') questionHeadingEl?: ElementRef<HTMLElement>;
+    @ViewChild('successHeading') successHeadingEl?: ElementRef<HTMLElement>;
+
+    private readonly injector = inject(Injector);
 
     /** Prefix for element ids and radio group names, unique per instance. */
     readonly uid = `appshell-feedback-${nextInstanceId++}`;
 
     private readonly _index = signal(0);
     private readonly _answers = signal<Record<string, StoredAnswer>>({});
-    private readonly _done = signal(false);
+    private readonly _status = signal<FeedbackStatus>('answering');
+
+    // A save still running when the questionnaire goes, e.g. its dialog closed,
+    // must not emit on an output that no longer exists (NG0953).
+    private destroyed = false;
+
+    constructor() {
+        inject(DestroyRef).onDestroy(() => this.destroyed = true);
+    }
 
     readonly questions = computed(() => {
         const { questions: supplied, productQuestion } = this.feedback();
@@ -130,12 +167,27 @@ export class AppShellFeedbackComponent {
             title: merged.title ? this.withProduct(merged.title, product) : undefined,
             subtitle: merged.subtitle ? this.withProduct(merged.subtitle, product) : undefined,
             successTitle: this.withProduct(merged.successTitle, product),
-            successMessage: this.withProduct(merged.successMessage, product)
+            successMessage: this.withProduct(merged.successMessage, product),
+            errorMessage: this.withProduct(merged.errorMessage, product)
         };
     });
 
     readonly index = this._index.asReadonly();
-    readonly done = this._done.asReadonly();
+    readonly status = this._status.asReadonly();
+    readonly done = computed(() => this._status() === 'done');
+    /** `save` is running: the submit button waits and says so. */
+    readonly sending = computed(() => this._status() === 'sending');
+    /** `save` failed: the answers are still here to send again. */
+    readonly failed = computed(() => this._status() === 'failed');
+
+    /** Submit's wording: Submit, Sending… while saving, Try again after a failure. */
+    readonly submitText = computed(() => {
+        const text = this.text();
+        if (this.sending()) {
+            return text.sendingLabel;
+        }
+        return this.failed() ? text.retryLabel : text.submitLabel;
+    });
 
     readonly current = computed(() => this.questions()[this._index()]);
     readonly total = computed(() => this.questions().length);
@@ -295,22 +347,56 @@ export class AppShellFeedbackComponent {
     }
 
     back(): void {
-        if (!this.isFirst()) {
+        if (!this.isFirst() && !this.sending()) {
+            // The error belongs to the last step; going back to change an
+            // answer leaves it behind, and the next submit tries afresh.
+            this._status.set('answering');
             this._index.set(this._index() - 1);
             this.focusQuestion();
         }
     }
 
-    submit(): void {
-        if (!this.canSubmit()) {
+    /**
+     * Without `save`, emits the answers and thanks the person straight away.
+     * With it, waits for the save: thanks the person once it succeeds, or stays
+     * on the last step with an error when it fails. A second press while the
+     * save is running does nothing.
+     */
+    async submit(): Promise<void> {
+        if (!this.canSubmit() || this.sending()) {
             return;
         }
-        this.submitted.emit(this.answersForEmission());
-        this._done.set(true);
+        const answers = this.answersForEmission();
+        const save = this.save();
+        if (!save) {
+            this.finish(answers);
+            return;
+        }
+        this._status.set('sending');
+        const saved = await runFeedbackSave(save, answers);
+        if (this.destroyed) {
+            return;
+        }
+        if (saved) {
+            this.finish(answers);
+        } else {
+            this._status.set('failed');
+        }
     }
 
     dismiss(): void {
         this.dismissed.emit();
+    }
+
+    /**
+     * Emits the answers and shows the thank-you. Focus goes to its heading:
+     * the submit button that held it is gone, and left alone the keyboard
+     * would fall back to the page behind the questionnaire.
+     */
+    private finish(answers: AppShellFeedbackAnswers): void {
+        this.submitted.emit(answers);
+        this._status.set('done');
+        afterNextRender(() => this.successHeadingEl?.nativeElement.focus(), { injector: this.injector });
     }
 
     /**

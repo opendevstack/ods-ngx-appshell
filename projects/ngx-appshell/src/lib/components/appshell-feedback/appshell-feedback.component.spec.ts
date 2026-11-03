@@ -1,7 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { NEVER, of, throwError } from 'rxjs';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { APPSHELL_FEEDBACK_STANDARD_QUESTIONS, AppShellFeedbackComponent } from './appshell-feedback.component';
-import { AppShellFeedback, AppShellFeedbackAnswers, AppShellFeedbackQuestion } from '../../models/appshell-feedback';
+import { AppShellFeedback, AppShellFeedbackAnswers, AppShellFeedbackQuestion, AppShellFeedbackSave } from '../../models/appshell-feedback';
 
 const CUSTOM: AppShellFeedback = {
     title: 'Two quick questions',
@@ -451,6 +452,214 @@ describe('AppShellFeedbackComponent', () => {
         expect(Object.isFrozen(APPSHELL_FEEDBACK_STANDARD_QUESTIONS)).toBeTrue();
         expect(Object.isFrozen(APPSHELL_FEEDBACK_STANDARD_QUESTIONS[0])).toBeTrue();
         expect(APPSHELL_FEEDBACK_STANDARD_QUESTIONS[0].options).toContain('Create a support ticket');
+    });
+
+    // --- saving through the host ---
+
+    describe('saving', () => {
+        const el = () => fixture.nativeElement as HTMLElement;
+        const submitButton = () => el().querySelector('.feedback-submit') as HTMLButtonElement;
+
+        /** A save the test settles by hand, to look at the questionnaire while it waits. */
+        const pendingSave = () => {
+            let settle!: (value: unknown) => void;
+            let fail!: (reason: unknown) => void;
+            const calls: AppShellFeedbackAnswers[] = [];
+            const save: AppShellFeedbackSave = answers => {
+                calls.push(answers);
+                return new Promise((resolve, reject) => { settle = resolve; fail = reject; });
+            };
+            return { save, calls, settle: (v?: unknown) => settle(v), fail: (e?: unknown) => fail(e) };
+        };
+
+        const useSave = (save: AppShellFeedbackSave) => {
+            fixture.componentRef.setInput('save', save);
+            fixture.detectChanges();
+        };
+
+        it('should thank the person at once when the host passes no save', () => {
+            answerStandardSteps();
+            const emitted = submitAndCapture();
+            expect(emitted.length).toBe(1);
+            expect(component.status()).toBe('done');
+        });
+
+        it('should wait for the save, saying so, before thanking the person', async () => {
+            const pending = pendingSave();
+            useSave(pending.save);
+            answerStandardSteps();
+            const emitted = submitAndCapture();
+            fixture.detectChanges();
+
+            expect(pending.calls.length).toBe(1);
+            expect(component.sending()).toBeTrue();
+            expect(emitted).toEqual([]);
+            expect(submitButton().textContent?.trim()).toBe('Sending…');
+            expect(submitButton().getAttribute('aria-busy')).toBe('true');
+            // The answers cannot change under a save that is already running.
+            expect((el().querySelector('.feedback-step') as HTMLFieldSetElement).disabled).toBeTrue();
+            expect((el().querySelector('.feedback-back') as HTMLButtonElement).disabled).toBeTrue();
+
+            pending.settle({ id: 42 });
+            await fixture.whenStable();
+            fixture.detectChanges();
+
+            expect(emitted).toEqual([pending.calls[0]]);
+            expect(el().querySelector('.feedback-success-title')?.textContent?.trim()).toBe('Thank you!');
+        });
+
+        it('should send once however many times Submit is pressed while saving', () => {
+            const pending = pendingSave();
+            useSave(pending.save);
+            answerStandardSteps();
+            component.submit();
+            component.submit();
+            expect(pending.calls.length).toBe(1);
+        });
+
+        it('should keep the person on the last step with an error when the save rejects', async () => {
+            const pending = pendingSave();
+            useSave(pending.save);
+            answerStandardSteps();
+            const emitted = submitAndCapture();
+            pending.fail(new Error('500'));
+            await fixture.whenStable();
+            fixture.detectChanges();
+
+            expect(component.failed()).toBeTrue();
+            expect(emitted).toEqual([]);
+            expect(el().querySelector('.feedback-success')).toBeNull();
+            const error = el().querySelector('.feedback-error');
+            expect(error?.getAttribute('role')).toBe('alert');
+            expect(error?.textContent?.trim()).toBe('Your feedback could not be sent. Please try again.');
+            // The answers are still there, and Submit offers to send them again.
+            expect(component.textAnswer()).toBe('Quick and clear');
+            expect(submitButton().textContent?.trim()).toBe('Try again');
+            expect(submitButton().disabled).toBeFalse();
+        });
+
+        it('should treat a save that gives back false as failed', async () => {
+            useSave(() => Promise.resolve(false));
+            answerStandardSteps();
+            await component.submit();
+            expect(component.failed()).toBeTrue();
+        });
+
+        it('should treat a save that throws as failed', async () => {
+            useSave(() => { throw new Error('offline'); });
+            answerStandardSteps();
+            await component.submit();
+            expect(component.failed()).toBeTrue();
+        });
+
+        it('should read an Observable save by its first value or its error', async () => {
+            useSave(() => of({ id: 1 }));
+            answerStandardSteps();
+            await component.submit();
+            expect(component.done()).toBeTrue();
+
+            const other = TestBed.createComponent(AppShellFeedbackComponent);
+            other.componentRef.setInput('save', () => throwError(() => new Error('403')));
+            other.detectChanges();
+            component = other.componentInstance;
+            answerStandardSteps();
+            await component.submit();
+            expect(component.failed()).toBeTrue();
+        });
+
+        it('should send the answers again on Try again, and thank the person once they are saved', async () => {
+            let attempts = 0;
+            const saved: AppShellFeedbackAnswers[] = [];
+            useSave(async answers => {
+                attempts++;
+                if (attempts === 1) {
+                    throw new Error('502');
+                }
+                saved.push(answers);
+            });
+            answerStandardSteps();
+            const emitted = submitAndCapture();
+            await fixture.whenStable();
+            expect(component.failed()).toBeTrue();
+
+            await component.submit();
+
+            expect(attempts).toBe(2);
+            expect(component.done()).toBeTrue();
+            expect(emitted).toEqual(saved);
+        });
+
+        it('should leave the error behind when the person goes back to change an answer', async () => {
+            useSave(() => Promise.reject(new Error('500')));
+            answerStandardSteps();
+            await component.submit();
+            expect(component.failed()).toBeTrue();
+
+            component.back();
+            fixture.detectChanges();
+
+            expect(component.failed()).toBeFalse();
+            expect(el().querySelector('.feedback-error')).toBeNull();
+        });
+
+        it('should not emit when the questionnaire is gone before its save ends', async () => {
+            const pending = pendingSave();
+            useSave(pending.save);
+            answerStandardSteps();
+            const emitted = submitAndCapture();
+
+            fixture.destroy();
+            pending.settle();
+            await Promise.resolve();
+            await Promise.resolve();
+
+            expect(emitted).toEqual([]);
+        });
+
+        it('should keep waiting, closable, while a save never answers', () => {
+            useSave(() => NEVER);
+            answerStandardSteps();
+            component.submit();
+            fixture.detectChanges();
+
+            expect(component.sending()).toBeTrue();
+            let dismissed = 0;
+            component.dismissed.subscribe(() => dismissed++);
+            (el().querySelector('.feedback-dismiss') as HTMLButtonElement).click();
+            expect(dismissed).toBe(1);
+        });
+
+        it('should move focus to the thank-you once the answers are in', async () => {
+            answerStandardSteps();
+            fixture.detectChanges();
+            component.submit();
+            fixture.detectChanges();
+            await fixture.whenStable();
+
+            expect(document.activeElement).toBe(el().querySelector('.feedback-success-title'));
+        });
+
+        it('should translate the sending, error and retry wording', async () => {
+            fixture.componentRef.setInput('feedback', {
+                questions: [{ id: 'q', type: 'choice', label: 'Q?', options: ['A'] }],
+                productName: 'Rooms',
+                sendingLabel: 'Enviando…',
+                errorMessage: 'No se ha podido enviar a {product}.',
+                retryLabel: 'Reintentar'
+            });
+            const pending = pendingSave();
+            useSave(pending.save);
+            component.answer(component.current(), 'A');
+            component.submit();
+            fixture.detectChanges();
+            expect(submitButton().textContent?.trim()).toBe('Enviando…');
+
+            pending.fail();
+            await fixture.whenStable();
+            fixture.detectChanges();
+            expect(el().querySelector('.feedback-error')?.textContent?.trim()).toBe('No se ha podido enviar a Rooms.');
+            expect(submitButton().textContent?.trim()).toBe('Reintentar');
+        });
     });
 
     // --- rendering ---
