@@ -20,9 +20,9 @@ describe('FeedbackScreenComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should show the standard, the four-step and the host-supplied questionnaires', () => {
+  it('should show the standard, the four-step, the host-supplied and the saving questionnaires', () => {
     const questionnaires = fixture.nativeElement.querySelectorAll('appshell-feedback');
-    expect(questionnaires.length).toBe(3);
+    expect(questionnaires.length).toBe(4);
   });
 
   it('should name the product for the standard questionnaire', () => {
@@ -51,6 +51,22 @@ describe('FeedbackScreenComponent', () => {
     component.onSubmitted({ goalAchieved: 'Yes' });
     component.onDismissed();
     expect(component.lastAnswers).toBeUndefined();
+  });
+
+  it('should save after a moment, or fail while the box is ticked', async () => {
+    jasmine.clock().install();
+    try {
+      const saved = component.save({ foundIt: 'Yes' }) as Promise<unknown>;
+      jasmine.clock().tick(1500);
+      await expectAsync(saved).toBeResolved();
+
+      component.failSave = true;
+      const failed = component.save({ foundIt: 'No' }) as Promise<unknown>;
+      jasmine.clock().tick(1500);
+      await expectAsync(failed).toBeRejected();
+    } finally {
+      jasmine.clock().uninstall();
+    }
   });
 
   it('should hide the launchers once they have been answered', () => {
