@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { JsonPipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import {
     AppShellFeedbackComponent,
     AppShellFeedbackLauncherComponent,
@@ -10,7 +11,7 @@ import {
 
 @Component({
     selector: 'app-feedback-screen',
-    imports: [AppShellFeedbackComponent, AppShellFeedbackLauncherComponent, JsonPipe],
+    imports: [AppShellFeedbackComponent, AppShellFeedbackLauncherComponent, JsonPipe, FormsModule],
     templateUrl: './feedback-screen.component.html',
     styleUrl: './feedback-screen.component.scss'
 })

@@ -6,23 +6,10 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ## [Unreleased]
 
-### Added
-- Added `save` to AppShellFeedbackComponent and AppShellFeedbackLauncherComponent, so the
-  questionnaire can wait for the host to store the answers. Submit says "Sending…" and ignores
-  further presses while the save runs, and the answers cannot be changed under it. The thank-you
-  appears only once the save succeeds; a failed save (rejected Promise, Observable error, a thrown
-  error or `false`) keeps the person on the last step with an error message and "Try again", their
-  answers intact. New wording: `sendingLabel`, `errorMessage` and `retryLabel`. Without `save` the
-  questionnaire behaves as before.
-
 ### Changed
-- With `save`, `submitted` is emitted once the answers are saved rather than on Submit. The
-  launcher reports saved answers even when the dialog was closed while the save was running.
-
-### Fixed
-- The feedback questionnaire moves focus to its thank-you heading once the answers are in.
-  The submit button that held the focus disappears at that moment, and the keyboard fell back
-  to the page behind the dialog.
+- AppShellFeedbackComponent and AppShellFeedbackLauncherComponent accept an optional `save`, so the
+  questionnaire waits for the host to store the answers before thanking the person, and shows an error
+  with "Try again" when the save fails.
 
 ## [19.0.17]
 

@@ -26,7 +26,7 @@
             save fail.
         </p>
         <label class="feedback-screen-toggle">
-            <input type="checkbox" [checked]="failSave" (change)="failSave = $any($event.target).checked">
+            <input type="checkbox" [(ngModel)]="failSave">
             Make the save fail
         </label>
         <appshell-feedback [feedback]="shortSurvey" [save]="save" (submitted)="onSubmitted($event)" />
