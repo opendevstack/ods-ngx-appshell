@@ -1,3 +1,5 @@
+import { Observable } from 'rxjs';
+
 /**
  * A free-text field that opens under a question when one particular option is
  * picked — "Other" on a list of goals, "No" on "Were you able to achieve it?".
@@ -96,6 +98,16 @@ export interface AppShellFeedback {
     successTitle?: string;
     successMessage?: string;
     closeLabel?: string;
+
+    /** The submit button's wording while `save` is still running. */
+    sendingLabel?: string;
+    /**
+     * Shown above the buttons on the last step when `save` fails. The answers
+     * stay on screen, so the person can send them again.
+     */
+    errorMessage?: string;
+    /** The submit button's wording after a failed `save`. */
+    retryLabel?: string;
 }
 
 /**
@@ -103,3 +115,13 @@ export interface AppShellFeedback {
  * `scale` answers are numbers, `multiple` answers are lists, the rest text.
  */
 export type AppShellFeedbackAnswers = Record<string, string | number | string[]>;
+
+/**
+ * Stores the answers wherever the host keeps them, e.g. a POST to its own API.
+ *
+ * Return a Promise or an Observable. The save failed when the Promise rejects,
+ * the Observable errors, or either one gives back `false`; anything else counts
+ * as saved. An Observable is read up to its first value.
+ */
+export type AppShellFeedbackSave =
+    (answers: AppShellFeedbackAnswers) => Promise<unknown> | Observable<unknown>;

@@ -19,8 +19,9 @@
         }
 
         <!-- One question at a time. A fieldset whose legend is the question, so a
-             screen reader announces the question together with its answers. -->
-        <fieldset class="feedback-step">
+             screen reader announces the question together with its answers.
+             Disabled while the host saves: what is on screen is what is sent. -->
+        <fieldset class="feedback-step" [disabled]="sending()">
             <legend class="feedback-question" tabindex="-1" #questionHeading [id]="uid + '-question'">
                 {{ currentLabel() }}@if (currentRequired()) {<span class="feedback-required" aria-hidden="true">&nbsp;*</span><span class="feedback-sr-only"> ({{ text().requiredLabel }})</span>}
             </legend>
@@ -63,15 +64,24 @@
             }
         </fieldset>
 
+        <!-- The host's save failed: the answers are still here, and Submit
+             becomes "Try again". An alert, so it is read out as it appears. -->
+        @if (failed()) {
+            <p class="feedback-error" role="alert">{{ text().errorMessage }}</p>
+        }
+
         <div class="feedback-actions">
             @if (!isFirst()) {
-                <button type="button" class="feedback-button feedback-button--secondary feedback-back" (click)="back()">
+                <button type="button" class="feedback-button feedback-button--secondary feedback-back" (click)="back()" [disabled]="sending()">
                     {{ text().backLabel }}
                 </button>
             }
             @if (isLast()) {
-                <button type="button" class="feedback-button feedback-button--primary feedback-submit" (click)="submit()" [disabled]="!canSubmit()">
-                    {{ text().submitLabel }}
+                <!-- Not disabled while sending: a disabled button drops the
+                     keyboard focus. It says "Sending…" and ignores presses. -->
+                <button type="button" class="feedback-button feedback-button--primary feedback-submit" (click)="submit()"
+                    [disabled]="!canSubmit()" [attr.aria-disabled]="sending() || null" [attr.aria-busy]="sending() || null">
+                    {{ submitText() }}
                 </button>
             } @else {
                 <button type="button" class="feedback-button feedback-button--primary feedback-next" (click)="next()" [disabled]="currentUnanswered()">
@@ -81,7 +91,7 @@
         </div>
     } @else {
         <section class="feedback-success" role="status">
-            <h2 class="feedback-success-title">{{ text().successTitle }}</h2>
+            <h2 class="feedback-success-title" tabindex="-1" #successHeading>{{ text().successTitle }}</h2>
             <p class="feedback-success-message">{{ text().successMessage }}</p>
             <button type="button" class="feedback-button feedback-button--primary feedback-close" (click)="dismiss()">
                 {{ text().closeLabel }}

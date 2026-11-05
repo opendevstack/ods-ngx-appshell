@@ -1,15 +1,17 @@
 import { Component } from '@angular/core';
 import { JsonPipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import {
     AppShellFeedbackComponent,
     AppShellFeedbackLauncherComponent,
     AppShellFeedback,
-    AppShellFeedbackAnswers
+    AppShellFeedbackAnswers,
+    AppShellFeedbackSave
 } from 'ngx-appshell';
 
 @Component({
     selector: 'app-feedback-screen',
-    imports: [AppShellFeedbackComponent, AppShellFeedbackLauncherComponent, JsonPipe],
+    imports: [AppShellFeedbackComponent, AppShellFeedbackLauncherComponent, JsonPipe, FormsModule],
     templateUrl: './feedback-screen.component.html',
     styleUrl: './feedback-screen.component.scss'
 })
@@ -52,6 +54,17 @@ export class FeedbackScreenComponent {
             }
         ]
     };
+
+    /** Tick to watch the questionnaire handle a save that fails. */
+    failSave = false;
+
+    /**
+     * Stands in for the host's own API: answers after a moment, and fails while
+     * `failSave` is ticked. A real save would post the answers and return that
+     * request, as a Promise or an Observable.
+     */
+    save: AppShellFeedbackSave = () => new Promise((resolve, reject) =>
+        setTimeout(() => this.failSave ? reject(new Error('Simulated failure')) : resolve(undefined), 1500));
 
     /**
      * The host decides what happens to the answers. Here they are only shown on

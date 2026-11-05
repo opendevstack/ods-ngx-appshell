@@ -142,6 +142,14 @@ appshell-feedback {
         }
     }
 
+    // After a failed save: the palette's error colours, the buttons right under it.
+    .feedback-error {
+        margin: 1.5rem 0 -1rem;
+        padding: 0.5rem 0.75rem;
+        background-color: var(--appshell-color-error-main);
+        color: var(--appshell-color-error-dark);
+    }
+
     // Back and Next together at the bottom right; alone on the first step.
     .feedback-actions {
         display: flex;
@@ -204,6 +212,8 @@ appshell-feedback {
             font-size: 1.25rem;
             line-height: 1.75rem;
             font-weight: 700;
+            // Focused programmatically once the answers are in; not a tab stop.
+            outline: none;
         }
 
         .feedback-success-message {

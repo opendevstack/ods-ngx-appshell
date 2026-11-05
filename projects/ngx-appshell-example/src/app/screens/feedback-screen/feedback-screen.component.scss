@@ -15,6 +15,13 @@
         color: var(--appshell-color-grey-strong);
     }
 
+    .feedback-screen-toggle {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+
     pre {
         padding: 1rem;
         border-radius: 0.5rem;

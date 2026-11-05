@@ -6,9 +6,10 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ## [Unreleased]
 
-### Added
 ### Changed
-### Fixed
+- AppShellFeedbackComponent and AppShellFeedbackLauncherComponent accept an optional `save`, so the
+  questionnaire waits for the host to store the answers before thanking the person, and shows an error
+  with "Try again" when the save fails.
 
 ## [19.0.17]
 
