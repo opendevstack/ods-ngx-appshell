@@ -6,6 +6,14 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ## [Unreleased]
 
+### Added
+### Changed
+### Fixed
+
+## [19.0.18]
+
+Library version: `@opendevstack/ngx-appshell@19.0.18`
+
 ### Changed
 - AppShellFeedbackComponent and AppShellFeedbackLauncherComponent accept an optional `save`, so the
   questionnaire waits for the host to store the answers before thanking the person, and shows an error
